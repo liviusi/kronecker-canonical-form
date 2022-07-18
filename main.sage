@@ -5,41 +5,48 @@ def compute_kernel(
         A: sa.sage.matrix,
         B: sa.sage.matrix):
     """
-    Returns the vector representing the polynomial of minimum degree
-    in the kernel of the pencil
-    (A + tB)x = 0.
+    Returns the pair (degree, v) with v representing the
+    polynomial of minimum degree in the kernel of the pencil
+    (A + tB)x = 0
+    and degree its degree.
     """
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
-    found_root = False
-    vectors = list()
-    while not found_root:
-        if len(vectors) == 0:
+    assert A.base_ring() == B.base_ring()
+    degree = 0
+    while True:
+        if degree == 0:
             # Computing: A * v_0 = 0
-            tmp = [item for item in list(A.right_kernel().basis_matrix())[0]]
-            if not tmp:
+            right_kernel_A = A.right_kernel().basis_matrix()
+            if not right_kernel_A:
                 print("Ker(A) is empty.")
                 exit(1)
-            right_kernel_A = sa.vector(A.base_ring(), tmp)
-            vectors.append(right_kernel_A)
-            tmp = [item for item in list(B.right_kernel().basis_matrix())[0]]
-            if not tmp:
+            right_kernel_B = B.right_kernel().basis_matrix()
+            if not right_kernel_B:
                 print("Ker(B) is empty.")
                 exit(1)
-            right_kernel_B = sa.vector(B.base_ring(), tmp)
             if (right_kernel_A == right_kernel_B):
-                found_root = True
+                return (degree, right_kernel_A)
         else:
-            # Computing: A * v_i + B * v_{i-1} = 0
-            # [A * v_i | B * v_{i-1}] y = 0 has a solution if and only if
-            # the polynomial is of this degree.
-            break
-    return vectors
+            rows = []
+            for i in range(degree + 1):
+                rows.append([A if i == j else
+                             (B if i == j + 1 else 0)
+                             for j in range(degree + 1)])
+            rows.append([B if j == degree else 0 for j in range(degree+1)])
+            coefficient_matrix = sa.block_matrix(A.base_ring(), rows)
+            print(f"{degree=}")
+            # print(coefficient_matrix)
+            matrix_kernel = coefficient_matrix.right_kernel().basis_matrix()
+            if matrix_kernel:
+                return (degree, matrix_kernel)
+        degree += 1
 
 
 # Starting point is a pencil of the form (A + tB)x = 0.
 ring = sa.AA
 
-A = sa.matrix(ring, [[0, 1, 2], [2, 3, 6], [4, 2, 4], [0, 2, 4]])
-B = sa.matrix(ring, [[1, 4, 6], [2, 8, 5], [2, 8, 12], [1, 0, 1]])
+A = sa.matrix(ring, [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]])
+B = sa.matrix(ring, [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
 
 assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
+print(compute_kernel(A, B))
