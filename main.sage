@@ -54,7 +54,7 @@ def reduction_theorem(
     [L * ]
     [0 * ].
     """
-    degree, vector = compute_kernel(A, B)
+    _, vector = compute_kernel(A, B)
     k = len(vector.list())
     if k <= 0:
         print("The degree of the polynomial of minimum degree " +
