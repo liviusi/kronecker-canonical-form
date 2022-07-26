@@ -51,8 +51,8 @@ def reduction_theorem(
         B: sa.sage.matrix):
     """
     Reduces a pencil (A + tB)x = 0 to a canonical form:
-    [L        *          ]
-    [0 (new_A + t*new_B] ].
+    [L * ]
+    [0 * ].
     """
     degree, vector = compute_kernel(A, B)
     k = len(vector.list())
