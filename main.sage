@@ -3,7 +3,7 @@ import sage.all as sa
 
 def compute_kernel(
         A: sa.sage.matrix,
-        B: sa.sage.matrix):
+        B: sa.sage.matrix) -> tuple[int, sa.sage.matrix]:
     """
     Returns the pair (degree, v) with v representing the
     polynomial of minimum degree in the kernel of the pencil
@@ -15,6 +15,10 @@ def compute_kernel(
     degree = 0
     while True:
         if degree == 0:
+            """
+            [A] v = 0
+            [B]
+            """
             # Computing: A * v_0 = 0
             right_kernel_A = A.right_kernel().basis_matrix()
             if not right_kernel_A:
@@ -40,6 +44,31 @@ def compute_kernel(
             if matrix_kernel:
                 return (degree, matrix_kernel)
         degree += 1
+
+
+def reduction_theorem(
+        A: sa.sage.matrix,
+        B: sa.sage.matrix):
+    """
+    Reduces a pencil (A + tB)x = 0 to a canonical form:
+    [L        *          ]
+    [0 (new_A + t*new_B] ].
+    """
+    degree, vector = compute_kernel(A, B)
+    k = len(vector.list())
+    if k <= 0:
+        print("The degree of the polynomial of minimum degree " +
+              "in the pencil must be greater than zero.")
+        exit(1)
+    assert not len(A.base_ring().linear_dependence(vector)) <= 0
+    if k < A.ncols():
+        vector = sa.vector(vector.base_ring(), vector.list() +
+                           [0 for _ in range(A.ncols() - len(vector.list()))])
+    w_matrix = [A.solve_right(vector[i]) for i in range(k)]
+    if k < A.ncols():
+        w_matrix += [sa.vector(A.sa.base_ring(),
+                               [0 for _ in range(A.ncols() - k)])]
+    return (vector, sa.matrix(A.base_ring(), w_matrix))
 
 
 # Starting point is a pencil of the form (A + tB)x = 0.
