@@ -1,5 +1,20 @@
 import sage.all as sa
+import sys
 import ast
+
+ring = sa.AA
+DEFAULT_PENCIL_FILE = "./pencil.txt"
+
+def into_chunks(
+        lst: list,
+        n: int) -> list:
+    """
+    Splits a list into n equally sized chunks if possible, returns None otherwise.
+    """
+    if len(lst) % n != 0:
+        return None
+    else:
+        return [lst[i:i + n] for i in range(0, len(lst), n)]
 
 
 def recover_matrix(
@@ -24,7 +39,7 @@ def recover_matrices(
                 recover_matrix(ring, lines[1].split("B = ")[1]))
 
 
-def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.sage.vector]:
+def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.vector]:
     """
     Completes the given matrix to a basis.
     TODO: actually document how this function works.
@@ -42,7 +57,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.sage.vector]:
 
 def compute_lowest_degree_polynomial(
         A: sa.sage.matrix,
-        B: sa.sage.matrix) -> tuple[int, sa.sage.matrix]:
+        B: sa.sage.matrix) -> tuple[int, list[sa.vector]]:
     """
     Returns the pair (degree, v) with v representing the
     polynomial of minimum degree in the kernel of the pencil
@@ -86,7 +101,8 @@ def compute_lowest_degree_polynomial(
                 resulting_kernel = coefficient_matrix_kernel
                 break
         degree += 1
-    return (degree, resulting_kernel)
+    return (degree, into_chunks(resulting_kernel.columns(),
+                resulting_kernel.ncols()//(degree+1)))
 
 
 def reduction_theorem(
@@ -97,23 +113,44 @@ def reduction_theorem(
     [L * ]
     [0 * ].
     """
-    _, vector = compute_lowest_degree_polynomial(A, B)
-    k = len(vector.list())
-    if k <= 0:
+    degree, vector = compute_lowest_degree_polynomial(A, B)
+    if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
         exit(1)
     assert not len(A.base_ring().linear_dependence(vector)) <= 0
 
 
-# Starting point is a pencil of the form (A + tB)x = 0.
-ring = sa.AA
+def main() -> None:
+    """
+    Main function.
+    """
+    filename = None
+    if (len(sys.argv) <= 1):
+        print("No input file has been selected. Default will be used:" +
+        f" {DEFAULT_PENCIL_FILE}.")
+        filename = DEFAULT_PENCIL_FILE
+    elif len(sys.argv) != 2:
+        print("Only a single argument may be provided." + 
+        " Usage: sage main.sage <pencil_filename>")
+        exit(1)
+    else:
+        filename = sys.argv[1]
 
-A, B = recover_matrices(ring, "dump.txt")
-# print(f'A.parent() - {A.parent()}')
-# print(f'B.parent() - {B.parent()}')
+    # Starting point is a pencil of the form (A + tB)x = 0.
+    A, B = recover_matrices(ring, filename)
 
-assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
-complete_to_a_basis(A)
-# degree, poly = compute_lowest_degree_polynomial(A, B)
-# print(poly)
+    # Matrices sizes must be compatible.
+    assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
+
+    # Info:
+    print(f'Matrix space parent of A: {A.parent()}')
+    print(f'Matrix space parent of B: {B.parent()}')
+
+    degree, poly = compute_lowest_degree_polynomial(A, B)
+    print(f'{degree=}')
+    print(poly)
+
+
+if __name__ == "__main__":
+    main()
