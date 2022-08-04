@@ -86,33 +86,47 @@ def compute_lowest_degree_polynomial(
                 resulting_kernel = coefficient_matrix_kernel
                 break
         degree += 1
-    print(resulting_kernel)
     result = [[] for _ in range(resulting_kernel.ncols() // (degree + 1))]
     for i in range(resulting_kernel.nrows()):
         for j in range(resulting_kernel.ncols()):
-            result[j // (resulting_kernel.ncols() // (degree + 1))].append(resulting_kernel[i, j])
+            result[(
+                    j //
+                    (resulting_kernel.ncols() //
+                        (degree + 1)))].append(resulting_kernel[i, j])
     return (degree, sa.matrix(A.base_ring(), result).transpose())
 
 
 def reduction_theorem(
         A: sa.sage.matrix,
-        B: sa.sage.matrix):
+        B: sa.sage.matrix) -> tuple[
+                                        sa.sage.matrix, sa.sage.matrix,
+                                        sa.sage.matrix, sa.sage.matrix]:
     """
     Reduces a pencil (A + tB)x = 0 to a canonical form:
-    [L * ]
-    [0 * ].
+    A_tilde = P^-1 * A * Q =
+    [0 1 0 ... 0 |        ]
+    [0 0 1 ... 0 |   D    ]
+    [0 0 0 ... 1 |        ]
+    [------------|------- ]
+    [     0      | A_star ]
+
+    B_tilde = P^-1 * B * Q =
+    [1 0 0 ... 0 |        ]
+    [0 1 0 ... 0 |   F    ]
+    [0 0 ... 1 0 |        ]
+    [------------|------- ]
+    [     0      | B_star ]
     """
     degree, vector = compute_lowest_degree_polynomial(A, B)
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
         exit(1)
-    print("Lowest degree polynomial:")
-    print(vector)
-    print("------------------------------------------------")
-    print("Q:")
     Q = complete_to_a_basis(vector)
-    print(Q)
+    P = complete_to_a_basis(A * vector)
+    A_tilde = P ^ -1 * A * Q
+    B_tilde = P ^ -1 * B * Q
+    return (A_tilde, B_tilde, P, Q)
 
 
 def main() -> None:
@@ -122,11 +136,11 @@ def main() -> None:
     filename = None
     if (len(sys.argv) <= 1):
         print("No input file has been selected. Default will be used:" +
-        f" {DEFAULT_PENCIL_FILE}.")
+              f" {DEFAULT_PENCIL_FILE}.")
         filename = DEFAULT_PENCIL_FILE
     elif len(sys.argv) != 2:
-        print("Only a single argument may be provided." + 
-        " Usage: sage main.sage <pencil_filename>")
+        print("Only a single argument may be provided." +
+              " Usage: sage main.sage <pencil_filename>")
         exit(1)
     else:
         filename = sys.argv[1]
@@ -138,10 +152,14 @@ def main() -> None:
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
 
     # Info:
-    print(f'Matrix space parent of A: {A.parent()}')
-    print(f'Matrix space parent of B: {B.parent()}')
+    print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
+    print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
 
-    reduction_theorem(A, B)
+    A_tilde, B_tilde, P, Q = reduction_theorem(A, B)
+    print(f"A_tilde:\n{A_tilde}\n")
+    print(f"B_tilde:\n{B_tilde}\n")
+    print(f"P:\n{P}\n")
+    print(f"Q:\n{Q}\n")
 
 
 if __name__ == "__main__":
