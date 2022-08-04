@@ -28,7 +28,7 @@ def recover_matrices(
                 recover_matrix(ring, lines[1].split("B = ")[1]))
 
 
-def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.vector]:
+def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
     """
     Completes the given matrix to a basis.
     TODO: actually document how this function works.
@@ -41,7 +41,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.vector]:
     basis = list()
     for index in pivot_indices:
         basis.append(new_M.column(index))
-    return basis
+    return sa.matrix(M.base_ring(), basis) 
 
 
 def compute_lowest_degree_polynomial(
@@ -142,6 +142,7 @@ def main() -> None:
     degree, poly = compute_lowest_degree_polynomial(A, B)
     print(f'{degree=}')
     print(poly)
+    print(complete_to_a_basis(sa.matrix(sa.AA, [[1, 0, 0], [2, 0, 0]])))
 
 
 if __name__ == "__main__":
