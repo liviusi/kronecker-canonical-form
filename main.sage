@@ -37,11 +37,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
         [1 if i == j else 0 for i in range(M.nrows())]
         for j in range(M.nrows())])
     new_M = M.augment(identity_mat)
-    pivot_indices = new_M.pivots()
-    basis = list()
-    for index in pivot_indices:
-        basis.append(new_M.column(index))
-    return sa.matrix(M.base_ring(), basis) 
+    return new_M[:, new_M.pivots()]
 
 
 def compute_lowest_degree_polynomial(
@@ -90,11 +86,12 @@ def compute_lowest_degree_polynomial(
                 resulting_kernel = coefficient_matrix_kernel
                 break
         degree += 1
+    print(resulting_kernel)
     result = [[] for _ in range(resulting_kernel.ncols() // (degree + 1))]
     for i in range(resulting_kernel.nrows()):
         for j in range(resulting_kernel.ncols()):
             result[j // (resulting_kernel.ncols() // (degree + 1))].append(resulting_kernel[i, j])
-    return (degree, sa.matrix(A.base_ring(), result))
+    return (degree, sa.matrix(A.base_ring(), result).transpose())
 
 
 def reduction_theorem(
@@ -110,7 +107,12 @@ def reduction_theorem(
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
         exit(1)
-    assert not len(A.base_ring().linear_dependence(vector)) <= 0
+    print("Lowest degree polynomial:")
+    print(vector)
+    print("------------------------------------------------")
+    print("Q:")
+    Q = complete_to_a_basis(vector)
+    print(Q)
 
 
 def main() -> None:
@@ -139,10 +141,7 @@ def main() -> None:
     print(f'Matrix space parent of A: {A.parent()}')
     print(f'Matrix space parent of B: {B.parent()}')
 
-    degree, poly = compute_lowest_degree_polynomial(A, B)
-    print(f'{degree=}')
-    print(poly)
-    print(complete_to_a_basis(sa.matrix(sa.AA, [[1, 0, 0], [2, 0, 0]])))
+    reduction_theorem(A, B)
 
 
 if __name__ == "__main__":
