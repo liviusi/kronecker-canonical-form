@@ -1,20 +1,9 @@
 import sage.all as sa
 import sys
-import ast
+from ast import literal_eval
 
 ring = sa.AA
 DEFAULT_PENCIL_FILE = "./pencil.txt"
-
-def into_chunks(
-        lst: list,
-        n: int) -> list:
-    """
-    Splits a list into n equally sized chunks if possible, returns None otherwise.
-    """
-    if len(lst) % n != 0:
-        return None
-    else:
-        return [lst[i:i + n] for i in range(0, len(lst), n)]
 
 
 def recover_matrix(
@@ -23,7 +12,7 @@ def recover_matrix(
     """
     Given a ring, constructs a matrix from its string representation M.
     """
-    return sa.matrix(ring, ast.literal_eval(M))
+    return sa.matrix(ring, literal_eval(M))
 
 
 def recover_matrices(
@@ -57,7 +46,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> list[sa.vector]:
 
 def compute_lowest_degree_polynomial(
         A: sa.sage.matrix,
-        B: sa.sage.matrix) -> tuple[int, list[sa.vector]]:
+        B: sa.sage.matrix) -> tuple[int, list[sa.sage.matrix]]:
     """
     Returns the pair (degree, v) with v representing the
     polynomial of minimum degree in the kernel of the pencil
@@ -101,8 +90,11 @@ def compute_lowest_degree_polynomial(
                 resulting_kernel = coefficient_matrix_kernel
                 break
         degree += 1
-    return (degree, into_chunks(resulting_kernel.columns(),
-                resulting_kernel.ncols()//(degree+1)))
+    result = [[] for _ in range(resulting_kernel.ncols() // (degree + 1))]
+    for i in range(resulting_kernel.nrows()):
+        for j in range(resulting_kernel.ncols()):
+            result[j // (resulting_kernel.ncols() // (degree + 1))].append(resulting_kernel[i, j])
+    return (degree, sa.matrix(A.base_ring(), result))
 
 
 def reduction_theorem(
