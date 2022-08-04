@@ -1,6 +1,7 @@
 import sage.all as sa
 import sys
 from ast import literal_eval
+from itertools import chain
 
 ring = sa.AA
 DEFAULT_PENCIL_FILE = "./pencil.txt"
@@ -86,14 +87,21 @@ def compute_lowest_degree_polynomial(
                 resulting_kernel = coefficient_matrix_kernel
                 break
         degree += 1
-    result = [[] for _ in range(resulting_kernel.ncols() // (degree + 1))]
-    for i in range(resulting_kernel.nrows()):
+    resulting_kernel = resulting_kernel.transpose()
+    indices = [i for i in range(0, resulting_kernel.nrows(), resulting_kernel.nrows() // (degree + 1))]
+    resulting_kernel.subdivide(indices, None)
+    result = []
+    for index in indices:
+        v = []
         for j in range(resulting_kernel.ncols()):
-            result[(
-                    j //
-                    (resulting_kernel.ncols() //
-                        (degree + 1)))].append(resulting_kernel[i, j])
-    return (degree, sa.matrix(A.base_ring(), result).transpose())
+            col = []
+            for i in range(index, index + resulting_kernel.nrows() // (degree + 1)):
+                col.append(resulting_kernel[i, j])
+            v.append(col)
+        v = sa.matrix(ring, v).transpose()
+        result.append(v)
+
+    return (degree, result)
 
 
 def reduction_theorem(
@@ -117,13 +125,18 @@ def reduction_theorem(
     [------------|------- ]
     [     0      | B_star ]
     """
-    degree, vector = compute_lowest_degree_polynomial(A, B)
+    degree, polynomial = compute_lowest_degree_polynomial(A, B)
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
         exit(1)
-    Q = complete_to_a_basis(vector)
-    P = complete_to_a_basis(A * vector)
+
+    V = sa.block_matrix(ring, [[v for v in polynomial]], subdivide=True)
+    print(f'V:\n{V}\n')
+    print(f'Product:\n{A*polynomial[0]}\n')
+    print(f'Product:\n{B*polynomial[len(polynomial)-1]}\n')
+    Q = complete_to_a_basis(V)
+    P = complete_to_a_basis(A * V)
     A_tilde = P ^ -1 * A * Q
     B_tilde = P ^ -1 * B * Q
     return (A_tilde, B_tilde, P, Q)
