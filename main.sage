@@ -2,7 +2,7 @@ from re import I
 import sage.all as sa
 import sys
 from ast import literal_eval
-from itertools import chain
+
 
 ring = sa.AA
 DEFAULT_PENCIL_FILE = "./pencil.txt"
@@ -115,14 +115,14 @@ def reduction_theorem(
     [0 0 1 ... 0 |   D    ]
     [0 0 0 ... 1 |        ]
     [------------|------- ]
-    [     0      | A_star ]
+    [     0      | A_STAR ]
 
     B_tilde = P^-1 * B * Q =
     [1 0 0 ... 0 |        ]
     [0 1 0 ... 0 |   F    ]
     [0 0 ... 1 0 |        ]
     [------------|------- ]
-    [     0      | B_star ]
+    [     0      | B_STAR ]
     """
     degree, polynomial = compute_lowest_degree_polynomial(A, B)
     if degree <= 0:
@@ -149,15 +149,46 @@ def reduction_theorem(
         L_B.append(row_L_B)
     L_A = sa.matrix(A_tilde.base_ring(), L_A)
     L_B = sa.matrix(B_tilde.base_ring(), L_B)
-    print(f"L_A:\n{L_A}\n")
-    print(f"L_B:\n{L_B}\n")
 
     # (A + tB)x = 0 is now in KCF.
     if A.ncols() == L_A.ncols() and A.nrows() == L_B.nrows():
-        return ((L_A, sa.matrix(A.base_ring(), []),
-                    sa.matrix(A.base_ring(), []), sa.matrix(A.base_ring(), [])),
-                    (L_B, sa.matrix(B.base_ring(), []), sa.matrix(B.base_ring(), []),
-                        sa.matrix(B.base_ring(), [])))
+        return ((L_A, sa.matrix(A.base_ring(), []), sa.matrix(A.base_ring(), [])),
+                        (L_B, sa.matrix(B.base_ring(), []),
+                                sa.matrix(B.base_ring(), []), sa.matrix(B.base_ring(), [])))
+
+    rows = []
+    for i in range(L_A.nrows()):
+        row = []
+        for j in range(L_A.ncols(), A.ncols()):
+            row.append(A_tilde[i, j])
+        rows.append(row)
+    D = sa.matrix(A.base_ring(), rows)
+
+    rows = []
+    for i in range(L_A.nrows(), A.nrows()):
+        row = []
+        for j in range(L_A.ncols(), A.ncols()):
+            row.append(A_tilde[i, j])
+        rows.append(row)
+    A_STAR = sa.matrix(A.base_ring(), rows)
+
+    rows = []
+    for i in range(L_B.nrows()):
+        row = []
+        for j in range(L_B.ncols(), B.ncols()):
+            row.append(B_tilde[i, j])
+        rows.append(row)
+    F = sa.matrix(B.base_ring(), rows)
+
+    rows = []
+    for i in range(L_B.nrows(), B.nrows()):
+        row = []
+        for j in range(L_B.ncols(), B.ncols()):
+            row.append(B_tilde[i, j])
+        rows.append(row)
+    B_STAR = sa.matrix(B.base_ring(), rows)
+
+    return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
 
 def main() -> None:
@@ -186,11 +217,13 @@ def main() -> None:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
 
-    (L_A, D, ZERO, A_STAR), (L_B, F, ZERO, B_STAR) = reduction_theorem(A, B)
+    (L_A, D, A_STAR), (L_B, F, B_STAR) = reduction_theorem(A, B)
     print(f"L_A:\n{L_A}\n")
-    print(f"L_B:\n{L_B}\n")
     print(f"D:\n{D}\n")
+    print(f"A_STAR:\n{A_STAR}\n")
+    print(f"L_B:\n{L_B}\n")
     print(f"F:\n{F}\n")
+    print(f"B_STAR:\n{B_STAR}\n")
 
 
 if __name__ == "__main__":
