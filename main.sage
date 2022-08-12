@@ -43,6 +43,40 @@ def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
     return new_M[:, new_M.pivots()]
 
 
+def build_coefficient_matrix(
+        A: sa.sage.matrix,
+        B: sa.sage.matrix,
+        degree: int, change_sign=False) -> sa.sage.matrix:
+    """
+    Given two matrices (A, B) of the same size returns a matrix of
+    the following form:
+    [A   0     0]
+    [B   A      ]
+    [0   B      ]
+    [          A]
+    [0 0  ...  B]
+    of size (degree + 2 x degree + 1).
+    change_sign is to be toggled on if the matrix is to be built
+    using -B instead of B.
+    """
+    assert A.ncols() == B.ncols() and A.nrows() == B.nrows()
+    if degree < 0:
+        return sa.matrix(A.base_ring(), [])
+    else:
+        sign = -1 if change_sign else 1
+        rows = []
+        if degree == 0:
+            rows.append([A])
+            rows.append([sign * B])
+        else:
+            for i in range(degree + 1):
+                rows.append([A if i == j else
+                             (sign * B if i == j + 1 else 0)
+                             for j in range(degree + 1)])
+            rows.append([sign * B if j == degree else 0 for j in range(degree+1)])
+        return sa.block_matrix(A.base_ring(), rows)
+
+
 def compute_lowest_degree_polynomial(
         A: sa.sage.matrix,
         B: sa.sage.matrix) -> tuple[int, list[sa.vector]]:
@@ -55,46 +89,24 @@ def compute_lowest_degree_polynomial(
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
     assert A.base_ring() == B.base_ring()
     degree = 0
-    resulting_kernel = None
+    coefficient_matrix_kernel = None
     while True:
-        if degree == 0:
-            """
-            [A] v = 0
-            [B]
-            """
-            # Computing: A * v_0 = 0
-            rows = []
-            rows.append([A]); rows.append([-B])
-            coefficient_matrix = sa.block_matrix(ring, rows)
-            coefficient_matrix_kernel = (
-                coefficient_matrix.right_kernel().basis_matrix()
-            )
-            if coefficient_matrix_kernel:
-                resulting_kernel = coefficient_matrix_kernel
-                break
-        else:
-            rows = []
-            for i in range(degree + 1):
-                rows.append([A if i == j else
-                             (-B if i == j + 1 else 0)
-                             for j in range(degree + 1)])
-            rows.append([-B if j == degree else 0 for j in range(degree+1)])
-            coefficient_matrix = sa.block_matrix(A.base_ring(), rows)
-            coefficient_matrix_kernel = (
-                coefficient_matrix.right_kernel().basis_matrix()
-            )
-            if coefficient_matrix_kernel:
-                resulting_kernel = coefficient_matrix_kernel
-                break
+        coefficient_matrix = build_coefficient_matrix(A, B, degree, True)
+        coefficient_matrix_kernel = (
+            coefficient_matrix.right_kernel().basis_matrix()
+        )
+        if coefficient_matrix_kernel:
+            coefficient_matrix_kernel = coefficient_matrix_kernel
+            break
         degree += 1
-    resulting_kernel = resulting_kernel.transpose()
-    indices = [i for i in range(0, resulting_kernel.nrows(), resulting_kernel.nrows() // (degree + 1))]
-    resulting_kernel.subdivide(indices, None)
+    coefficient_matrix_kernel = coefficient_matrix_kernel.transpose()
+    indices = [i for i in range(0, coefficient_matrix_kernel.nrows(), coefficient_matrix_kernel.nrows() // (degree + 1))]
+    coefficient_matrix_kernel.subdivide(indices, None)
     result = []
     for index in indices:
         col = []
-        for i in range(index, index + resulting_kernel.nrows() // (degree + 1)):
-            col.append(resulting_kernel[i, 0])
+        for i in range(index, index + coefficient_matrix_kernel.nrows() // (degree + 1)):
+            col.append(coefficient_matrix_kernel[i, 0])
         result.append(sa.vector(ring, col))
 
     return (degree, result)
@@ -188,7 +200,37 @@ def reduction_theorem(
         rows.append(row)
     B_STAR = sa.matrix(B.base_ring(), rows)
 
+    M = build_coefficient_matrix(A_STAR, B_STAR, degree-1)
+
+    print(f'M:\n{M}\n')
+
+    rows = []
+    sign = -1
+    for i in range(F.nrows()):
+        row = []
+        for j in range(F.ncols() - 1):
+            sign *= -1
+            row.append(sign * (F[i, j + 1] - D[i, j]))
+        rows.append(row)
+    W = sa.matrix(A.base_ring(), rows)
+
+    print(f'W:\n{W}\n')
+
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
+
+
+"""
+    rows = []
+    for i in range(degree):
+        row = []
+        for k in range(F.ncols()):
+            print(f'{F[i,k]}')
+            row.append(F[i+1, k] - D[i, k])
+        rows.append(row)
+    W = sa.matrix(A.base_ring(), rows)
+    print(W)
+"""
+
 
 
 def main() -> None:
