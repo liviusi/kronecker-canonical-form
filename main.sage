@@ -216,6 +216,8 @@ def reduction_theorem(
 
     print(f'W:\n{W}\n')
 
+    # print(M.solve_right(W))
+
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
 
