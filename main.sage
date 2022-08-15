@@ -246,20 +246,6 @@ def reduction_theorem(
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
 
-"""
-    rows = []
-    for i in range(degree):
-        row = []
-        for k in range(F.ncols()):
-            print(f'{F[i,k]}')
-            row.append(F[i+1, k] - D[i, k])
-        rows.append(row)
-    W = sa.matrix(A.base_ring(), rows)
-    print(W)
-"""
-
-
-
 def main() -> None:
     """
     Main function.
