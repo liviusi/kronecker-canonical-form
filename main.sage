@@ -1,4 +1,3 @@
-from re import I
 import sage.all as sa
 import sys
 from ast import literal_eval
