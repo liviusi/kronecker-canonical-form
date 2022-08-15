@@ -276,6 +276,13 @@ def main() -> None:
     to_be_transposed = False
     KCF = None
     while True:
+        if A.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero():
+            KCF = sa.block_diagonal_matrix(L_entries)
+            break
+        elif A.ncols() < A.nrows():
+            to_be_transposed = True
+            A = A.transpose()
+            B = B.transpose()
         (L_A, _, A_STAR), (L_B, _, B_STAR) = reduction_theorem(A, B)
         new_entry = L_A + sa.var('t') * L_B
         if to_be_transposed:
@@ -284,15 +291,9 @@ def main() -> None:
         L_entries.append(new_entry)
         A = A_STAR
         B = B_STAR
-        if A.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero():
-            KCF = sa.block_diagonal_matrix(L_entries)
-            break
-        elif A.ncols() < A.nrows():
-            to_be_transposed = True
-            A = A.transpose()
-            B = B.transpose()
 
     print(f"KCF:\n{KCF}\n")
+    print(f"A:\n{A}\nB:\n{B}\n")
 
 if __name__ == "__main__":
     main()
