@@ -46,7 +46,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
 def build_coefficient_matrix(
         A: sa.sage.matrix,
         B: sa.sage.matrix,
-        degree: int, change_sign=False) -> sa.sage.matrix:
+        epsilon: int, change_sign=False) -> sa.sage.matrix:
     """
     Given two matrices (A, B) of the same size returns a matrix of
     the following form:
@@ -55,25 +55,25 @@ def build_coefficient_matrix(
     [0   B      ]
     [          A]
     [0 0  ...  B]
-    of size (degree + 2 x degree + 1).
+    of size (epsilon + 2 x epsilon + 1).
     change_sign is to be toggled on if the matrix is to be built
     using -B instead of B.
     """
     assert A.ncols() == B.ncols() and A.nrows() == B.nrows()
-    if degree < 0:
+    if epsilon <= 0:
         return sa.matrix(A.base_ring(), [])
     else:
         sign = -1 if change_sign else 1
         rows = []
-        if degree == 0:
+        if epsilon == 1:
             rows.append([A])
             rows.append([sign * B])
         else:
-            for i in range(degree + 1):
+            for i in range(epsilon):
                 rows.append([A if i == j else
                              (sign * B if i == j + 1 else 0)
-                             for j in range(degree + 1)])
-            rows.append([sign * B if j == degree else 0 for j in range(degree+1)])
+                             for j in range(epsilon)])
+            rows.append([sign * B if j == epsilon - 1 else 0 for j in range(epsilon)])
         return sa.block_matrix(A.base_ring(), rows)
 
 
@@ -91,7 +91,7 @@ def compute_lowest_degree_polynomial(
     degree = 0
     coefficient_matrix_kernel = None
     while True:
-        coefficient_matrix = build_coefficient_matrix(A, B, degree, True)
+        coefficient_matrix = build_coefficient_matrix(A, B, degree + 1, True)
         coefficient_matrix_kernel = (
             coefficient_matrix.right_kernel().basis_matrix()
         )
@@ -200,23 +200,48 @@ def reduction_theorem(
         rows.append(row)
     B_STAR = sa.matrix(B.base_ring(), rows)
 
-    M = build_coefficient_matrix(A_STAR, B_STAR, degree-1)
+    # Does this really need to be computed each and every time?
+    # It is already shown how such matrices can always be defined,
+    # is this even useful?
+    W = Z = Y = None
 
-    print(f'M:\n{M}\n')
+    if degree - 1 > 0:
+        M = build_coefficient_matrix(A_STAR, B_STAR, degree-1)
+        # print(f'M:\n{M}\n')
+        if degree > 1:
+            rows = []
+            sign = -1
+            for i in range(F.nrows() - 1):
+                row = []
+                for j in range(F.ncols()):
+                    sign *= -1
+                    row.append(sign * (F[i+1, j] - D[i, j]))
+                rows.append(row)
+            W = sa.matrix(A.base_ring(), rows)
+            Z = M.solve_left(W)
+            assert Z.ncols() % degree == 0
+            rows = []
+            for i in range(Z.ncols()):
+                row = []
+                sign = -1
+                for k in range(Z.ncols() // degree):
+                    sign *= -1
+                    row.append(sign * Z[i])
+                rows.append(row)
+            Y = sa.matrix(A.base_ring(), rows)
+    else:
+        Y = sa.matrix(A.base_ring(), [[1 for _ in range(degree)]])
 
-    rows = []
-    sign = -1
-    for i in range(F.nrows()):
-        row = []
-        for j in range(F.ncols() - 1):
-            sign *= -1
-            row.append(sign * (F[i, j + 1] - D[i, j]))
-        rows.append(row)
-    W = sa.matrix(A.base_ring(), rows)
+    X = [[None for _ in range(A_STAR.ncols())] for _ in range(degree + 1)]
+    for i in range(degree):
+        for j in range(A_STAR.ncols()):
+            X[i][j] = F[i, j] + Y.row(i) * B_STAR.column(j)
+    for j in range(A_STAR.ncols()):
+        X[degree][j] = D[degree - 1, j] + Y.row(degree - 1) * A_STAR.column(j)
 
-    print(f'W:\n{W}\n')
+    X = sa.matrix(A.base_ring(), X)
 
-    # print(M.solve_right(W))
+    assert ((D + Y * A_STAR - L_A * X).is_zero()) and ((F + Y * B_STAR - L_B * X).is_zero())
 
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
