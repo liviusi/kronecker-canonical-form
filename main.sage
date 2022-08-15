@@ -115,10 +115,10 @@ def compute_lowest_degree_polynomial(
 def reduction_theorem(
         A: sa.sage.matrix,
         B: sa.sage.matrix) -> tuple[tuple[
-                                            sa.sage.matrix, sa.sage.matrix,
+                                            sa.sage.matrix,
                                             sa.sage.matrix, sa.sage.matrix],
                                     tuple[
-                                            sa.sage.matrix, sa.sage.matrix,
+                                            sa.sage.matrix,
                                             sa.sage.matrix, sa.sage.matrix]]:
     """
     Reduces a pencil (A + tB)x = 0 to a canonical form:
@@ -143,7 +143,7 @@ def reduction_theorem(
         exit(1)
 
     V = sa.matrix(polynomial[0].base_ring(), polynomial).transpose()
-    print(f'V:\n{V}\n')
+    # print(f'V:\n{V}\n')
     Q = complete_to_a_basis(V)
     P = complete_to_a_basis(A * V)
     A_tilde = P**-1 * A * Q
@@ -166,7 +166,7 @@ def reduction_theorem(
     if A.ncols() == L_A.ncols() and A.nrows() == L_B.nrows():
         return ((L_A, sa.matrix(A.base_ring(), []), sa.matrix(A.base_ring(), [])),
                         (L_B, sa.matrix(B.base_ring(), []),
-                                sa.matrix(B.base_ring(), []), sa.matrix(B.base_ring(), [])))
+                                sa.matrix(B.base_ring(), [])))
 
     rows = []
     for i in range(L_A.nrows()):
@@ -272,14 +272,27 @@ def main() -> None:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
 
-    (L_A, D, A_STAR), (L_B, F, B_STAR) = reduction_theorem(A, B)
-    print(f"L_A:\n{L_A}\n")
-    print(f"D:\n{D}\n")
-    print(f"A_STAR:\n{A_STAR}\n")
-    print(f"L_B:\n{L_B}\n")
-    print(f"F:\n{F}\n")
-    print(f"B_STAR:\n{B_STAR}\n")
+    L_entries = []
+    to_be_transposed = False
+    KCF = None
+    while True:
+        (L_A, _, A_STAR), (L_B, _, B_STAR) = reduction_theorem(A, B)
+        new_entry = L_A + sa.var('t') * L_B
+        if to_be_transposed:
+            new_entry = new_entry.transpose()
+            to_be_transposed = False
+        L_entries.append(new_entry)
+        A = A_STAR
+        B = B_STAR
+        if A.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero():
+            KCF = sa.block_diagonal_matrix(L_entries)
+            break
+        elif A.ncols() < A.nrows():
+            to_be_transposed = True
+            A = A.transpose()
+            B = B.transpose()
 
+    print(f"KCF:\n{KCF}\n")
 
 if __name__ == "__main__":
     main()
