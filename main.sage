@@ -1,11 +1,12 @@
-import sage.all as sa
 import sys
+import sage.all as sa
 from ast import literal_eval
+from random import randint
 
 
-ring = sa.SR
-EMPTY_MATRIX = sa.matrix(ring, [])
+RING = sa.SR
 DEFAULT_PENCIL_FILE = "./pencil.txt"
+EMPTY_MATRIX = sa.matrix(RING, [])
 
 
 def recover_matrix(
@@ -32,14 +33,13 @@ def recover_matrices(
 
 def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
     """
-    Completes the given matrix to a basis.
-    TODO: actually document how this function works.
+    Completes the given matrix to a basis by augmenting
+    it with the identity matrix and recovering the pivots.
     """
     identity_mat = sa.matrix(M.base_ring(), [
         [1 if i == j else 0 for i in range(M.nrows())]
         for j in range(M.nrows())])
     new_M = M.augment(identity_mat)
-    # assert pivots are in the very first positions
     return new_M[:, new_M.pivots()]
 
 
@@ -58,6 +58,7 @@ def build_coefficient_matrix(
     of size (epsilon + 2 x epsilon + 1).
     """
     assert A.ncols() == B.ncols() and A.nrows() == B.nrows()
+    assert A.base_ring() == B.base_ring()
     if epsilon <= 0:
         return sa.matrix(A.base_ring(), [])
     else:
@@ -97,14 +98,19 @@ def compute_lowest_degree_polynomial(
             break
         degree += 1
     coefficient_matrix_kernel = coefficient_matrix_kernel.transpose()
-    indices = [i for i in range(0, coefficient_matrix_kernel.nrows(), coefficient_matrix_kernel.nrows() // (degree + 1))]
+    indices = [i for i in range(0,
+                                coefficient_matrix_kernel.nrows(),
+                                coefficient_matrix_kernel.nrows() // (
+                                    degree + 1))]
     coefficient_matrix_kernel.subdivide(indices, None)
     result = []
     for index in indices:
         col = []
-        for i in range(index, index + coefficient_matrix_kernel.nrows() // (degree + 1)):
+        for i in range(index,
+                       index + coefficient_matrix_kernel.nrows() // (
+                           degree + 1)):
             col.append(coefficient_matrix_kernel[i, 0])
-        result.append(sa.vector(ring, col))
+        result.append(sa.vector(A.base_ring(), col))
 
     return (degree, result)
 
@@ -133,6 +139,7 @@ def reduction_theorem(
     [------------|------- ]
     [     0      | B_STAR ]
     """
+    assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     degree, polynomial = compute_lowest_degree_polynomial(A, -B)
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
@@ -162,7 +169,7 @@ def reduction_theorem(
     # (A + tB)x = 0 is now in KCF.
     if A.ncols() == L_A.ncols() and A.nrows() == L_B.nrows():
         return ((L_A, EMPTY_MATRIX, EMPTY_MATRIX),
-                        (L_B, EMPTY_MATRIX, EMPTY_MATRIX))
+                (L_B, EMPTY_MATRIX, EMPTY_MATRIX))
 
     rows = []
     for i in range(L_A.nrows()):
@@ -196,14 +203,12 @@ def reduction_theorem(
         rows.append(row)
     B_STAR = sa.matrix(B.base_ring(), rows)
 
-    # Does this really need to be computed each and every time?
-    # It is already shown how such matrices can always be defined,
-    # is this even useful?
+    # TODO: figure out how to return the matrix used to
+    # handle each and every transformation.
     W = Z = Y = None
 
     if degree - 1 > 0:
         M = build_coefficient_matrix(A_STAR, B_STAR, degree-1)
-        # print(f'M:\n{M}\n')
         if degree > 1:
             rows = []
             sign = -1
@@ -237,84 +242,57 @@ def reduction_theorem(
 
     X = sa.matrix(A.base_ring(), X)
 
-    assert ((D + Y * A_STAR - L_A * X).is_zero()) and ((F + Y * B_STAR - L_B * X).is_zero())
+    assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
+        (F + Y * B_STAR - L_B * X).is_zero())
 
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
 
 def reduce_regular_pencil(A: sa.sage.matrix,
-        B: sa.sage.matrix) -> tuple[
+                          B: sa.sage.matrix) -> tuple[
                                         tuple[sa.sage.matrix, sa.sage.matrix],
                                         tuple[sa.sage.matrix, sa.sage.matrix]]:
     assert A.nrows() == A.ncols() == B.nrows() == A.ncols()
     if A.nrows() == 0:
         return ((EMPTY_MATRIX, EMPTY_MATRIX), (EMPTY_MATRIX, EMPTY_MATRIX))
-    Cs = [0, 1, -1, 2, -2, 4, -4, 8, -8]
-    for c in Cs:
+    while True:
+        c = randint(-10, 10)
         if (A + c*B).det().is_zero():
             continue
         A_1 = A + c*B
         J = (A_1.inverse() * B).jordan_form()
 
-        indices = []
-        length = 1
-        for i in range(J.nrows()):
+        J_1_LENGTH = -1
+        for i in range(J.nrows() - 1, -1, -1):
             if J[i, i] != 0:
-                if i != J.nrows() - 1 and J[i, i+1] != 0:
-                    length += 1
-                else:
-                    length = 1
-                    indices.append((i, length))
-            else:
-                indices.append(i)
+                J_1_LENGTH = i + 1
                 break
 
-        J_1 = J.submatrix(indices[0][0], indices[0][0], indices[len(indices)-2][0]+1, indices[len(indices)-2][0]+1)
-        J_0 = J.submatrix(indices[len(indices)-1], indices[len(indices)-1], J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
+        J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
+        J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH,
+                          J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
 
-
-        H = (sa.identity_matrix(J_0.nrows()) - c * J_0).inverse() * J_0
+        H = ((sa.identity_matrix(J_0.nrows())
+              - c * J_0).inverse() * J_0).jordan_form()
         J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
 
-        M = J_1.inverse() - c * sa.identity_matrix(J_1.nrows())
+        M = (J_1.inverse() - c * sa.identity_matrix(J_1.nrows())).jordan_form()
         J_1_IDENTITIES = sa.identity_matrix(M.nrows())
 
         return ((J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
 
 
-def main() -> None:
+def kcf(A: sa.sage.matrix, B: sa.sage.matrix):
     """
-    Main function.
+    Computes the kronecker canonical form of the given pencil
+    (A + tB)x = 0.
     """
-    filename = None
-    if (len(sys.argv) <= 1):
-        print("No input file has been selected. Default will be used:" +
-              f" {DEFAULT_PENCIL_FILE}.")
-        filename = DEFAULT_PENCIL_FILE
-    elif len(sys.argv) != 2:
-        print("Only a single argument may be provided." +
-              " Usage: sage main.sage <pencil_filename>")
-        exit(1)
-    else:
-        filename = sys.argv[1]
-
-    # Starting point is a pencil of the form (A + tB)x = 0.
-    A, B = recover_matrices(ring, filename)
-
-    # Matrices sizes must be compatible.
-    assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
-
-    # Info:
-    print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
-    print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
-
     kronecker_blocks = []
     to_be_transposed = False
     KCF = None
     while True:
-        # TODO: handle linear dependency
-        if A.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero():
-            KCF = sa.block_diagonal_matrix(kronecker_blocks)
+        if (A.nrows() == A.ncols() and
+                not (A + sa.var('x') * B).det().is_zero()):
             break
         elif A.ncols() < A.nrows():
             to_be_transposed = True
@@ -335,6 +313,35 @@ def main() -> None:
         kronecker_blocks.append(J + sa.var('t') * E_2)
 
     KCF = sa.block_diagonal_matrix(kronecker_blocks)
+    return KCF
+
+
+def main() -> None:
+    """
+    Main function.
+    """
+    filename = None
+    if (len(sys.argv) <= 1):
+        print("No input file has been selected. Default will be used:" +
+              f" {DEFAULT_PENCIL_FILE}.")
+        filename = DEFAULT_PENCIL_FILE
+    elif len(sys.argv) != 2:
+        print("Only a single argument may be provided." +
+              " Usage: sage main.sage <pencil_filename>")
+        exit(1)
+    else:
+        filename = sys.argv[1]
+
+    # Starting point is a pencil of the form (A + tB)x = 0.
+    A, B = recover_matrices(sa.SR, filename)
+
+    # Matrices sizes must be compatible.
+    assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
+
+    # Info:
+    print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
+    print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
+    KCF = kcf(A, B)
     print(f'KCF:\n{KCF}\n')
 
 
