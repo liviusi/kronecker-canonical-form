@@ -3,7 +3,8 @@ import sys
 from ast import literal_eval
 
 
-ring = sa.AA
+ring = sa.SR
+EMPTY_MATRIX = sa.matrix(ring, [])
 DEFAULT_PENCIL_FILE = "./pencil.txt"
 
 
@@ -45,7 +46,7 @@ def complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
 def build_coefficient_matrix(
         A: sa.sage.matrix,
         B: sa.sage.matrix,
-        epsilon: int, change_sign=False) -> sa.sage.matrix:
+        epsilon: int) -> sa.sage.matrix:
     """
     Given two matrices (A, B) of the same size returns a matrix of
     the following form:
@@ -55,24 +56,21 @@ def build_coefficient_matrix(
     [          A]
     [0 0  ...  B]
     of size (epsilon + 2 x epsilon + 1).
-    change_sign is to be toggled on if the matrix is to be built
-    using -B instead of B.
     """
     assert A.ncols() == B.ncols() and A.nrows() == B.nrows()
     if epsilon <= 0:
         return sa.matrix(A.base_ring(), [])
     else:
-        sign = -1 if change_sign else 1
         rows = []
         if epsilon == 1:
             rows.append([A])
-            rows.append([sign * B])
+            rows.append([B])
         else:
             for i in range(epsilon):
                 rows.append([A if i == j else
-                             (sign * B if i == j + 1 else 0)
+                             (B if i == j + 1 else 0)
                              for j in range(epsilon)])
-            rows.append([sign * B if j == epsilon - 1 else 0 for j in range(epsilon)])
+            rows.append([B if j == epsilon - 1 else 0 for j in range(epsilon)])
         return sa.block_matrix(A.base_ring(), rows)
 
 
@@ -90,7 +88,7 @@ def compute_lowest_degree_polynomial(
     degree = 0
     coefficient_matrix_kernel = None
     while True:
-        coefficient_matrix = build_coefficient_matrix(A, B, degree + 1, True)
+        coefficient_matrix = build_coefficient_matrix(A, B, degree + 1)
         coefficient_matrix_kernel = (
             coefficient_matrix.right_kernel().basis_matrix()
         )
@@ -135,7 +133,7 @@ def reduction_theorem(
     [------------|------- ]
     [     0      | B_STAR ]
     """
-    degree, polynomial = compute_lowest_degree_polynomial(A, B)
+    degree, polynomial = compute_lowest_degree_polynomial(A, -B)
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
@@ -163,9 +161,8 @@ def reduction_theorem(
 
     # (A + tB)x = 0 is now in KCF.
     if A.ncols() == L_A.ncols() and A.nrows() == L_B.nrows():
-        return ((L_A, sa.matrix(A.base_ring(), []), sa.matrix(A.base_ring(), [])),
-                        (L_B, sa.matrix(B.base_ring(), []),
-                                sa.matrix(B.base_ring(), [])))
+        return ((L_A, EMPTY_MATRIX, EMPTY_MATRIX),
+                        (L_B, EMPTY_MATRIX, EMPTY_MATRIX))
 
     rows = []
     for i in range(L_A.nrows()):
@@ -223,7 +220,7 @@ def reduction_theorem(
             for i in range(Z.ncols()):
                 row = []
                 sign = -1
-                for k in range(Z.ncols() // degree):
+                for _ in range(Z.ncols() // degree):
                     sign *= -1
                     row.append(sign * Z[i])
                 rows.append(row)
@@ -243,6 +240,46 @@ def reduction_theorem(
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and ((F + Y * B_STAR - L_B * X).is_zero())
 
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
+
+
+def reduce_regular_pencil(A: sa.sage.matrix,
+        B: sa.sage.matrix) -> tuple[
+                                        tuple[sa.sage.matrix, sa.sage.matrix],
+                                        tuple[sa.sage.matrix, sa.sage.matrix]]:
+    assert A.nrows() == A.ncols() == B.nrows() == A.ncols()
+    if A.nrows() == 0:
+        return ((EMPTY_MATRIX, EMPTY_MATRIX), (EMPTY_MATRIX, EMPTY_MATRIX))
+    Cs = [0, 1, -1, 2, -2, 4, -4, 8, -8]
+    for c in Cs:
+        if (A + c*B).det().is_zero():
+            continue
+        A_1 = A + c*B
+        J = (A_1.inverse() * B).jordan_form()
+
+        indices = []
+        length = 1
+        for i in range(J.nrows()):
+            if J[i, i] != 0:
+                if i != J.nrows() - 1 and J[i, i+1] != 0:
+                    length += 1
+                else:
+                    length = 1
+                    indices.append((i, length))
+            else:
+                indices.append(i)
+                break
+
+        J_1 = J.submatrix(indices[0][0], indices[0][0], indices[len(indices)-2][0]+1, indices[len(indices)-2][0]+1)
+        J_0 = J.submatrix(indices[len(indices)-1], indices[len(indices)-1], J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
+
+
+        H = (sa.identity_matrix(J_0.nrows()) - c * J_0).inverse() * J_0
+        J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
+
+        M = J_1.inverse() - c * sa.identity_matrix(J_1.nrows())
+        J_1_IDENTITIES = sa.identity_matrix(M.nrows())
+
+        return ((J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
 
 
 def main() -> None:
@@ -271,28 +308,35 @@ def main() -> None:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
 
-    L_entries = []
+    kronecker_blocks = []
     to_be_transposed = False
     KCF = None
     while True:
+        # TODO: handle linear dependency
         if A.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero():
-            KCF = sa.block_diagonal_matrix(L_entries)
+            KCF = sa.block_diagonal_matrix(kronecker_blocks)
             break
         elif A.ncols() < A.nrows():
             to_be_transposed = True
             A = A.transpose()
             B = B.transpose()
         (L_A, _, A_STAR), (L_B, _, B_STAR) = reduction_theorem(A, B)
-        new_entry = L_A + sa.var('t') * L_B
+        L = L_A + sa.var('t') * L_B
         if to_be_transposed:
-            new_entry = new_entry.transpose()
+            L = L.transpose()
             to_be_transposed = False
-        L_entries.append(new_entry)
+        kronecker_blocks.append(L)
         A = A_STAR
         B = B_STAR
 
-    print(f"KCF:\n{KCF}\n")
-    print(f"A:\n{A}\nB:\n{B}\n")
+    if A.ncols() != 0 and A.nrows() != 0:
+        ((E_1, H), (J, E_2)) = reduce_regular_pencil(A, B)
+        kronecker_blocks.append(E_1 + sa.var('t') * H)
+        kronecker_blocks.append(J + sa.var('t') * E_2)
+
+    KCF = sa.block_diagonal_matrix(kronecker_blocks)
+    print(f'KCF:\n{KCF}\n')
+
 
 if __name__ == "__main__":
     main()
