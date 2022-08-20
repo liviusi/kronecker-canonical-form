@@ -203,6 +203,7 @@ def reduction_theorem(
         rows.append(row)
     B_STAR = sa.matrix(B.base_ring(), rows)
 
+    """
     # TODO: figure out how to return the matrix used to
     # handle each and every transformation.
     W = Z = Y = None
@@ -244,9 +245,9 @@ def reduction_theorem(
 
     X = sa.matrix(A.base_ring(), X)
 
-    print(f'{D+Y*A_STAR}\n\n{L_A*X}\n\n{(D + Y * A_STAR - L_A * X)}')
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
         (F + Y * B_STAR - L_B * X).is_zero())
+    """
 
     return ((L_A, D, A_STAR), (L_B, F, B_STAR))
 
@@ -338,7 +339,7 @@ def main() -> None:
     # Starting point is a pencil of the form (A + tB)x = 0.
     # TODO: if the degree of the polynomial is at least 2, X and Y cannot be computed.
     # should happen with these matrices.
-    A, B = sa.random_matrix(sa.ZZ, 6, 4).change_ring(RING), sa.random_matrix(sa.ZZ, 6, 4).change_ring(RING)
+    A, B = sa.random_matrix(sa.ZZ, 20, 10).change_ring(RING), sa.random_matrix(sa.ZZ, 20, 10).change_ring(RING)
 
     # Matrices sizes must be compatible.
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
