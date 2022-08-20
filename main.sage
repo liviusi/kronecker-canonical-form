@@ -4,7 +4,7 @@ from ast import literal_eval
 from random import randint
 
 
-RING = sa.SR
+RING = sa.QQbar
 DEFAULT_PENCIL_FILE = "./pencil.txt"
 EMPTY_MATRIX = sa.matrix(RING, [])
 
@@ -222,16 +222,18 @@ def reduction_theorem(
             Z = M.solve_left(W)
             assert Z.ncols() % degree == 0
             rows = []
-            for i in range(Z.ncols()):
+            iterations = 0
+            for i in range(degree):
                 row = []
                 sign = -1
-                for _ in range(Z.ncols() // degree):
+                for j in range(Z.ncols() // degree):
                     sign *= -1
-                    row.append(sign * Z[i])
+                    row.append(sign * Z[0, i + j + iterations])
+                iterations += 1
                 rows.append(row)
             Y = sa.matrix(A.base_ring(), rows)
     else:
-        Y = sa.matrix(A.base_ring(), [[1 for _ in range(degree)]])
+        Y = sa.matrix(A.base_ring(), [[1 for _ in range(B_STAR.nrows())]])
 
     X = [[None for _ in range(A_STAR.ncols())] for _ in range(degree + 1)]
     for i in range(degree):
@@ -242,6 +244,7 @@ def reduction_theorem(
 
     X = sa.matrix(A.base_ring(), X)
 
+    print(f'{D+Y*A_STAR}\n\n{L_A*X}\n\n{(D + Y * A_STAR - L_A * X)}')
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
         (F + Y * B_STAR - L_B * X).is_zero())
 
@@ -333,7 +336,9 @@ def main() -> None:
         filename = sys.argv[1]
 
     # Starting point is a pencil of the form (A + tB)x = 0.
-    A, B = recover_matrices(sa.SR, filename)
+    # TODO: if the degree of the polynomial is at least 2, X and Y cannot be computed.
+    # should happen with these matrices.
+    A, B = sa.random_matrix(sa.ZZ, 6, 4).change_ring(RING), sa.random_matrix(sa.ZZ, 6, 4).change_ring(RING)
 
     # Matrices sizes must be compatible.
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
