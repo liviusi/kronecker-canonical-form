@@ -6,5 +6,5 @@ rm -f main.pdf 2> /dev/null
 rm -f ./src/chapters/*.aux
 mv ./src/main.pdf . 2> /dev/null
 cd ./src/ || exit
-GLOBIGNORE=*.tex
+GLOBIGNORE=*.tex:*.bib
 rm -v * 2> /dev/null

@@ -1,29 +1,119 @@
 \section{Background}
-% review della letteratura: jordan, usi della forma di kronecker, algoritmi con aritmetica di macchina (van dooren)
-Ad duis non consequat est culpa sunt qui laboris non do. Ad officia culpa anim cupidatat laborum sint in consequat officia aliquip in ullamco. Proident elit pariatur aliquip fugiat magna adipisicing ad duis ea minim id minim. Eu labore irure laboris minim amet quis irure exercitation culpa adipisicing aute labore fugiat consequat.
+\subsection*{Computer algebra.}
+Computers have fundamentally two ways to reason over a mathematical expression: \textbf{numerical computations}, which are performed
+using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}), which - by
+contrast - use \textit{both numbers and symbols}.
 
-Occaecat sint in veniam ut mollit amet nisi consectetur eu reprehenderit mollit cillum. Reprehenderit cillum sunt labore quis officia duis non et dolore voluptate eu. Excepteur irure anim cupidatat minim do nulla esse duis laborum Lorem est quis est. Velit non sint ipsum excepteur ullamco enim labore nisi non duis ex Lorem culpa pariatur. Velit labore quis do laborum quis aliqua ut mollit sit aliqua. Pariatur ea consectetur sunt minim irure. Lorem esse proident amet voluptate laboris.
+Hereinafter, given a symbol \textit{x} its numerical value shall be written out as \textit{\(x + \epsilon\)}.
 
-Ad incididunt occaecat eu officia consequat irure adipisicing consequat amet qui. In ullamco fugiat labore mollit ipsum quis esse est cillum tempor ad pariatur sint ullamco. Sit sit incididunt consectetur ad ipsum est laborum dolor consequat deserunt veniam mollit.
+\begin{exmp}
+    Let us define the following matrix (made up of both symbols and numbers) M:
+    \[
+        \begin{bmatrix}
+            \sqrt{2}  &   1    \\
+                2     & \sqrt{2}
+        \end{bmatrix}
+    \]
+    Consider the matrix \( \tilde{M} \), having the same entries of M taken in numerical form:
+    \[
+        \begin{bmatrix}
+            \sqrt{2} + \epsilon &           1         \\
+                2               &  \sqrt{2} + \epsilon
+        \end{bmatrix}
+    \]
+    Computing its determinant gives out \( 2  +2\epsilon\sqrt{2} + \epsilon^2 - 2 \doteq 2 + 2\epsilon\sqrt{2} -2 \neq 0 \).
+\end{exmp}
 
-Voluptate pariatur do officia occaecat eiusmod laborum fugiat. Reprehenderit exercitation dolor quis laborum mollit reprehenderit enim dolore proident eu. Qui adipisicing magna cupidatat culpa proident aute sit labore in dolor adipisicing. Voluptate labore magna cillum nostrud incididunt do labore. Reprehenderit esse proident proident sint.
+Introducing a small change (e.g. an error) in the input argument may either cause a large or a small change in the result.
+We shall now introduce the concept of condition number.
 
-Id voluptate consectetur minim minim nisi aliquip aute. Pariatur eu culpa eiusmod elit fugiat consectetur do consequat duis officia exercitation pariatur. Ut velit do labore eiusmod ullamco deserunt do Lorem voluptate ullamco nisi. Dolore ad minim duis eiusmod dolor nisi laborum laborum incididunt consequat elit laborum tempor. Ut voluptate nostrud officia sit pariatur labore anim. Amet voluptate proident laborum nulla ea minim mollit consectetur proident. Ut magna magna elit consectetur sint irure ex in nostrud commodo nulla nisi.
+\begin{definition}[Condition number]
+    A condition number of a problem measures the sensitivity of the solution to small perturbations in the input data.
+    Given a function \(f \):
+    \[
+        cond(f, x) = \lim_{\epsilon \to 0} \sup \limits_{\norm{\Delta x} \leq \epsilon \norm{x}}
+        \dfrac{\norm{f(x+\Delta x) - f(x)}}{\epsilon \norm{f(x)}}
+    \]
+    Given a problem, if its condition number is low it is said to be \textbf{well-conditioned} (typically \( cond(f, x) \sim 1 \)),
+    while a problem with a high condition number is (said to be) \textbf{ill-conditioned} (\( cond(f, x) \gg 1 \)).
 
-Occaecat duis ipsum et dolore exercitation ad eu. Cupidatat laborum sunt nulla amet qui quis aliqua voluptate officia ea. In occaecat qui pariatur culpa dolore nulla cupidatat enim do do.
+    The condition number of a nonsingular matrix A is defined as:
+    \[
+        \kappa(A) = \norm{A^-1} \norm{A}
+    \]
+\end{definition}
 
-Sint minim do pariatur sunt ullamco sit veniam eiusmod anim. Magna sit laboris et fugiat veniam consequat do in aliqua cupidatat. Sint labore pariatur ad fugiat aliqua ut tempor consequat. Mollit elit mollit enim amet culpa ipsum laboris veniam cupidatat ut aliquip irure.
+Let us now investigate what would happen if (rather than using only numbers to compute expressions) symbols are allowed by introducing
+a framework which allows to work both with numerical and symbolic computations.
+\begin{definition}[Computer algebra system]
+    A computer algebra system (CAS) is a mathematics software package that is able to perform \textit{both symbolic and numerical
+    mathematical computations}.
+\end{definition}
 
-Reprehenderit duis anim dolor pariatur sit fugiat sit duis excepteur eu anim sint. Non in aliquip mollit fugiat duis id culpa irure. Sint labore nisi elit esse aliqua. Velit deserunt ipsum velit ea nisi voluptate. Sit anim tempor dolor mollit id. Cupidatat aliquip quis culpa sunt.
+A CAS is usually a \textbf{REPL} expected to support a few functionalities \cite{introcas}:
+\begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
+    \item \textbf{Arithmetic}:
+        arithmetic over different fields with arbitrary precision.
+    \item \textbf{Linear algebra}:
+        matrix algebra and knowledge of different operations and properties of matrices
+        (i.e. determinants, eigenvalues and eigenvectors).
+    \item \textbf{Polynomial manipulation}:
+        factorization over different fields, simplification and partial fraction decomposition of rational functions.
+    \item \textbf{Trascendental functions}:
+        support for trascendental functions and their properties.
+    \item \textbf{Calculus}:
+        limits, derivatives, integration and expansions of functions.
+    \item \textbf{Solving equations}:
+        solving systems of linear equations, computing with radicals solutions of polynomials of degree less than five.
+    \item \textbf{Programming language}:
+        users may implement their own algorithms using a programming language.
+\end{itemize}
 
-Nisi in enim id amet nostrud aliqua. Cupidatat laboris ex nisi reprehenderit consectetur minim velit ullamco minim. Excepteur et eiusmod exercitation deserunt fugiat laboris nostrud nisi. Incididunt nisi dolore mollit incididunt labore deserunt velit eiusmod et mollit id. Ipsum magna anim sunt reprehenderit qui Lorem id pariatur excepteur nisi. Nulla ex cillum nostrud do sint commodo cupidatat minim ullamco cillum exercitation nulla nostrud duis.
+The CAS chosen for this work is \textbf{SageMath} \cite{sage}.
 
-In nostrud amet quis ut adipisicing in adipisicing commodo dolore magna labore sunt mollit. Sunt consequat commodo veniam proident do exercitation enim consectetur. Ea consequat eu dolor elit reprehenderit nostrud eu anim ullamco adipisicing sint tempor esse reprehenderit.
+SageMath is an open source CAS distributed under the terms of the GNU GPLv3 \cite{gpl}.
 
-Nisi pariatur ad nulla ipsum anim officia sit voluptate est. Exercitation minim id adipisicing nisi et pariatur velit fugiat aliqua. Ea nulla irure nulla ullamco enim qui sint. Deserunt velit non ea dolor ex cupidatat quis officia cupidatat minim incididunt. Proident duis Lorem anim nulla enim anim minim cillum ex ad et Lorem nostrud. Amet nostrud dolore aliqua sit ad ad ipsum consectetur ex id consectetur est non dolore. Exercitation voluptate adipisicing culpa aliquip labore incididunt non ex ex.
+An attempt to review its functionalities and features shall not be made, but an
+example showing it allows for calculations either in symbolic or in inexact ones shall (be provided).
+\begin{exmp}
+    Take matrix M from Example 2.1:
+    \[
+        \begin{bmatrix}
+            \sqrt{2}  &   1    \\
+                2     & \sqrt{2}
+        \end{bmatrix}
+    \]
+    Compare the different result given out by defining M over the \textit{symbolic ring SR} and the \textit{finite-precision ring
+    CDF}:
+    \begin{minted}[mathescape,
+        numbersep=5pt,
+        gobble=2,
+        frame=lines,
+        framesep=2mm]{sage}
+        sage: matrix(SR, [[sqrt(2), 1], [2, sqrt(2)]]).det()
+        0
+        sage: matrix(CDF, [[sqrt(2), 1], [2, sqrt(2)]]).det()
+        -3.14018491736755e-16
+    \end{minted}
+\end{exmp}
 
-Ipsum tempor veniam esse ea adipisicing qui excepteur officia qui minim magna. Consequat adipisicing anim reprehenderit amet tempor et deserunt Lorem non eiusmod consectetur fugiat labore adipisicing. Officia qui velit sit adipisicing ipsum eiusmod pariatur ut sunt cillum ut. Velit magna nulla proident laboris veniam veniam. Minim occaecat ex sint fugiat laboris sint ipsum occaecat esse qui.
+\subsection*{Eigenvalues, eigenvectors}
 
-Aute occaecat fugiat occaecat minim eu minim ut laboris pariatur et. Tempor sit sit eu elit irure elit fugiat laborum irure veniam sint aliquip culpa occaecat. Veniam aute esse laborum duis incididunt magna eu commodo minim. Irure Lorem magna cillum culpa qui ullamco enim ullamco occaecat duis non aliqua. Consectetur aliquip consectetur fugiat do incididunt voluptate sint sint aute laborum irure laborum.
+\begin{definition}[Eigenvalue, eigenvector]
+    Given a linear transformation \(T\) in a finite-dimensional vector space \(V\) over a field \(F\) into itself and a nonzero
+    vector
+    \(\vec{v}\), \(\vec{v}\) is an eigenvector of \(T\) if and only if:
+    \[ A \vec{u} = \lambda \vec{u} \]
+    with \(A\) the matrix representation of \(T\), \(\vec{u}\) the coordinate vector of \(\vec{u}\) and \(\lambda\) a scalar in
+    \(F\) known as eigenvalue associated with \(\vec{v}\).
+\end{definition}
 
-Quis mollit magna mollit elit nulla esse proident amet in. Esse minim ea deserunt exercitation minim qui. Magna aute est eu ipsum mollit pariatur exercitation pariatur cupidatat voluptate culpa deserunt. Amet sunt magna veniam esse deserunt ut officia est adipisicing culpa ex.
+\begin{remark}
+    Note that:
+    \[ A \vec{u} = \lambda \vec{u} \iff (\lambda I - A)\vec{u} = 0 \]
+    It follows that the eigenvalues of A are the roots of:
+    \[ det(\lambda I - A) \]
+    which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch(A)\).
+\end{remark}
+
+\subsection*{Jordan canonical form}

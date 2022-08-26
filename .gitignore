@@ -137,3 +137,7 @@ dmypy.json
 *.out
 *.synctex.gz
 *.toc
+*.xdv
+*.bbl
+*.blg
+report/src/_minted-main

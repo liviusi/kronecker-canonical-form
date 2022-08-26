@@ -1,10 +1,12 @@
-\documentclass[11pt]{report}
+\documentclass[12pt]{report}
 % Set page margins
 \usepackage[margin=4cm]{geometry}
 
 \usepackage[]{graphicx}
 \usepackage{setspace}
 \usepackage{amsmath}
+\usepackage{amsthm} % theorems, examples, definitions
+\usepackage{commath} % norm
 \usepackage{amssymb}
 \singlespace % interlinea singola
 
@@ -53,38 +55,17 @@
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{subcaption}
-% Code Listings
-\definecolor{vgreen}{RGB}{104,180,104}
-\definecolor{vblue}{RGB}{49,49,255}
-\definecolor{vorange}{RGB}{255,143,102}
-\definecolor{vlightgrey}{RGB}{245,245,245}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\usepackage{minted}
 
-\usepackage{listings}
-
-\lstdefinestyle{code}{
-    language=bash,
-    backgroundcolor=\color{backcolour},
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,
-    breaklines=true,
-    captionpos=b,
-    keepspaces=true,
-    numbers=left,
-    numbersep=5pt,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=2
-}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{remark}{Remark}
 
 \begin{document}
 \begin{titlepage}
@@ -103,7 +84,7 @@
     \vspace{3cm}
 
     \begin{minipage}[t]{0.47\textwidth}
-        {\large{Relatore \\ \textbf{Ch.mo Prof. Federico Poloni}}}
+        {\large{Relatore \\ \textbf{Prof. Federico Poloni}}}
     \end{minipage}\hfill\begin{minipage}[t]{0.47\textwidth}\raggedleft
         {\large {Candidato \\ \textbf{Giacomo Trapani}}}
     \end{minipage}
