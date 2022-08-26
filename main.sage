@@ -4,7 +4,7 @@ from ast import literal_eval
 from random import randint
 
 
-RING = sa.QQbar
+RING = sa.SR
 DEFAULT_PENCIL_FILE = "./pencil.txt"
 EMPTY_MATRIX = sa.matrix(RING, [])
 
@@ -203,9 +203,6 @@ def reduction_theorem(
         rows.append(row)
     B_STAR = sa.matrix(B.base_ring(), rows)
 
-    """
-    # TODO: figure out how to return the matrix used to
-    # handle each and every transformation.
     W = Z = Y = None
 
     if degree - 1 > 0:
@@ -215,23 +212,23 @@ def reduction_theorem(
             sign = -1
             for i in range(F.nrows() - 1):
                 row = []
+                sign *= -1
                 for j in range(F.ncols()):
-                    sign *= -1
                     row.append(sign * (F[i+1, j] - D[i, j]))
                 rows.append(row)
             W = sa.matrix(A.base_ring(), rows)
             Z = M.solve_left(W)
             assert Z.ncols() % degree == 0
             rows = []
-            iterations = 0
+            sign = -1
+            rounds = 0
             for i in range(degree):
                 row = []
-                sign = -1
+                sign *= -1
                 for j in range(Z.ncols() // degree):
-                    sign *= -1
-                    row.append(sign * Z[0, i + j + iterations])
-                iterations += 1
+                    row.append(sign * Z[0, min(i + j + len(rows), Z.ncols()-1)])
                 rows.append(row)
+                rounds += 1
             Y = sa.matrix(A.base_ring(), rows)
     else:
         Y = sa.matrix(A.base_ring(), [[1 for _ in range(B_STAR.nrows())]])
@@ -244,12 +241,15 @@ def reduction_theorem(
         X[degree][j] = D[degree - 1, j] + Y.row(degree - 1) * A_STAR.column(j)
 
     X = sa.matrix(A.base_ring(), X)
+    return ((L_A, D, A_STAR), (L_B, F, B_STAR))
+"""
+    print(f'L_A:\n{L_A}\nA_STAR:\n{A_STAR}\nB_STAR:\n{B_STAR}\nD:\n{D}\nF:\n{F}\nY:\n{Y}\nX:\n{X}\n')
+    print(f'Y*A_STAR:\n{Y*A_STAR}\nD-L_A*X:\n{D-L_A*X}')
+    print(f'RESULT:\n{D + Y * A_STAR - L_A * X}\n')
 
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
         (F + Y * B_STAR - L_B * X).is_zero())
-    """
-
-    return ((L_A, D, A_STAR), (L_B, F, B_STAR))
+"""
 
 
 def reduce_regular_pencil(A: sa.sage.matrix,
@@ -277,7 +277,7 @@ def reduce_regular_pencil(A: sa.sage.matrix,
                           J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
 
         H = ((sa.identity_matrix(J_0.nrows())
-              - c * J_0).inverse() * J_0).jordan_form()
+              - c * J_0).inverse() * J_0).jordan_form() if J_0.nrows() > 0 else EMPTY_MATRIX
         J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
 
         M = (J_1.inverse() - c * sa.identity_matrix(J_1.nrows())).jordan_form()
@@ -337,9 +337,9 @@ def main() -> None:
         filename = sys.argv[1]
 
     # Starting point is a pencil of the form (A + tB)x = 0.
-    # TODO: if the degree of the polynomial is at least 2, X and Y cannot be computed.
-    # should happen with these matrices.
-    A, B = sa.random_matrix(sa.ZZ, 20, 10).change_ring(RING), sa.random_matrix(sa.ZZ, 20, 10).change_ring(RING)
+    # TODO: this crashes because of incompatible matrices sizes in reduction_theorem()
+    # A, B = sa.random_matrix(sa.ZZ, 10, 8).change_ring(RING), sa.random_matrix(sa.ZZ, 10, 8).change_ring(RING)
+    A, B = sa.random_matrix(sa.ZZ, 9, 6).change_ring(RING), sa.random_matrix(sa.ZZ, 9, 6).change_ring(RING)
 
     # Matrices sizes must be compatible.
     assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
