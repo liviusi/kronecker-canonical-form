@@ -141,6 +141,7 @@ def reduction_theorem(
     """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     degree, polynomial = compute_lowest_degree_polynomial(A, -B)
+    print(f'{degree=}')
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
@@ -170,67 +171,65 @@ def reduction_theorem(
         return ((L_A, EMPTY_MATRIX, EMPTY_MATRIX),
                 (L_B, EMPTY_MATRIX, EMPTY_MATRIX))
 
-    rows = []
+    D = []
     for i in range(L_A.nrows()):
         row = []
         for j in range(L_A.ncols(), A.ncols()):
             row.append(A_tilde[i, j])
-        rows.append(row)
-    D = sa.matrix(A.base_ring(), rows)
+        D.append(row)
+    D = sa.matrix(A.base_ring(), D)
 
-    rows = []
+    A_STAR = []
     for i in range(L_A.nrows(), A.nrows()):
         row = []
         for j in range(L_A.ncols(), A.ncols()):
             row.append(A_tilde[i, j])
-        rows.append(row)
-    A_STAR = sa.matrix(A.base_ring(), rows)
+        A_STAR.append(row)
+    A_STAR = sa.matrix(A.base_ring(), A_STAR)
 
-    rows = []
+    F = []
     for i in range(L_B.nrows()):
         row = []
         for j in range(L_B.ncols(), B.ncols()):
             row.append(B_tilde[i, j])
-        rows.append(row)
-    F = sa.matrix(B.base_ring(), rows)
+        F.append(row)
+    F = sa.matrix(B.base_ring(), F)
 
-    rows = []
+    B_STAR = []
     for i in range(L_B.nrows(), B.nrows()):
         row = []
         for j in range(L_B.ncols(), B.ncols()):
             row.append(B_tilde[i, j])
-        rows.append(row)
-    B_STAR = sa.matrix(B.base_ring(), rows)
+        B_STAR.append(row)
+    B_STAR = sa.matrix(B.base_ring(), B_STAR)
 
     W = Z = Y = None
 
     if degree - 1 > 0:
-        # print(f'{A_STAR.nrows()=} {A_STAR.ncols()=} {B_STAR.nrows()=} {B_STAR.ncols()=}')
         M = build_coefficient_matrix(A_STAR, B_STAR, degree-1)
         if degree > 1:
-            rows = []
             sign = -1
+            W = []
             for i in range(F.nrows() - 1):
-                row = []
-                sign *= -1
                 for j in range(F.ncols()):
-                    row.append(sign * (F[i+1, j] - D[i, j]))
-                rows.append(row)
-            W = sa.matrix(A.base_ring(), rows)
-            # print(f'{M.nrows()=} {M.ncols()=} {W.nrows()=} {W.ncols()=}')
+                    if j % (A.ncols() - degree - 1) == 0:
+                        sign *= -1
+                    W.append(sign * (F[i+1, j] - D[i, j]))
+            W = sa.matrix(A.base_ring(), [W])
             Z = M.solve_left(W)
             assert Z.ncols() % degree == 0
-            rows = []
-            sign = -1
-            rounds = 0
-            for i in range(degree):
-                row = []
-                sign *= -1
-                for j in range(Z.ncols() // degree):
-                    row.append(sign * Z[0, min(i + j + max(rounds * (Z.ncols() // degree) - 1, 0), Z.ncols()-1)])
-                rows.append(row)
-                rounds += 1
-            Y = sa.matrix(A.base_ring(), rows)
+            Y = []
+            row = []
+            sign = 1
+            for i in range(Z.ncols()):
+                if i != 0 and i % (Z.ncols() // degree) == 0:
+                    sign *= -1
+                    Y.append(row)
+                    row = []
+                row.append(sign * Z[0, i])
+            if row:
+                Y.append(row)
+            Y = sa.matrix(A.base_ring(), Y)
     else:
         Y = sa.matrix(A.base_ring(), [[1 for _ in range(B_STAR.nrows())]])
 
@@ -242,10 +241,6 @@ def reduction_theorem(
         X[degree][j] = D[degree - 1, j] + Y.row(degree - 1) * A_STAR.column(j)
 
     X = sa.matrix(A.base_ring(), X)
-
-    # print(f'Z:\n{Z}\nL_A:\n{L_A}\nA_STAR:\n{A_STAR}\nB_STAR:\n{B_STAR}\nD:\n{D}\nF:\n{F}\nY:\n{Y}\nX:\n{X}\n')
-    # print(f'Y*A_STAR:\n{Y*A_STAR}\nD-L_A*X:\n{D-L_A*X}')
-    # print(f'RESULT:\n{D + Y * A_STAR - L_A * X}\n')
 
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
         (F + Y * B_STAR - L_B * X).is_zero())
@@ -277,6 +272,9 @@ def reduce_regular_pencil(A: sa.sage.matrix,
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
         J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH,
                           J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
+        if (J_1.det().is_zero()):
+            print(f"Singular Jordan submatrix has been found in:\n{J}\nKCF cannot be computed.")
+            exit(1)
 
         H = ((sa.identity_matrix(J_0.nrows())
               - c * J_0).inverse() * J_0).jordan_form() if J_0.nrows() > 0 else EMPTY_MATRIX
@@ -293,6 +291,7 @@ def kcf(A: sa.sage.matrix, B: sa.sage.matrix):
     Computes the kronecker canonical form of the given pencil
     (A + tB)x = 0.
     """
+    assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     kronecker_blocks = []
     to_be_transposed = False
     KCF = None
@@ -339,12 +338,7 @@ def main() -> None:
         filename = sys.argv[1]
 
     # Starting point is a pencil of the form (A + tB)x = 0.
-    # TODO: this crashes because of incompatible matrices sizes in reduction_theorem()
-    # A, B = sa.random_matrix(sa.ZZ, 10, 8).change_ring(RING), sa.random_matrix(sa.ZZ, 10, 8).change_ring(RING)
-    A, B = sa.random_matrix(sa.ZZ, 10, 7).change_ring(RING), sa.random_matrix(sa.ZZ, 10, 7).change_ring(RING)
-
-    # Matrices sizes must be compatible.
-    assert A.nrows() == B.nrows() and B.ncols() == A.ncols()
+    A, B = recover_matrices(RING, filename)
 
     # Info:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
