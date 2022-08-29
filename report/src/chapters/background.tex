@@ -4,49 +4,76 @@ Computers have fundamentally two ways to reason over a mathematical expression: 
 using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}), which - by
 contrast - use \textit{both numbers and symbols}.
 
-Hereinafter, given a symbol \textit{x} its numerical value shall be written out as \textit{\(x + \epsilon\)}.
+First, we shall introduce the concept of \textbf{floating point number system} used to handle numerical computations.
+\begin{definition}[Normalized-floating point number system]
+    A normalized-floating point number system \(F\) is characterized by the 4-tuple of integers \(\beta, p, L, U\):
+    \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
+        \item \(\beta\) is called base or radix,
+        \item \(p\) precision,
+        \item \([L, U]\) exponent range (with \(L\), \(U\) denoting lower and upper bound respectively).
+    \end{itemize}
+    Given a number \(x \in \mathbb{R}\), \(x \neq 0\) its representation in a floating point number system shall be written out as
+    \(fl(x)\) and has the form
+    \[x = sign(x) \beta^E \sum_{i=0}^{p-1}d_{i}\beta^{-i}\]
+    with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}\) (which is called mantissa) made up of natural numbers such that
+    \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\) eventually different from \(\beta - 1\).
+\end{definition}
+\begin{remark}
+    A floating point number system \(F\) is discrete and finite: it approximates real numbers with finite numbers.
+\end{remark}
 
-\begin{exmp}
-    Let us define the following matrix (made up of both symbols and numbers) M:
+A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which shall not be
+discussed.
+
+\begin{definition}[Machine epsilon]
+    Machine epsilon is the maximum possible absolute relative error in representing a nonzero real number \(x\) in a floating point
+    number system
+    \[\epsilon_{mach} = \max \limits_{x} \dfrac{\vert x - fl(x) \vert}{\vert x \vert}.\]
+\end{definition}
+
+\begin{example}
+    Let us define the matrix (made up of both symbols and numbers) M
     \[
         \begin{bmatrix}
             \sqrt{2}  &   1    \\
                 2     & \sqrt{2}
-        \end{bmatrix}
+        \end{bmatrix}.
     \]
-    Consider the matrix \( \tilde{M} \), having the same entries of M taken in numerical form:
+    Consider the matrix \( \tilde{M} \), having as entries the floating point approximation of those of M
     \[
         \begin{bmatrix}
-            \sqrt{2} + \epsilon &           1         \\
-                2               &  \sqrt{2} + \epsilon
-        \end{bmatrix}
+            fl(\sqrt{2})      &         1      \\
+                2             &    fl(\sqrt{2})
+        \end{bmatrix}.
     \]
     Computing its determinant gives out \( 2  +2\epsilon\sqrt{2} + \epsilon^2 - 2 \doteq 2 + 2\epsilon\sqrt{2} -2 \neq 0 \).
-\end{exmp}
+\end{example}
 
-Introducing a small change (e.g. an error) in the input argument may either cause a large or a small change in the result.
-We shall now introduce the concept of condition number.
+Introducing a small change (i.e. an ``error") in the input argument may either cause a large or a small change in the result.
+We shall now introduce the concept of condition numbers.
 
 \begin{definition}[Condition number]
     A condition number of a problem measures the sensitivity of the solution to small perturbations in the input data.
     Given a function \(f \):
     \[
         cond(f, x) = \lim_{\epsilon \to 0} \sup \limits_{\norm{\Delta x} \leq \epsilon \norm{x}}
-        \dfrac{\norm{f(x+\Delta x) - f(x)}}{\epsilon \norm{f(x)}}
+        \dfrac{\norm{f(x+\Delta x) - f(x)}}{\epsilon \norm{f(x)}}.
     \]
     Given a problem, if its condition number is low it is said to be \textbf{well-conditioned} (typically \( cond(f, x) \sim 1 \)),
     while a problem with a high condition number is (said to be) \textbf{ill-conditioned} (\( cond(f, x) \gg 1 \)).
+\end{definition}
 
-    The condition number of a nonsingular matrix A is defined as:
+\begin{definition}[Condition number of a matrix]
+    The condition number of a non-singular matrix A is defined as:
     \[
-        \kappa(A) = \norm{A^-1} \norm{A}
+        \kappa(A) = \norm{A^{-1}} \times \norm{A}.
     \]
 \end{definition}
 
-Let us now investigate what would happen if (rather than using only numbers to compute expressions) symbols are allowed by introducing
-a framework which allows to work both with numerical and symbolic computations.
+Let us now investigate what would happen if symbols are allowed by introducing a framework that allows us to work both with numerical
+and symbolic computations.
 \begin{definition}[Computer algebra system]
-    A computer algebra system (CAS) is a mathematics software package that is able to perform \textit{both symbolic and numerical
+    A computer algebra system (CAS) is a mathematics software package that can perform \textit{both symbolic and numerical
     mathematical computations}.
 \end{definition}
 
@@ -59,8 +86,8 @@ A CAS is usually a \textbf{REPL} expected to support a few functionalities \cite
         (i.e. determinants, eigenvalues and eigenvectors).
     \item \textbf{Polynomial manipulation}:
         factorization over different fields, simplification and partial fraction decomposition of rational functions.
-    \item \textbf{Trascendental functions}:
-        support for trascendental functions and their properties.
+    \item \textbf{Transcendental functions}:
+        support for transcendental functions and their properties.
     \item \textbf{Calculus}:
         limits, derivatives, integration and expansions of functions.
     \item \textbf{Solving equations}:
@@ -69,51 +96,132 @@ A CAS is usually a \textbf{REPL} expected to support a few functionalities \cite
         users may implement their own algorithms using a programming language.
 \end{itemize}
 
-The CAS chosen for this work is \textbf{SageMath} \cite{sage}.
+The CAS chosen for this work is \textbf{SageMath} \cite{sage}, the features and functionalities of which shall not be discussed here.
 
 SageMath is an open source CAS distributed under the terms of the GNU GPLv3 \cite{gpl}.
 
-An attempt to review its functionalities and features shall not be made, but an
-example showing it allows for calculations either in symbolic or in inexact ones shall (be provided).
-\begin{exmp}
+Hereafter, an example in which symbolic computations are put against numerical (computations) shall be made.
+\begin{example}
     Take matrix M from Example 2.1:
     \[
         \begin{bmatrix}
             \sqrt{2}  &   1    \\
                 2     & \sqrt{2}
-        \end{bmatrix}
+        \end{bmatrix}.
     \]
-    Compare the different result given out by defining M over the \textit{symbolic ring SR} and the \textit{finite-precision ring
-    CDF}:
+    Compare the different results given out when computing its determinant by defining M over the \textit{symbolic ring SR} and
+    the \textit{finite-precision ring CDF}:
     \begin{minted}[mathescape,
-        numbersep=5pt,
-        gobble=2,
-        frame=lines,
-        framesep=2mm]{sage}
+            numbersep=5pt,
+            gobble=2,
+            frame=lines,
+            framesep=2mm]{sage}
         sage: matrix(SR, [[sqrt(2), 1], [2, sqrt(2)]]).det()
         0
         sage: matrix(CDF, [[sqrt(2), 1], [2, sqrt(2)]]).det()
         -3.14018491736755e-16
     \end{minted}
-\end{exmp}
+    We can observe that in SR \((\sqrt{2})^2 = 2\) since no approximations are made.
+
+    Now, take the polynomial \(p(x)\):
+    \[
+        p(x) = x^{6} + 5 \, x^{5} - 3 \, x^{4} - 42 \, x^{3} + 12 \, x^{2} - x + 1.
+    \]
+    If an attempt to calculate its roots over SR is made, an exception will be thrown; however, doing this over a finite-precision ring
+    (such as CDF) will work:
+    \begin{minted}[mathescape,
+            numbersep=5pt,
+            gobble=2,
+            frame=lines,
+            framesep=2mm]{sage}
+        sage: p = x^6 + 5*x^5 - 3*x^4 -42*x^3 + 12*x^2 - x + 1
+        sage: p.roots(ring=SR)
+            RuntimeError: no explicit roots found
+        sage: p.roots(ring=CDF)
+        [(-3.865705050148171 - 1.5654017866113432*I, 1),
+        (-3.8657050501481702 + 1.5654017866113419*I, 1),
+        (-0.04843174828928114 - 0.2430512799158686*I, 1),
+        (-0.048431748289281144 + 0.24305127991586856*I, 1),
+        (0.38275295887213723 + 7.286537374692244e-17*I, 1),
+        (2.4455206380027437 - 1.995314986816126e-16*I, 1)]
+    \end{minted}
+\end{example}
+
+For deeper reasoning about the limits of computer algebra systems, one may refer to Mitic \cite{mitic}.
 
 \subsection*{Eigenvalues, eigenvectors}
+In the following section, eigenvalues and eigenvectors shall be defined.
 
+Lastly, a result on the condition number of the problem
+of computing eigenvalues of a matrix shall be given.
 \begin{definition}[Eigenvalue, eigenvector]
     Given a linear transformation \(T\) in a finite-dimensional vector space \(V\) over a field \(F\) into itself and a nonzero
     vector
-    \(\vec{v}\), \(\vec{v}\) is an eigenvector of \(T\) if and only if:
-    \[ A \vec{u} = \lambda \vec{u} \]
-    with \(A\) the matrix representation of \(T\), \(\vec{u}\) the coordinate vector of \(\vec{u}\) and \(\lambda\) a scalar in
-    \(F\) known as eigenvalue associated with \(\vec{v}\).
+    \(\vb{v}\), \(\vb{v}\) is an eigenvector of \(T\) if and only if
+    \[ A \vb{u} = \lambda \vb{u} \]
+    with \(A\) the matrix representation of \(T\), \(\vb{u}\) the coordinate vector of \(\vb{u}\) and \(\lambda\) a scalar in
+    \(F\) known as eigenvalue associated with \(\vb{v}\).
+
+    Similarly, we can define a row vector \(\vb{x}_{L}\), and a scalar \(\lambda_{L}\) such that
+    \[\vb{x}_{L}A = \lambda_{L}A,\]
+    which are called left eigenvector and left eigenvalue respectively.
 \end{definition}
 
 \begin{remark}
-    Note that:
-    \[ A \vec{u} = \lambda \vec{u} \iff (\lambda I - A)\vec{u} = 0 \]
-    It follows that the eigenvalues of A are the roots of:
+    Note that writing
+    \( A \vb{u} = \lambda \vb{u} \) is equivalent to \( (\lambda I - A)\vb{u} = 0 \).
+
+    It follows that the eigenvalues of A are the roots of
     \[ det(\lambda I - A) \]
     which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch(A)\).
 \end{remark}
 
+\begin{remark}
+    Suppose \(A\) is a real square matrix, then the following statements are true:
+    \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
+        \item the eigenvalues of the left and right eigenvectors of A are the same,
+        \item the left eigenvectors simplify into the transpose of the right eigenvectors of \(A^T\).
+    \end{itemize}
+\end{remark}
+
+\begin{definition}[Algebraic, geometric multiplicities of eigenvalues]
+    Given a square matrix \(A\) and a scalar \(\lambda \in \mathbb{C}\): we call algebraic multiplicity the multiplicity of \(lambda\) as
+    a root of the characteristic polynomial of \(A\), and we denote it by \(m_{A}(ch(A))\); we call geometric multiplicity the
+    dimension of the nullspace of the matrix \(\lambda I - A\), and we denote by \(\nu_{A}(\lambda)\).
+\end{definition}
+
+Let us now investigate how introducing perturbations in the representation of a matrix may influence the numerical stability of its
+eigenvalues (caveat: in the following paragraph, the notation \(\delta x\) shall be used to denote the difference between a symbol
+\(x\) and its floating point approximation \(fl(x)\)).
+
+Let us define a square matrix \(A\) and its eigenvalue \(\lambda \in \mathbb{C}\), \(\vb{x}\), \(\vb{y}\) the right
+and left eigenvectors associated with \(\lambda\).
+
+Consider the perturbed problem
+\[
+    \tilde{A} \tilde{\vb{x}} = \tilde{\lambda} \tilde{\vb{x}}
+\]
+with \(\epsilon\) the machine epsilon, \(\tilde{A} = A + \epsilon\delta A\), \(\tilde{\vb{x}} = \vb{x} + \epsilon\delta \vb{x}\),
+\(\tilde{\lambda} = \lambda + \epsilon\delta \lambda\).
+
+Differentiating w.r.t. \(\epsilon\) and multiplying by \(\vb{y}^T\) on the left side gives
+\[
+    \vb{y}^T \delta A \vb{x} + \vb{y}^T A fl(\vb{x}) = fl(\lambda) \vb{y}^T \vb{x} + \vb{y}^T \lambda fl(\vb{x})
+\]
+and, since \(\vb{y}\) is the left eigenvector we can rewrite it as
+\[
+    \dfrac{\delta \lambda}{\delta \epsilon} = \dfrac{\vb{y}^T \delta A \vb{x}}{\vb{y}^T \vb{x}}.
+\]
+Assuming the absolute error \(\norm{\delta A} = 1\) and using the definition of cross product for \(\vb{y}^T \vb{x}\) we get
+\[
+    \vert \delta \lambda \vert \leq \dfrac{1}{cos(\theta_{\lambda})} \vert \delta \epsilon \vert.
+\]
+
+\begin{theorem}[Condition number of an eigenvalue]
+    Given a square matrix \(A\), the eigenvalue \(\lambda \in \mathbb{C}\) the quantity
+    \[k(\lambda) = \dfrac{1}{cos(\theta_{\lambda})},\]
+    with \(\theta_{\lambda}\) the angle between the left and right eigenvectors associated with \(\lambda\), is called condition number
+    of the eigenvalue \(\lambda\).
+\end{theorem}
+    
 \subsection*{Jordan canonical form}
