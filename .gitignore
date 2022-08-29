@@ -143,4 +143,5 @@ dmypy.json
 *.xdv
 *.bbl
 *.blg
+*.json
 report/src/_minted-main
