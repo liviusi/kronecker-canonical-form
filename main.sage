@@ -141,7 +141,6 @@ def reduction_theorem(
     """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     degree, polynomial = compute_lowest_degree_polynomial(A, -B)
-    print(f'{degree=}')
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
               "in the pencil must be greater than zero.")
@@ -339,6 +338,7 @@ def main() -> None:
 
     # Starting point is a pencil of the form (A + tB)x = 0.
     A, B = recover_matrices(RING, filename)
+    # A, B = sa.random_matrix(sa.ZZ, 20, 15).change_ring(RING), sa.random_matrix(sa.ZZ, 20, 15).change_ring(RING)
 
     # Info:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
