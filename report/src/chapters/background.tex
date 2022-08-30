@@ -1,8 +1,8 @@
 \section{Background}
 \subsection*{Computer algebra.}
-Computers have fundamentally two ways to reason over a mathematical expression: \textbf{numerical computations}, which are performed
-using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}), which - by
-contrast - use \textit{both numbers and symbols}.
+Computers have fundamentally two ways to reason over a mathematical expression: \textbf{numerical computations}, which are
+performed using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}),
+which - by contrast - use \textit{both numbers and symbols}.
 
 First, we shall introduce the concept of \textbf{floating point number system} used to handle numerical computations.
 \begin{definition}[Normalized-floating point number system]
@@ -22,8 +22,8 @@ First, we shall introduce the concept of \textbf{floating point number system} u
     A floating point number system \(F\) is discrete and finite: it approximates real numbers with finite numbers.
 \end{remark}
 
-A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which shall not be
-discussed.
+A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which
+shall not be discussed.
 
 \begin{definition}[Machine epsilon]
     Machine epsilon is the maximum possible absolute relative error in representing a nonzero real number \(x\) in a floating point
@@ -70,8 +70,8 @@ We shall now introduce the concept of condition numbers.
     \]
 \end{definition}
 
-Let us now investigate what would happen if symbols are allowed by introducing a framework that allows us to work both with numerical
-and symbolic computations.
+Let us now investigate what would happen if symbols are allowed by introducing a framework that allows us to work both
+with numerical and symbolic computations.
 \begin{definition}[Computer algebra system]
     A computer algebra system (CAS) is a mathematics software package that can perform \textit{both symbolic and numerical
     mathematical computations}.
@@ -96,7 +96,8 @@ A CAS is usually a \textbf{REPL} expected to support a few functionalities \cite
         users may implement their own algorithms using a programming language.
 \end{itemize}
 
-The CAS chosen for this work is \textbf{SageMath} \cite{sage}, the features and functionalities of which shall not be discussed here.
+The CAS chosen for this work is \textbf{SageMath} \cite{sage}, the features and functionalities of which shall not
+be discussed here.
 
 SageMath is an open source CAS distributed under the terms of the GNU GPLv3 \cite{gpl}.
 
@@ -127,8 +128,8 @@ Hereafter, an example in which symbolic computations are put against numerical (
     \[
         p(x) = x^{6} + 5 \, x^{5} - 3 \, x^{4} - 42 \, x^{3} + 12 \, x^{2} - x + 1.
     \]
-    If an attempt to calculate its roots over SR is made, an exception will be thrown; however, doing this over a finite-precision ring
-    (such as CDF) will work:
+    If an attempt to calculate its roots over SR is made, an exception will be thrown; however, doing this over a
+    finite-precision ring (such as CDF) will work:
     \begin{minted}[mathescape,
             numbersep=5pt,
             gobble=2,
@@ -169,17 +170,17 @@ of computing eigenvalues of a matrix shall be given.
 
 \begin{remark}
     Note that writing
-    \( A \vb{u} = \lambda \vb{u} \) is equivalent to \( (\lambda I - A)\vb{u} = 0 \).
+    \( A \vb{u} = \lambda \vb{u} \) is equivalent to \( (A - \lambda I)\vb{u} = 0 \).
 
     It follows that the eigenvalues of A are the roots of
-    \[ det(\lambda I - A) \]
+    \[ det(A - \lambda I) \]
     which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch(A)\).
 \end{remark}
 
 \begin{definition}[Eigenspace]
-    Given a square matrix A and its eigenvalue \(\lambda\), we define the eigenspace of A associated with \(\lambda\) the set \(E\)
-    of all vectors satisfying the equation
-    \[E = \{\vb{u}: (A - \lambda I)\vb{u} = 0\}.\]
+    Given a square matrix A and its eigenvalue \(\lambda\), we define the eigenspace of A associated with \(\lambda\) the subspace
+    \(E_{A}\) of all vectors satisfying the equation
+    \[E_{A} = \{\vb{u}: (A - \lambda I)\vb{u} = 0\} = ker(A - \lambda I).\]
 \end{definition}
 
 \begin{remark}
@@ -195,7 +196,7 @@ of computing eigenvalues of a matrix shall be given.
     \[ m_{A}(\lambda) = max\{k: (\exists s(x): s(x)(x - \lambda)^k = ch_{A}(x))\}.\]
     The geometric multiplicity of \(\lambda\) is defined as
     \[
-        \nu_{A}(\lambda) = dim(ker(\lambda I - A)).
+        \nu_{A}(\lambda) = dim(ker(A - \lambda I)).
     \]
 \end{definition}
 
@@ -210,8 +211,8 @@ Consider the perturbed problem
 \[
     \tilde{A} \tilde{\vb{x}} = \tilde{\lambda} \tilde{\vb{x}}
 \]
-with \(\epsilon\) the machine epsilon, \(\tilde{A} = A + \epsilon\delta A\), \(\tilde{\vb{x}} = \vb{x} + \epsilon\delta \vb{x}\),
-\(\tilde{\lambda} = \lambda + \epsilon\delta \lambda\).
+with \(\epsilon\) the machine epsilon, \(\tilde{A} = A + \epsilon\delta A\), \(\tilde{\vb{x}} = \vb{x} +
+\epsilon\delta \vb{x}\), \(\tilde{\lambda} = \lambda + \epsilon\delta \lambda\).
 
 Differentiating w.r.t. \(\epsilon\) and multiplying by \(\vb{y}^T\) on the left side gives
 \[
@@ -226,46 +227,126 @@ Assuming the absolute error \(\norm{\delta A} = 1\) and using the definition of 
     \vert \delta \lambda \vert \leq \dfrac{1}{\vert cos(\theta_{\lambda}) \vert} \vert \delta \epsilon \vert.
 \]
 
-\begin{theorem}[Condition number of an eigenvalue]
-    Given a square matrix \(A\), the eigenvalue \(\lambda \in \mathbb{C}\) and \(\theta_{\lambda}\) the angle between the left and right
-    eigenvectors associated with \(\lambda\), the quantity
-    \[k(\lambda) = \dfrac{1}{cos(\theta_{\lambda})}\]
+\begin{definition}[Condition number of an eigenvalue]
+    Given a square matrix \(A\), the eigenvalue \(\lambda \in \mathbb{C}\) and \(\theta_{\lambda}\) the angle between the left
+    and right eigenvectors associated with \(\lambda\), the quantity
+    \[k_{A}(\lambda) = \dfrac{1}{cos(\theta_{\lambda})}\]
     is called the condition number of the eigenvalue \(\lambda\).
-\end{theorem}
+\end{definition}
     
 \subsection*{Jordan canonical form}
 \begin{definition}[Generalized eigenvector, generalized eigenspace]
     Given an \(n \times n\) square matrix \(A\) and its eigenvalue \(\lambda\), the vector \(\vb{x}_{m}\) such that
     \[
-        (\lambda I - A)^{m} \vb{x}_{m} = 0 \ \wedge \ (\lambda I - A)^{m} \vb{x}_{m} \neq 0
+        (A - \lambda I)^{m} \vb{x}_{m} = 0 \ \wedge \ (A - \lambda I)^{m} \vb{x}_{m} \neq 0
     \]
     is a generalized eigenvector of rank \(m\) associated with \(\lambda\).
 
-    Furthermore, the set \(E\)
+    Furthermore, the subspace \(E_{A}^m\)
     \[
-        E = ker((\lambda I - A)^m)
+        E_{A}^m(\lambda) = ker((A - \lambda I)^m)
     \]
     is called generalized eigenspace;
     its dimension
     \[
-        \nu_{A}^{m}(\lambda) = dim(E_{A}^{m}(\lambda)) = n - rank((\lambda I - A)^m)
+        \nu_{A}^{m}(\lambda) = dim(E_{A}^{m}(\lambda)) = n - rank((A - \lambda I)^m)
     \]
     is called the m-th geometric multiplicity of \(\lambda\) in \(A\).
 \end{definition}
 
 \begin{definition}[Defective matrix, defective eigenvalue]
-    
+    Given a square \(n \times n\) matrix \(A\), if it has less than \(n\) distinct eigenvalues then it is called a
+    defective matrix.
+
+    Furthermore, we define an eigenvalue \(\lambda\) of such a matrix as a defective eigenvalue if and only if
+    \[
+        m_{A}(\lambda) > \nu_{A}(\lambda).
+    \]
 \end{definition}
 
 \begin{example}
-    Define a defective matrix, compute its eigenvector(s) and compare its algebraic multiplicity with its geometric one.
+    Consider the matrix M
+    \[
+        \begin{bmatrix}
+            2 & 1 \\
+            0 & 2
+        \end{bmatrix},
+    \]
+    there is only one eigenvalue \(\lambda\) associated with M and \(\lambda = 2\); the eigenvector associated with
+    it is
+    \[
+        \vb{x}_{1} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}.
+    \]
+
+    Furthermore, note that \(\lambda\) has algebraic multiplicity \(m_{A}(2) = 2\): it follows that M is a defective matrix
+    and \(\lambda\) is a defective eigenvalue.
+
+    Now, we shall compute its generalized eigenvectors.
+
+    Note that \(dim(ker(A - \lambda I)) = p = 1\), which implies
+    there exist \(m - p = 1\) generalized eigenvectors of rank greater than \(1\). To compute the generalized eigenvector
+    \(\vb{x}_{2}\) we solve \((A - \lambda I)\vb{x}_{2} = \vb{x}_{1}\)
+    \[
+        M - \lambda
+        \begin{bmatrix}
+            1 & 0 \\
+            0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{20} \\
+            x_{21}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            1 \\
+            0
+        \end{bmatrix}.
+    \]
+    Substituting with their values gives us
+    \[
+        \begin{bmatrix}
+            2 - 2*1 & 1       \\
+                0   & 2 - 2*1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{20} \\
+            x_{21}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            1 \\
+            0
+        \end{bmatrix}.
+    \]
+    Solving this system we can conclude
+    \[
+        \vb{x}_{2} = \begin{bmatrix} t \\ 1 \end{bmatrix}
+    \]
+    with no restrictions over the value of the scalar \(t\).
 \end{example}
-\begin{definition}[Canonical basis]
-    
+
+\begin{definition}[Jordan matrix]
+    A diagonal block matrix M is called a Jordan matrix if and only if each block along the diagonal is of the form
+    \[
+        \begin{bmatrix}
+            \lambda     &    1         &    0     &   \cdots   &    0    \\
+                0       &    \lambda   &    1     &   \cdots   &    0    \\
+            \vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
+                0       &       0      &     0    &  \lambda   &    1    \\
+                0       &       0      &     0    &     1      & \lambda
+        \end{bmatrix},
+    \]
+    and we indicate such a matrix with
+    \(diag(J_{\lambda_{1}, n_{1}}, ..., J_{\lambda_{k}, n_{k}})\) with \(k\) the number of diagonal blocks it is made up of.
+
+    Each block can be completely described by the tuple \((\lambda, n)\) as it is an \(n \times n\) matrix of zeroes everywhere
+    except for the diagonal, which is filled with \(\lambda\), and the superdiagonal, with ones.
 \end{definition}
-\begin{definition}[Jordan canonical form]
+
+\begin{theorem}[Jordan canonical form]
     
-\end{definition}
+\end{theorem}
+
 \begin{theorem}[Stability of the JCF transformation]
     Given a matrix \(A\) and its JCF \(A = P^{-1}JP\), the transforming matrix P is highly ill-conditioned
     whenever A has at least a defective or nearly defective eigenvalue.
