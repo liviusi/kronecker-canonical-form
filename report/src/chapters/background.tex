@@ -1,6 +1,16 @@
 \section{Background}
+This chapter will serve as prerequisite knowledge throughout the rest of this thesis.
+
+We shall briefly present SageMath, the software system used when implementing the algorithm to be discussed, by introducing
+computer algebra systems and comparing numerical computations against computer algebra showcasing an example; then, the reader
+shall familiarize with the concept of condition number as an emphasis on it will be put in every part.
+
+Subsequently, definitions and properties of eigenvalues and eigenvectors shall be concisely introduced.
+
+Lastly, we shall describe the Jordan canonical form of a matrix.
+
 \subsection*{Computer algebra.}
-Computers have fundamentally two ways to reason over a mathematical expression: \textbf{numerical computations}, which are
+Computers have fundamentally two ways to reason about a mathematical expression: \textbf{numerical computations}, which are
 performed using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}),
 which - by contrast - use \textit{both numbers and symbols}.
 
@@ -17,10 +27,16 @@ First, we shall introduce the concept of \textbf{floating point number system} u
     \[x = sign(x) \beta^E \sum_{i=0}^{p-1}d_{i}\beta^{-i}\]
     with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}\) (which is called mantissa) made up of natural numbers such that
     \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\) eventually different from \(\beta - 1\).
+
+    The notation \(\delta x\) shall be used to denote the difference between a symbol \(x\) and its floating point
+    approximation \(fl(x)\)
+    \[
+        \delta x = x - fl(x).
+    \]
 \end{definition}
-\begin{remark}
-    A floating point number system \(F\) is discrete and finite: it approximates real numbers with finite numbers.
-\end{remark}
+
+It is important to notice that a floating point number system \(F\) is discrete and finite: it approximates real numbers with
+finite numbers.
 
 A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which
 shall not be discussed.
@@ -50,7 +66,7 @@ shall not be discussed.
 \end{example}
 
 Introducing a small change (i.e. an ``error") in the input argument may either cause a large or a small change in the result.
-We shall now introduce the concept of condition numbers.
+Now, we shall introduce the concept of condition number.
 
 \begin{definition}[Condition number]
     A condition number of a problem measures the sensitivity of the solution to small perturbations in the input data.
@@ -63,15 +79,44 @@ We shall now introduce the concept of condition numbers.
     while a problem with a high condition number is (said to be) \textbf{ill-conditioned} (\( cond(f, x) \gg 1 \)).
 \end{definition}
 
+Let us now consider the problem of solving a linear equation subjected to a perturbation.
+
+Let A be a non-singular matrix and assume we introduce a perturbation in the constant term
+\(\tilde{\vb{b}} = \vb{b} +  \delta \vb{b}\). The equation can be written as
+\[
+    A\tilde{\vb{x}} = \tilde{\vb{b}}
+\]
+with \(\tilde{\vb{x}} = \vb{x} + \delta \vb{x}\). We can obtain
+\[
+    \tilde{\vb{x}} - \vb{x} = A^{-1} \tilde{\vb{b}} - A^{-1} \vb{b} = A^{-1} \delta \vb{b}
+\]
+and, by using matrix norms, we can write
+\[
+    \norm{\tilde{\vb{x}} - \vb{x}} = \norm{A^{-1} \delta \vb{b}} \leq \norm{A^{-1}} \norm{\delta \vb{b}}.
+\]
+It is also known that
+\[
+    \norm{\vb{b}} = \norm{A \vb{x}} \leq \norm{A} \norm{\vb{x}}
+\]
+which implies
+\[
+    \norm{\vb{x}} \geq \dfrac{\norm{\vb{b}}}{\norm{A}}.
+\]
+Tying all this together we can conclude
+\[
+    \dfrac{\norm{\tilde{\vb{x}} - \vb{x}}}{\norm{\vb{x}}} \leq \norm{A} \norm{A^{-1}} \dfrac{\norm{\delta \vb{b}}}{\norm{\vb{b}}}.
+\]
+
 \begin{definition}[Condition number of a matrix]
     The condition number of a non-singular matrix A is defined as:
     \[
-        \kappa(A) = \norm{A^{-1}} \times \norm{A}.
+        \kappa(A) = \norm{A^{-1}} \norm{A}.
     \]
 \end{definition}
 
-Let us now investigate what would happen if symbols are allowed by introducing a framework that allows us to work both
-with numerical and symbolic computations.
+Now, let us refocus on the topic of math expressions.
+Let us investigate what would happen if symbols are allowed in computations by introducing a framework that allows us to work with
+computer algebra.
 \begin{definition}[Computer algebra system]
     A computer algebra system (CAS) is a mathematics software package that can perform \textit{both symbolic and numerical
     mathematical computations}.
@@ -148,13 +193,17 @@ Hereafter, an example in which symbolic computations are put against numerical (
     \end{minted}
 \end{example}
 
+What we may conclude from such an example is that numerical analysis is certainly a powerful tool as it allows for computations
+which could not happen with computer algebra, \textbf{but} computer algebra being able to compute an exact answer without
+any approximation will prove to be useful in our use case.
+
 For deeper reasoning about the limits of computer algebra systems, one may refer to Mitic \cite{mitic}.
 
 \subsection*{Eigenvalues, eigenvectors}
-In the following section, eigenvalues and eigenvectors shall be defined.
+In the following section, eigenvalues and eigenvectors shall be defined; a reader may also consult Axler \cite{axler}
+or Strang \cite{strang09}.
 
-Lastly, a result on the condition number of the problem
-of computing eigenvalues of a matrix shall be given.
+Lastly, a result on the condition number of the problem of computing eigenvalues of a matrix shall be given.
 \begin{definition}[Eigenvalue, eigenvector]
     Given a linear transformation \(T\) in a finite-dimensional vector space \(V\) over a field \(F\) into itself and a nonzero
     vector
@@ -164,8 +213,8 @@ of computing eigenvalues of a matrix shall be given.
     \(F\) known as eigenvalue associated with \(\vb{v}\).
 
     Similarly, we can define a row vector \(\vb{x}_{L}\), and a scalar \(\lambda_{L}\) such that
-    \[\vb{x}_{L}A = \lambda_{L}A,\]
-    which are called left eigenvector and left eigenvalue respectively.
+    \[\vb{x}_{L}A = \lambda_{L}\vb{x}_{L},\]
+    which are called \textbf{left eigenvector} and \textbf{left eigenvalue} respectively.
 \end{definition}
 
 \begin{remark}
@@ -174,7 +223,7 @@ of computing eigenvalues of a matrix shall be given.
 
     It follows that the eigenvalues of A are the roots of
     \[ det(A - \lambda I) \]
-    which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch(A)\).
+    which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch_{A}(\lambda)\).
 \end{remark}
 
 \begin{definition}[Eigenspace]
@@ -182,14 +231,6 @@ of computing eigenvalues of a matrix shall be given.
     \(E_{A}\) of all vectors satisfying the equation
     \[E_{A} = \{\vb{u}: (A - \lambda I)\vb{u} = 0\} = ker(A - \lambda I).\]
 \end{definition}
-
-\begin{remark}
-    Suppose \(A\) is a real square matrix, then the following statements are true:
-    \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
-        \item the eigenvalues of the left and right eigenvectors of A are the same,
-        \item the left eigenvectors simplify into the transpose of the right eigenvectors of \(A^T\).
-    \end{itemize}
-\end{remark}
 
 \begin{definition}[Algebraic, geometric multiplicities of eigenvalues]
     Given a square matrix \(A\) and a scalar \(\lambda \in \mathbb{C}\): we define the algebraic multiplicity of \(\lambda\) as
@@ -200,14 +241,19 @@ of computing eigenvalues of a matrix shall be given.
     \]
 \end{definition}
 
-Let us now investigate how introducing perturbations in the representation of a matrix may influence the numerical stability of its
-eigenvalues (caveat: in the following paragraph, the notation \(\delta x\) shall be used to denote the difference between a symbol
-\(x\) and its floating point approximation \(fl(x)\)).
+\begin{remark}
+    Suppose \(A\) is a real square matrix, then the following statements are true:
+    \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
+        \item the eigenvalues of the left and right eigenvectors of A are the same,
+        \item the left eigenvectors simplify into the transpose of the right eigenvectors of \(A^T\).
+    \end{itemize}
+\end{remark}
 
-Let us define a square matrix \(A\) and its eigenvalue \(\lambda \in \mathbb{C}\), \(\vb{x}\), \(\vb{y}\) the right
-and left eigenvectors associated with \(\lambda\).
+Now, let us investigate how introducing perturbations in the representation of a matrix may influence the numerical stability of its
+eigenvalues.
 
-Consider the perturbed problem
+Let \(A\) be a square matrix, \(\lambda \in \mathbb{C}\) its eigenvalue, \(\vb{x}\), \(\vb{y}\) the right
+and left eigenvectors associated with \(\lambda\). Consider the perturbed problem
 \[
     \tilde{A} \tilde{\vb{x}} = \tilde{\lambda} \tilde{\vb{x}}
 \]
@@ -222,109 +268,21 @@ and, since \(\vb{y}\) is the left eigenvector we can rewrite it as
 \[
     \dfrac{\delta \lambda}{\delta \epsilon} = \dfrac{\vb{y}^T \delta A \vb{x}}{\vb{y}^T \vb{x}}.
 \]
-Assuming the absolute error \(\norm{\delta A} = 1\) and using the definition of cross product for \(\vb{y}^T \vb{x}\) we get
+Assuming \(\norm{\delta A} = 1\) and using the definition of dot product for \(\vb{y}^T \vb{x}\) we get
 \[
-    \vert \delta \lambda \vert \leq \dfrac{1}{\vert cos(\theta_{\lambda}) \vert} \vert \delta \epsilon \vert.
+    \vert \delta \lambda \vert \leq \dfrac{1}{\vert \cos(\theta_{\lambda}) \vert} \vert \delta \epsilon \vert.
 \]
 
 \begin{definition}[Condition number of an eigenvalue]
     Given a square matrix \(A\), the eigenvalue \(\lambda \in \mathbb{C}\) and \(\theta_{\lambda}\) the angle between the left
     and right eigenvectors associated with \(\lambda\), the quantity
-    \[k_{A}(\lambda) = \dfrac{1}{cos(\theta_{\lambda})}\]
+    \[k_{A}(\lambda) = \dfrac{1}{\cos(\theta_{\lambda})}\]
     is called the condition number of the eigenvalue \(\lambda\).
 \end{definition}
     
 \subsection*{Jordan canonical form}
-\begin{definition}[Generalized eigenvector, generalized eigenspace]
-    Given an \(n \times n\) square matrix \(A\) and its eigenvalue \(\lambda\), the vector \(\vb{x}_{m}\) such that
-    \[
-        (A - \lambda I)^{m} \vb{x}_{m} = 0 \ \wedge \ (A - \lambda I)^{m} \vb{x}_{m} \neq 0
-    \]
-    is a generalized eigenvector of rank \(m\) associated with \(\lambda\).
-
-    Furthermore, the subspace \(E_{A}^m\)
-    \[
-        E_{A}^m(\lambda) = ker((A - \lambda I)^m)
-    \]
-    is called generalized eigenspace;
-    its dimension
-    \[
-        \nu_{A}^{m}(\lambda) = dim(E_{A}^{m}(\lambda)) = n - rank((A - \lambda I)^m)
-    \]
-    is called the m-th geometric multiplicity of \(\lambda\) in \(A\).
-\end{definition}
-
-\begin{definition}[Defective matrix, defective eigenvalue]
-    Given a square \(n \times n\) matrix \(A\), if it has less than \(n\) distinct eigenvalues then it is called a
-    defective matrix.
-
-    Furthermore, we define an eigenvalue \(\lambda\) of such a matrix as a defective eigenvalue if and only if
-    \[
-        m_{A}(\lambda) > \nu_{A}(\lambda).
-    \]
-\end{definition}
-
-\begin{example}
-    Consider the matrix M
-    \[
-        \begin{bmatrix}
-            2 & 1 \\
-            0 & 2
-        \end{bmatrix},
-    \]
-    there is only one eigenvalue \(\lambda\) associated with M and \(\lambda = 2\); the eigenvector associated with
-    it is
-    \[
-        \vb{x}_{1} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}.
-    \]
-
-    Furthermore, note that \(\lambda\) has algebraic multiplicity \(m_{A}(2) = 2\): it follows that M is a defective matrix
-    and \(\lambda\) is a defective eigenvalue.
-
-    Now, we shall compute its generalized eigenvectors.
-
-    Note that \(dim(ker(A - \lambda I)) = p = 1\), which implies
-    there exist \(m - p = 1\) generalized eigenvectors of rank greater than \(1\). To compute the generalized eigenvector
-    \(\vb{x}_{2}\) we solve \((A - \lambda I)\vb{x}_{2} = \vb{x}_{1}\)
-    \[
-        M - \lambda
-        \begin{bmatrix}
-            1 & 0 \\
-            0 & 1
-        \end{bmatrix}
-        \begin{bmatrix}
-            x_{20} \\
-            x_{21}
-        \end{bmatrix}
-        =
-        \begin{bmatrix}
-            1 \\
-            0
-        \end{bmatrix}.
-    \]
-    Substituting with their values gives us
-    \[
-        \begin{bmatrix}
-            2 - 2*1 & 1       \\
-                0   & 2 - 2*1
-        \end{bmatrix}
-        \begin{bmatrix}
-            x_{20} \\
-            x_{21}
-        \end{bmatrix}
-        =
-        \begin{bmatrix}
-            1 \\
-            0
-        \end{bmatrix}.
-    \]
-    Solving this system we can conclude
-    \[
-        \vb{x}_{2} = \begin{bmatrix} t \\ 1 \end{bmatrix}
-    \]
-    with no restrictions over the value of the scalar \(t\).
-\end{example}
-
+In the following section, we shall define Jordan matrices and discuss the stability of a transformation of a matrix into its
+Jordan canonical form.
 \begin{definition}[Jordan matrix]
     A diagonal block matrix M is called a Jordan matrix if and only if each block along the diagonal is of the form
     \[
@@ -343,14 +301,108 @@ Assuming the absolute error \(\norm{\delta A} = 1\) and using the definition of 
     except for the diagonal, which is filled with \(\lambda\), and the superdiagonal, with ones.
 \end{definition}
 
-\begin{theorem}[Jordan canonical form]
-    
-\end{theorem}
+\begin{remark}
+    Let \(V\) be a vector space defined over a field \(F\) and \(A\) a matrix defined in V. If \(ch_{A}(t)\) can be factorized into
+    its linear factors over \(K\), then \(A\) is similar to a Jordan matrix \(J\). We define \(J\) the \textbf{Jordan
+    canonical form} (\textbf{JCF}) of \(A\).
+\end{remark}
+
+\begin{definition}[Defective matrix, defective eigenvalue]
+    Given a square \(n \times n\) matrix \(A\), if it has less than \(n\) distinct eigenvalues then it is called a
+    defective matrix.
+
+    Furthermore, we define an eigenvalue \(\lambda\) of such a matrix as a defective eigenvalue if and only if
+    \[
+        m_{A}(\lambda) > \nu_{A}(\lambda).
+    \]
+\end{definition}
+
+Now, we shall give a result on the stability of such a transformation the proof of which can be found in other works, such as
+Datta \cite{biswadatta}.
 
 \begin{theorem}[Stability of the JCF transformation]
     Given a matrix \(A\) and its JCF \(A = P^{-1}JP\), the transforming matrix P is highly ill-conditioned
     whenever A has at least a defective or nearly defective eigenvalue.
 \end{theorem}
-\begin{proof}
-    Work in progress...
-\end{proof}
+
+Lastly, we shall give an example to show the implications of such a theorem by showing the differences in
+the JCF of a matrix and its perturbed version.
+
+\begin{example}
+Consider the \(n \times n\) matrices
+\[
+    A =
+    \begin{bmatrix}
+            0       &      1       &    0     &   \cdots   &    0    \\
+            0       &      0       &    1     &   \cdots   &    0    \\
+        \vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
+            0       &       0      &     0    &     0      &    1    \\
+            0       &       0      &     0    &     1      &    0
+    \end{bmatrix},
+    B =
+    \begin{bmatrix}
+        0       &      1       &    0     &   \cdots   &    0    \\
+        0       &      0       &    1     &   \cdots   &    0    \\
+     \vdots     &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
+        0       &       0      &     0    &     0      &    1    \\
+      \alpha    &       0      &     0    &     1      &    0
+    \end{bmatrix}
+\]
+with \(\alpha > 0\).
+
+It is evident how \(A\) has a defective eigenvalue in \(\lambda_{A} = 0\) and \(m_{A}(0) = n\), \(\nu_{A}(0) = 1\); furthermore,
+\(A\) is already in JCF.
+
+Now, let us switch our focus to \(B\). To compute its eigenvalues, take the characteristic polynomial
+\(ch_{B}(t) = t^n - \alpha\): it has n distinct roots in
+\[
+    t_{j} = z_{n}^{j} \sqrt[n]{\alpha}
+\]
+with \(j = 1, ..., n\), \(z_{n} = \cos(\dfrac{2\pi}{n}) + \iu \sin(\dfrac{2\pi}{n})\) and
+\(\iu\) imaginary unit such that \(\iu^2 = -1\).
+
+To conclude, we shall show the JCF of \(A\) and \(B\) defined in SR computed by SageMath when \(n = 4\).
+
+\begin{minted}[mathescape,
+    numbersep=5pt,
+    gobble=2,
+    frame=lines,
+    framesep=2mm]{sage}
+    sage: A = matrix(SR, [
+                [1 if i == j-1
+                    else 0 for j in range(4)]
+                for i in range(4)
+            ])
+    sage: B = matrix(SR, [
+                [1 if i == j-1
+                    else x if j == 0 and i == 3
+                        else 0 for j in range(4)]
+                for i in range(4)
+            ])
+    sage: A
+    [0 1 0 0]
+    [0 0 1 0]
+    [0 0 0 1]
+    [0 0 0 0]
+    sage: A.jordan_form()
+    [0 1 0 0]
+    [0 0 1 0]
+    [0 0 0 1]
+    [0 0 0 0]
+    sage: B
+    [0 1 0 0]
+    [0 0 1 0]
+    [0 0 0 1]
+    [x 0 0 0]
+    sage: B.jordan_form()
+    [ I*x^(1/4)|         0|         0|         0]
+    [----------+----------+----------+----------]
+    [         0|  -x^(1/4)|         0|         0]
+    [----------+----------+----------+----------]
+    [         0|         0|-I*x^(1/4)|         0]
+    [----------+----------+----------+----------]
+    [         0|         0|         0|   x^(1/4)]
+
+\end{minted}
+
+\end{example}
