@@ -291,7 +291,7 @@ Jordan canonical form.
                 0       &    \lambda   &    1     &   \cdots   &    0    \\
             \vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
                 0       &       0      &     0    &  \lambda   &    1    \\
-                0       &       0      &     0    &     1      & \lambda
+                0       &       0      &     0    &     0      & \lambda
         \end{bmatrix},
     \]
     and we indicate such a matrix with
@@ -320,7 +320,7 @@ Jordan canonical form.
 Now, we shall give a result on the stability of such a transformation the proof of which can be found in other works, such as
 Datta \cite{biswadatta}.
 
-\begin{theorem}[Stability of the JCF transformation]
+\begin{theorem}[Stability of the JCF transformation]\label{thm:stability-jcf}
     Given a matrix \(A\) and its JCF \(A = P^{-1}JP\), the transforming matrix P is highly ill-conditioned
     whenever A has at least a defective or nearly defective eigenvalue.
 \end{theorem}
@@ -337,7 +337,7 @@ Consider the \(n \times n\) matrices
             0       &      0       &    1     &   \cdots   &    0    \\
         \vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
             0       &       0      &     0    &     0      &    1    \\
-            0       &       0      &     0    &     1      &    0
+            0       &       0      &     0    &     0      &    0
     \end{bmatrix},
     B =
     \begin{bmatrix}
@@ -345,7 +345,7 @@ Consider the \(n \times n\) matrices
         0       &      0       &    1     &   \cdots   &    0    \\
      \vdots     &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
         0       &       0      &     0    &     0      &    1    \\
-      \alpha    &       0      &     0    &     1      &    0
+      \alpha    &       0      &     0    &     0      &    0
     \end{bmatrix}
 \]
 with \(\alpha > 0\).
@@ -404,5 +404,32 @@ To conclude, we shall show the JCF of \(A\) and \(B\) defined in SR computed by 
     [         0|         0|         0|   x^(1/4)]
 
 \end{minted}
+
+For the sake of clarity, we shall also show what the implications of B having such eigenvalues are.
+
+Suppose \(x = 10^{-10}\).
+
+\begin{minted}[mathescape,
+    numbersep=5pt,
+    gobble=2,
+    frame=lines,
+    framesep=2mm]{sage}
+    sage: B = matrix(SR, [
+                [1 if i == j-1
+                    else 10**-10 if j == 0 and i == 3
+                        else 0 for j in range(4)]
+                for i in range(4)
+            ])
+    sage: B
+    [            0             1             0             0]
+    [            0             0             1             0]
+    [            0             0             0             1]
+    [1/10000000000             0             0             0]
+    sage: P =  = B.jordan_form(transformation=True)[1]
+    sage: cond = norm(P.inverse()) * norm(P)
+    sage: cond
+    31622776.60168379
+\end{minted}
+We can see that \(\kappa(P) \gg 1\), as stated in \nameref{thm:stability-jcf} (theorem \ref{thm:stability-jcf}).
 
 \end{example}
