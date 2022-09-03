@@ -68,6 +68,15 @@
 \newtheorem*{remark}{Remark}
 \newcommand{\iu}{\mathrm{i}\mkern1mu}
 
+\makeatletter
+\@ifpackageloaded{hyperref}%
+  {\newcommand{\mylabel}[2]% #1=name, #2 = contents
+    {\protected@write\@auxout{}{\string\newlabel{#1}{{#2}{\thepage}%
+      {\@currentlabelname}{\@currentHref}{}}}}}%
+  {\newcommand{\mylabel}[2]% #1=name, #2 = contents
+    {\protected@write\@auxout{}{\string\newlabel{#1}{{#2}{\thepage}}}}}
+\makeatother
+
 \begin{document}
 \begin{titlepage}
     \clearpage\thispagestyle{empty}
