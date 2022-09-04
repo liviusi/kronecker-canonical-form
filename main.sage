@@ -2,6 +2,7 @@ import sys
 import sage.all as sa
 from ast import literal_eval
 from random import randint
+from typing import List
 
 
 RING = sa.SR
@@ -117,12 +118,8 @@ def compute_lowest_degree_polynomial(
 
 def reduction_theorem(
         A: sa.sage.matrix,
-        B: sa.sage.matrix) -> tuple[tuple[
-                                            sa.sage.matrix,
-                                            sa.sage.matrix, sa.sage.matrix],
-                                    tuple[
-                                            sa.sage.matrix,
-                                            sa.sage.matrix, sa.sage.matrix]]:
+        B: sa.sage.matrix,
+        transformation=False):
     """
     Reduces a pencil (A + tB)x = 0 to a canonical form:
     A_tilde = P^-1 * A * Q =
@@ -167,8 +164,11 @@ def reduction_theorem(
 
     # (A + tB)x = 0 is now in KCF.
     if A.ncols() == L_A.ncols() and A.nrows() == L_B.nrows():
-        return ((L_A, EMPTY_MATRIX, EMPTY_MATRIX),
-                (L_B, EMPTY_MATRIX, EMPTY_MATRIX))
+        if not transformation:
+            return ((L_A, EMPTY_MATRIX),
+                    (L_B, EMPTY_MATRIX))
+        else:
+            return ((P**-1, Q), (L_A, EMPTY_MATRIX), (L_B, EMPTY_MATRIX))
 
     D = []
     for i in range(L_A.nrows()):
@@ -244,12 +244,17 @@ def reduction_theorem(
     assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
         (F + Y * B_STAR - L_B * X).is_zero())
 
-    return ((L_A, D, A_STAR), (L_B, F, B_STAR))
-   
+    if not transformation:
+        return ((L_A, A_STAR), (L_B, B_STAR))
+    else:
+        left_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree), Y], [0, sa.identity_matrix(A_tilde.nrows() - degree)]])
+        right_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree + 1), -X], [0, sa.identity_matrix(A_tilde.ncols() - degree - 1)]])
+        return ((left_M* P**-1, Q * right_M), (L_A, A_STAR), (L_B, B_STAR))
 
 
 def reduce_regular_pencil(A: sa.sage.matrix,
-                          B: sa.sage.matrix) -> tuple[
+                          B: sa.sage.matrix,
+                          transformation=False) -> tuple[
                                         tuple[sa.sage.matrix, sa.sage.matrix],
                                         tuple[sa.sage.matrix, sa.sage.matrix]]:
     assert A.nrows() == A.ncols() == B.nrows() == A.ncols()
@@ -262,19 +267,17 @@ def reduce_regular_pencil(A: sa.sage.matrix,
         A_1 = A + c*B
         J = (A_1.inverse() * B).jordan_form()
 
-        J_1_LENGTH = -1
+        J_1_LENGTH = 0
         for i in range(J.nrows() - 1, -1, -1):
             if J[i, i] != 0:
                 J_1_LENGTH = i + 1
                 break
 
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
-        J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH,
+        J_0 = J.submatrix(J_1_LENGTH-1, J_1_LENGTH-1,
                           J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
-        if (J_1.det().is_zero()):
-            print(f"Singular Jordan submatrix has been found in:\n{J}\nKCF cannot be computed.")
-            exit(1)
 
+        # J_0 may be empty, the jordan form of an empty matrix is not defined
         H = ((sa.identity_matrix(J_0.nrows())
               - c * J_0).inverse() * J_0).jordan_form() if J_0.nrows() > 0 else EMPTY_MATRIX
         J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
@@ -293,31 +296,51 @@ def kcf(A: sa.sage.matrix, B: sa.sage.matrix):
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     kronecker_blocks = []
     to_be_transposed = False
-    KCF = None
+    L = sa.identity_matrix(A.nrows())
+    R = sa.identity_matrix(A.ncols())
+    A_tilde, B_tilde = A, B
     while True:
-        if (A.nrows() == A.ncols() and
-                not (A + sa.var('x') * B).det().is_zero()):
+        if (A_tilde.nrows() == A_tilde.ncols() and
+                not (A_tilde + sa.var('x') * B_tilde).det().is_zero()):
             break
-        elif A.ncols() < A.nrows():
+        elif A_tilde.ncols() < A_tilde.nrows():
             to_be_transposed = True
-            A = A.transpose()
-            B = B.transpose()
-        (L_A, _, A_STAR), (L_B, _, B_STAR) = reduction_theorem(A, B)
-        L = L_A + sa.var('t') * L_B
+            A_tilde = A_tilde.transpose()
+            B_tilde = B_tilde.transpose()
+            L, R = R.H, L.H
+        (P, Q), (L_A, A_STAR), (L_B, B_STAR) = reduction_theorem(A_tilde, B_tilde, True)
+        assert (P * A_tilde * Q - sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (P * B_tilde *  Q - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
+        L = sa.block_diagonal_matrix([sa.identity_matrix(L.nrows() - P.nrows()), P]) * L
+        R = R * sa.block_diagonal_matrix([sa.identity_matrix(R.nrows() - Q.nrows()), Q])
         if to_be_transposed:
-            L = L.transpose()
+            A, B = A.transpose(), B.transpose()
+            L_A = L_A.transpose()
+            L_B = L_B.transpose()
+            A_STAR, B_STAR = A_STAR.transpose(), B_STAR.transpose()
+            L, R = R.H, L.H
             to_be_transposed = False
-        kronecker_blocks.append(L)
-        A = A_STAR
-        B = B_STAR
+        kronecker_blocks.append((L_A, L_B))
+        A_tilde = A_STAR
+        B_tilde = B_STAR
 
-    if A.ncols() != 0 and A.nrows() != 0:
+    if A_tilde.ncols() != 0 and A_tilde.nrows() != 0:
         ((E_1, H), (J, E_2)) = reduce_regular_pencil(A, B)
-        kronecker_blocks.append(E_1 + sa.var('t') * H)
-        kronecker_blocks.append(J + sa.var('t') * E_2)
+        kronecker_blocks.append((E_1, H))
+        kronecker_blocks.append((J, E_2))
 
-    KCF = sa.block_diagonal_matrix(kronecker_blocks)
-    return KCF
+    KCF_A = sa.block_diagonal_matrix([block[0] for block in kronecker_blocks])
+    KCF_B = sa.block_diagonal_matrix([block[1] for block in kronecker_blocks])
+
+    # assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+
+    return (KCF_A, KCF_B)
+
+def print_pencil(A: sa.sage.matrix, B: sa.sage.matrix, space=30):
+    assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
+    str_A, str_B = str(A).splitlines(), str(B).splitlines()
+    print("A:" + " " * (space+len(str_A[0])-2) + "B:")
+    for i in range(len(str_A)):
+        print(str_A[i] + " " * space + str_B[i])
 
 
 def main() -> None:
@@ -338,13 +361,12 @@ def main() -> None:
 
     # Starting point is a pencil of the form (A + tB)x = 0.
     A, B = recover_matrices(RING, filename)
-    # A, B = sa.random_matrix(sa.ZZ, 20, 15).change_ring(RING), sa.random_matrix(sa.ZZ, 20, 15).change_ring(RING)
 
     # Info:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
-    KCF = kcf(A, B)
-    print(f'KCF:\n{KCF}\n')
+    KCF_A, KCF_B = kcf(A, B)
+    print_pencil(KCF_A, KCF_B)
 
 
 if __name__ == "__main__":
