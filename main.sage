@@ -274,8 +274,10 @@ def reduce_regular_pencil(A: sa.sage.matrix,
                 break
 
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
-        J_0 = J.submatrix(J_1_LENGTH-1, J_1_LENGTH-1,
-                          J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols())
+        J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH,
+                          J.nrows()-J_1.nrows(), J.ncols()-J_1.ncols()) if J_1_LENGTH != J.nrows() else EMPTY_MATRIX
+
+        print(f'J_0:\n{J_0}\nJ_1:\n{J_1}')
 
         # J_0 may be empty, the jordan form of an empty matrix is not defined
         H = ((sa.identity_matrix(J_0.nrows())
