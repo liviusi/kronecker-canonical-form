@@ -1,9 +1,10 @@
 \section{Background}
 This chapter will serve as prerequisite knowledge throughout the rest of this thesis.
 
-We shall briefly present SageMath, the software system used when implementing the algorithm to be discussed, by introducing
-computer algebra systems and comparing numerical computations against computer algebra showcasing an example; then, the reader
-shall familiarize with the concept of condition number as an emphasis on it will be put in every part.
+We shall briefly present SageMath, the software system used to implement the algorithm discussed in the following chapters,
+by introducing computer algebra systems and comparing numerical computations against computer algebra showcasing an
+example; then, the reader shall familiarize with the concept of condition number as an emphasis on it will be put in
+every part.
 
 Subsequently, definitions and properties of eigenvalues and eigenvectors shall be concisely introduced.
 
@@ -14,7 +15,8 @@ Computers have fundamentally two ways to reason about a mathematical expression:
 performed using \textit{only numbers} to represent values and \textbf{computer algebra} (or \textbf{symbolic computations}),
 which - by contrast - use \textit{both numbers and symbols}.
 
-First, we shall introduce the concept of \textbf{floating point number system} used to handle numerical computations.
+First, we shall introduce the concept of \textbf{floating point number system}, which is the system used to handle numerical
+computations.
 \begin{definition}[Normalized-floating point number system]
     A normalized-floating point number system \(F\) is characterized by the 4-tuple of integers \(\beta, p, L, U\):
     \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
@@ -22,8 +24,8 @@ First, we shall introduce the concept of \textbf{floating point number system} u
         \item \(p\) precision,
         \item \([L, U]\) exponent range (with \(L\), \(U\) denoting lower and upper bound respectively).
     \end{itemize}
-    Given a number \(x \in \mathbb{R}\), \(x \neq 0\) its representation in a floating point number system shall be written out as
-    \(fl(x)\) and has the form
+    Given a number \(x \in \mathbb{R}\), \(x \neq 0\) its representation in a floating point number system shall be written
+    out as \(fl(x)\) and has the form
     \[x = sign(x) \beta^E \sum_{i=0}^{p-1}d_{i}\beta^{-i}\]
     with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}\) (which is called mantissa) made up of natural numbers such that
     \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\) eventually different from \(\beta - 1\).
@@ -36,14 +38,14 @@ First, we shall introduce the concept of \textbf{floating point number system} u
 \end{definition}
 
 It is important to notice that a floating point number system \(F\) is discrete and finite: it approximates real numbers with
-finite numbers.
+finite numbers; in other words, a floating point number system may introduce errors when representing a real number.
 
 A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which
 shall not be discussed.
 
 \begin{definition}[Machine epsilon]
-    Machine epsilon is the maximum possible absolute relative error in representing a nonzero real number \(x\) in a floating point
-    number system
+    Machine epsilon is the maximum possible absolute relative error in representing a nonzero real number \(x\) in a
+    floating point number system
     \[\epsilon_{mach} = \max \limits_{x} \dfrac{\vert x - fl(x) \vert}{\vert x \vert}.\]
 \end{definition}
 
@@ -66,7 +68,7 @@ shall not be discussed.
 \end{example}
 
 Introducing a small change (i.e. an ``error") in the input argument may either cause a large or a small change in the result.
-Now, we shall introduce the concept of condition number.
+Now, we shall define what condition numbers are.
 
 \begin{definition}[Condition number]
     A condition number of a problem measures the sensitivity of the solution to small perturbations in the input data.
@@ -75,8 +77,9 @@ Now, we shall introduce the concept of condition number.
         cond(f, x) = \lim_{\epsilon \to 0} \sup \limits_{\norm{\Delta x} \leq \epsilon \norm{x}}
         \dfrac{\norm{f(x+\Delta x) - f(x)}}{\epsilon \norm{f(x)}}.
     \]
-    Given a problem, if its condition number is low it is said to be \textbf{well-conditioned} (typically \( cond(f, x) \sim 1 \)),
-    while a problem with a high condition number is (said to be) \textbf{ill-conditioned} (\( cond(f, x) \gg 1 \)).
+    Given a problem, if its condition number is low it is said to be \textbf{well-conditioned}
+    (typically \( cond(f, x) \sim 1 \)), while a problem with a high condition number is (said to be)
+    \textbf{ill-conditioned} (\( cond(f, x) \gg 1 \)).
 \end{definition}
 
 Let us now consider the problem of solving a linear equation subjected to a perturbation.
@@ -104,7 +107,8 @@ which implies
 \]
 Tying all this together we can conclude
 \[
-    \dfrac{\norm{\tilde{\vb{x}} - \vb{x}}}{\norm{\vb{x}}} \leq \norm{A} \norm{A^{-1}} \dfrac{\norm{\delta \vb{b}}}{\norm{\vb{b}}}.
+    \dfrac{\norm{\tilde{\vb{x}} - \vb{x}}}{\norm{\vb{x}}} \leq \norm{A} \norm{A^{-1}}
+    \dfrac{\norm{\delta \vb{b}}}{\norm{\vb{b}}}.
 \]
 
 \begin{definition}[Condition number of a matrix]
@@ -115,8 +119,8 @@ Tying all this together we can conclude
 \end{definition}
 
 Now, let us refocus on the topic of math expressions.
-Let us investigate what would happen if symbols are allowed in computations by introducing a framework that allows us to work with
-computer algebra.
+Let us investigate what would happen if symbols are allowed in computations by introducing a framework that allows
+us to work with computer algebra.
 \begin{definition}[Computer algebra system]
     A computer algebra system (CAS) is a mathematics software package that can perform \textit{both symbolic and numerical
     mathematical computations}.
@@ -173,8 +177,8 @@ Hereafter, an example in which symbolic computations are put against numerical (
     \[
         p(x) = x^{6} + 5 \, x^{5} - 3 \, x^{4} - 42 \, x^{3} + 12 \, x^{2} - x + 1.
     \]
-    If an attempt to calculate its roots over SR is made, an exception will be thrown; however, doing this over a
-    finite-precision ring (such as CDF) will work:
+    If an attempt to calculate its roots over SR is made an exception will be thrown (here, a reader may refer to
+    Abel-Ruffini theorem for further explanations); however, doing this over a finite-precision ring (such as CDF) will work:
     \begin{minted}[mathescape,
             numbersep=5pt,
             gobble=2,
@@ -200,10 +204,9 @@ any approximation will prove to be useful in our use case.
 For deeper reasoning about the limits of computer algebra systems, one may refer to Mitic \cite{mitic}.
 
 \subsection*{Eigenvalues, eigenvectors}
-In the following section, eigenvalues and eigenvectors shall be defined; a reader may also consult Axler \cite{axler}
-or Strang \cite{strang09}.
+In the following section, we shall define \textbf{eigenvalues} and \textbf{eigenvectors} and discuss the numerical stability
+of their computation; a reader may also consult Axler \cite{axler} or Strang \cite{strang09} for further explanations.
 
-Lastly, a result on the condition number of the problem of computing eigenvalues of a matrix shall be given.
 \begin{definition}[Eigenvalue, eigenvector]
     Given a linear transformation \(T\) in a finite-dimensional vector space \(V\) over a field \(F\) into itself and a nonzero
     vector
@@ -281,8 +284,8 @@ Assuming \(\norm{\delta A} = 1\) and using the definition of dot product for \(\
 \end{definition}
     
 \subsection*{Jordan canonical form}
-In the following section, we shall define Jordan matrices and discuss the stability of a transformation of a matrix into its
-Jordan canonical form.
+In the following section, we shall define \textbf{Jordan matrices} and discuss the stability of a transformation of a matrix
+into its Jordan canonical form.
 \begin{definition}[Jordan matrix]
     A diagonal block matrix M is called a Jordan matrix if and only if each block along the diagonal is of the form
     \[
@@ -294,17 +297,17 @@ Jordan canonical form.
                 0       &       0      &     0    &     0      & \lambda
         \end{bmatrix},
     \]
-    and we indicate such a matrix with
-    \(diag(J_{\lambda_{1}, n_{1}}, ..., J_{\lambda_{k}, n_{k}})\) with \(k\) the number of diagonal blocks it is made up of.
+    and we can write such a matrix M as
+    \(M = diag(J_{\lambda_{1}, n_{1}}, ..., J_{\lambda_{k}, n_{k}})\) with \(k\) the number of diagonal blocks it is made up of.
 
-    Each block can be completely described by the tuple \((\lambda, n)\) as it is an \(n \times n\) matrix of zeroes everywhere
-    except for the diagonal, which is filled with \(\lambda\), and the superdiagonal, with ones.
+    Each \(n \times n\) block can be completely characterized by the tuple \((\lambda, n)\) as it can fully describe both
+    the structure and the dimension of a block.
 \end{definition}
 
 \begin{remark}
-    Let \(V\) be a vector space defined over a field \(F\) and \(A\) a matrix defined in V. If \(ch_{A}(t)\) can be factorized into
-    its linear factors over \(K\), then \(A\) is similar to a Jordan matrix \(J\). We define \(J\) the \textbf{Jordan
-    canonical form} (\textbf{JCF}) of \(A\).
+    Let \(V\) be a vector space defined over a field \(F\) and \(A\) a matrix defined in V. If the characteristic
+    polynomial of A \(ch_{A}(t)\) can be factorized into its linear factors over \(K\), then \(A\) is similar to a
+    Jordan matrix \(J\). We define \(J\) the \textbf{Jordan canonical form} (\textbf{JCF}) of \(A\).
 \end{remark}
 
 \begin{definition}[Defective matrix, defective eigenvalue]
@@ -325,7 +328,7 @@ Datta \cite{biswadatta}.
     whenever A has at least a defective or nearly defective eigenvalue.
 \end{theorem}
 
-Lastly, we shall give an example to show the implications of such a theorem by showing the differences in
+Lastly, we shall give an example to show the implications of this theorem by showing the differences in
 the JCF of a matrix and its perturbed version.
 
 \begin{example}
