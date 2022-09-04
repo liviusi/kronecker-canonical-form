@@ -1,24 +1,82 @@
-\section{Kronecker canonical form}
-Magna consequat nostrud culpa officia. Reprehenderit tempor et et veniam mollit nostrud. Sint ullamco pariatur ipsum irure excepteur magna non occaecat laborum veniam minim. Nisi pariatur aliquip aute ut aliqua.
+\section{Theory and applications of pencils of matrices}
+This chapter will introduce the reader to the concept of a linear pencil of matrices and its properties.
+\begin{definition}[Linear matrix pencil]
+    A linear pencil of matrices is defined as a polynomial with matrix coefficients
+    \[
+        \Gamma(\lambda) = A + \lambda B
+    \]
+    with \(\lambda \in \mathbb{C}, A\) and \(B\) \(m \times n\) matrices.
+    A linear pencil of matrices may also be called a \textbf{pair of matrices} and, in this thesis, we shall use
+    synonymously both terms.
+\end{definition}
+\begin{definition}[Regular pencil]
+    A matrix pair \((A, B)\) is said to be regular if and only if \(A\) and \(B\) are square matrices of the same size and
+    the determinant \(det(A + \lambda B)\) is not identically zero.
+\end{definition}
+\begin{definition}[Singular pencil]
+    A matrix pair \(A, B\) is said to be singular if and only if it is not regular.
+\end{definition}
 
-Adipisicing labore cupidatat officia labore tempor ex laborum duis est laboris sint cillum consectetur ut. Sunt ut labore est ipsum enim tempor. Deserunt est adipisicing pariatur elit tempor nulla eiusmod ad ipsum Lorem. Mollit occaecat quis esse fugiat deserunt ea. Non aliquip et reprehenderit sint voluptate culpa non quis labore eu laborum enim amet eiusmod.
+\subsection*{Regular pencils.}
+Consider the regular pencil of matrices
+\[\Gamma(\lambda) = A + \lambda B,\]
+let \(F\) be the field the entries of \(A\) and \(B\) belong to and \(r\) the rank of the pencil.
 
-Consequat amet sunt in nulla occaecat ad veniam proident. Magna sint excepteur laboris excepteur Lorem aliquip. Enim amet elit Lorem aliqua ut elit fugiat. Amet mollit officia excepteur ullamco incididunt minim ipsum consectetur tempor ut do. Dolor non enim fugiat aliquip.
+Denote with \(D_{j}(\lambda)\) the greatest common divisor of all minors of order \(j\) of \(\Gamma(\lambda)\)
+(with \(j = 1, ..., r\)) and assume without any loss of generality \(D_{j}(\lambda)\) is monic and
+\(D_{0}(\lambda) = 1\). Given the sequence,
+\begin{gather*}
+    D_{r}(\lambda), \
+    D_{r-1}(\lambda), \
+    ..., \
+    D_{1}(\lambda), D_{0}(\lambda)
+\end{gather*}
+we define the \textbf{invariant polynomials} of the pencil of matrices \(\Gamma(\lambda)\) as the fractions
+\begin{gather*}
+    i_{1}(\lambda) = \dfrac{D_{r}(\lambda)}{D_{r-1}(\lambda)}, \
+    i_{2}(\lambda) = \dfrac{D_{r-1}(\lambda)}{D_{r-2}(\lambda)}, \
+    ..., \
+    i_{r}(\lambda) = D_{1}(\lambda).
+\end{gather*}
 
-Voluptate dolor do non commodo. Qui qui eu id dolor Lorem excepteur sint cillum esse commodo et. Cupidatat ipsum eiusmod consectetur culpa duis veniam mollit consectetur velit do veniam tempor. Eu nostrud laboris nisi ullamco. Labore fugiat aute nostrud aliquip cillum nulla duis.
+We can now write the expansion of the invariant polynomials into irreducible factors in \(F\) as
+\begin{gather*}
+    i_{1}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{1, i}}, \
+    i_{2}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{2, i}}, \
+    ... \\
+    i_{r}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{r, i}},
+\end{gather*}
+with \(p_{i}\) an irreducible polynomial appearing in the expansion.
 
-Nulla laborum ex est aute incididunt et mollit ea excepteur aliquip cillum tempor ullamco. Exercitation ullamco consectetur aliqua officia quis. Ex amet eiusmod laborum tempor excepteur adipisicing nulla non.
+We define the \textbf{elementary divisors} \(e_{i}\) of the pencil of matrices \(\Gamma(\lambda)\) all the polynomials
+\(p_{i}(\lambda)^{\alpha_{j, i}}\) (with \(j = 1, ..., r\)) that are not equal to one.
 
-Pariatur Lorem id laboris pariatur nulla officia proident exercitation tempor ut nostrud eu sunt. Ea proident irure dolore cupidatat commodo ad laborum. Eiusmod elit ullamco ad Lorem non laborum consequat minim ipsum. Adipisicing nisi magna incididunt incididunt irure fugiat dolor et Lorem qui dolor pariatur aliqua. Ad adipisicing do proident cupidatat labore magna fugiat nulla esse excepteur culpa. Reprehenderit consequat enim non sunt incididunt eu.
+A similar procedure may be defined for the pencil of matrices
+\[
+    \Theta(\lambda) = \mu A + \lambda B
+\]
+leading to polynomials in two variables \((\mu, \lambda)\). Clearly, having \(\mu = 1\) would lead to obtaining the elementary
+divisors of \(\Gamma(\lambda)\); however, for each elementary divisor of degree \(q\) we have
+\[
+    e_{i}(\mu, \lambda) = \mu^q e_{i}(\dfrac{\lambda}{\mu}),
+\]
+and, with this technique, it is possible to generate all the elementary divisors of \(\Theta(\lambda)\) except for
+those of the form \(\mu^q\), which are called \textbf{elementary infinite divisors} of the pencil of matrices \(\Theta(\lambda)\).
 
-Aute culpa laborum do cillum excepteur laboris consequat. Ullamco Lorem eiusmod ex commodo ea nisi consequat mollit proident amet cupidatat minim ad. Pariatur in cupidatat magna velit fugiat amet enim elit occaecat adipisicing quis sit.
+\begin{remark}
+    A regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) has elementary infinite divisors if and only if
+    \(det(B) = 0\).
+\end{remark}
 
-In esse exercitation tempor mollit. Non esse qui elit qui. Sint incididunt quis sit ex est tempor consectetur. Eu velit nisi ullamco consequat Lorem ad veniam sunt sit non aliquip fugiat. Id tempor dolore ex labore deserunt tempor consectetur. Cillum ad anim eu esse Lorem proident et esse anim ex. Magna consectetur voluptate sint aute in cillum dolore occaecat est ullamco.
+We can now give a result on the equivalence of regular pencils.
 
-Culpa fugiat officia velit sunt cillum tempor eu laboris commodo exercitation incididunt. Esse laboris fugiat aute minim culpa irure sint duis. In laborum duis minim labore in quis minim quis aliqua nostrud tempor excepteur laborum. Elit aliquip aute elit amet est Lorem Lorem quis do dolore ad non tempor. Consequat Lorem aliqua nulla esse id pariatur ea. Incididunt commodo labore tempor excepteur ullamco labore pariatur non ipsum eiusmod.
+\begin{theorem}[Equivalence of regular pencils of matrices]
+    Two regular matrix pairs \((A, B)\), \((A_{1}, B_{1})\) are called equivalent if and only if they have the same finite and
+    infinite elementary divisors.
+\end{theorem}
 
-Do sit cupidatat cupidatat ullamco nisi. Sint aute voluptate nulla dolor mollit. Reprehenderit reprehenderit enim fugiat est nostrud id aute irure id adipisicing nisi. Veniam aute ullamco cillum Lorem labore ex cillum ad labore nulla ad nulla.
+\subsection*{Singular pencils.}
 
-Deserunt sint tempor sit cillum. Ex dolor nisi nostrud sint fugiat aliquip pariatur officia eu aliquip proident in ad. Anim cupidatat excepteur ad in duis culpa sint. Sint et dolore irure qui sunt aute.
+\subsection*{Kronecker canonical form.}
 
-Tempor commodo non cillum quis amet. Proident proident ea ex exercitation nulla voluptate est eiusmod dolor ut ullamco laborum. Ea id anim consectetur labore minim. Eiusmod culpa id incididunt ut exercitation.
+\subsection*{Fundamental applications.}
