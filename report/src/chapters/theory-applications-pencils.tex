@@ -1,0 +1,220 @@
+\section{Theory and applications of pencils of matrices}
+This chapter will introduce the reader to the concept of a linear pencil of matrices and its properties. Throughout this
+chapter and the following one, a reader may refer to G\"antmacher \cite{gantmacher}, Kunkel, Mehrmann
+\cite{kunkel-mehrmann} and Beelen, Van Dooren \cite{beelen-van_dooren}.
+\begin{definition}[Linear matrix pencil]
+    A linear pencil of matrices is defined as a polynomial with matrix coefficients
+    \[
+        \Gamma(\lambda) = A + \lambda B
+    \]
+    with \(\lambda \in \mathbb{C}, A\) and \(B\) \(m \times n\) matrices.
+    A linear pencil of matrices may also be called a \textbf{pair of matrices} and, in this thesis, we shall use
+    synonymously both terms.
+\end{definition}
+
+\subsection*{Regular pencils.}
+Now, we consider the case where \((A + \lambda B)\) is a regular pencil of matrices.
+\begin{definition}[Regular pencil]
+    A matrix pair \((A, B)\) is said to be regular if and only if \(A\) and \(B\) are square matrices of the same size and
+    the determinant \(det(A + \lambda B)\) is not identically zero.
+\end{definition}
+
+Consider the regular pencil of matrices
+\[\Gamma(\lambda) = A + \lambda B,\]
+let \(F\) be the field the entries of \(A\) and \(B\) belong to and \(r\) the rank of the pencil.
+
+Denote with \(D_{j}(\lambda)\) the greatest common divisor of all minors of order \(j\) of \(\Gamma(\lambda)\)
+(with \(j = 1, ..., r\)) and assume without any loss of generality \(D_{j}(\lambda)\) is monic and
+\(D_{0}(\lambda) = 1\). Given the sequence,
+\begin{gather*}
+    D_{r}(\lambda), \
+    D_{r-1}(\lambda), \
+    ..., \
+    D_{1}(\lambda), D_{0}(\lambda)
+\end{gather*}
+we define the \textbf{invariant polynomials} of the pencil of matrices \(\Gamma(\lambda)\) as the fractions
+\begin{gather*}
+    i_{1}(\lambda) = \dfrac{D_{r}(\lambda)}{D_{r-1}(\lambda)}, \
+    i_{2}(\lambda) = \dfrac{D_{r-1}(\lambda)}{D_{r-2}(\lambda)}, \
+    ..., \
+    i_{r}(\lambda) = D_{1}(\lambda).
+\end{gather*}
+
+We can now write the expansion of the invariant polynomials into irreducible factors in \(F\) as
+\begin{gather*}
+    i_{1}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{1, i}}, \
+    i_{2}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{2, i}}, \
+    ... \\
+    i_{r}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{r, i}},
+\end{gather*}
+with \(p_{i}\) an irreducible polynomial appearing in the expansion.
+
+We define the \textbf{elementary}(\textbf{finite}) \textbf{divisors} \(e_{i}\) of the pencil of matrices \(\Gamma(\lambda)\)
+all the polynomials \(p_{i}(\lambda)^{\alpha_{j, i}}\) (with \(j = 1, ..., r\)) that are not equal to one.
+
+A similar procedure may be defined for the pencil of matrices
+\[
+    \Theta(\lambda) = \mu A + \lambda B
+\]
+leading to polynomials in two variables \((\mu, \lambda)\). Clearly, having \(\mu = 1\) would lead to obtaining the elementary
+finite divisors of \(\Gamma(\lambda)\); however, for each elementary divisor of degree \(q\) we have
+\[
+    e_{i}(\mu, \lambda) = \mu^q e_{i}(\dfrac{\lambda}{\mu}),
+\]
+and, with this technique, it is possible to generate all the elementary divisors of \(\Theta(\lambda)\) except for
+those of the form \(\mu^q\), which are called \textbf{elementary infinite divisors} of the pencil of matrices
+\(\Theta(\lambda)\).
+
+\begin{remark}
+    A regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) has elementary infinite divisors if and only if
+    \(det(B) = 0\).
+\end{remark}
+
+We can now give a result on the equivalence of regular pencils.
+
+\begin{theorem}[Equivalence of regular pencils of matrices]\label{thm:regular-pencils}
+    Two regular matrix pairs \((A, B)\), \((A_{1}, B_{1})\) are called equivalent if and only if they have the
+    same finite and infinite elementary divisors.
+\end{theorem}
+
+\subsection*{Singular pencils.}
+Next, we shall investigate the most general case of \(m \times n\) pencils of matrices in order to introduce
+the reader to the concept of minimal indices of a pencil of matrices.
+\begin{definition}[Singular pencil]
+    A matrix pair \(A, B\) is said to be singular if and only if it is not regular.
+\end{definition}
+
+Consider the singular pencil of (rectangular) matrices \(\Gamma(\lambda) = A + \lambda B\) and assume its rank \(r\) is smaller
+than its number of columns \(n\).
+
+This implies the equation
+\[
+    (A + \lambda B) \vb{x} = 0
+\]
+has nontrivial solutions \(\vb{x}_{1}(\lambda), ..., \vb{x}_{k}(\lambda)\) and let \(X\) be the polynomial
+matrix made up of such polynomials
+\[
+    X =
+    \begin{bmatrix}
+        x_{1, 1} & x_{2, 1} & \ldots & x_{k, 1} \\
+        x_{1, 2} & x_{2, 2} & \ldots & x_{k, 1} \\
+        \vdots   &          &        &   \vdots \\
+        x_{1, n} & x_{2, n} & \ldots & x_{k, n}
+    \end{bmatrix}
+\]
+
+The columns \(\vb{x}_{i}(\lambda)\) (with \(i = 1, ..., k\)) of \(X\) can be chosen to be linearly independent; as a matter of
+fact, the columns are linearly dependent if the rank of \(X\) is less than \(k\) and, (only) in this case, we can
+choose \(k\) nontrivial polynomials \(p_{i}(\lambda)\) such that
+\[
+    \sum_{i=1}^{k} p_{i}(\lambda) \vb{x}_{i}(\lambda) \equiv 0.
+\]
+
+We choose the nontrivial polynomial \(\vb{x}_{1}(\lambda)\) of least degree \(\epsilon_{1}\) in \(\lambda\); next,
+amongst the very same solutions, we choose \(\vb{x}_{2}(\lambda)\) of least degree \(\epsilon_{2}\) etc.
+
+Since the maximum number of linearly independent solutions of the aforementioned equation
+is no more than \(n - r\), this process has a finite number of steps.
+
+To summarize, from an equation \((A + \lambda B)\vb{x} = 0\) we can obtain a sequence of solutions of non-increasing degree
+\[
+    \epsilon_{1} \leq \epsilon_{2} \leq ... \leq \epsilon_{p},
+\]
+and we define \(\epsilon_{i}\) a \textbf{minimal index for the columns} of the pencil of matrices \(\Gamma(\lambda)\).
+
+We can also introduce \textbf{minimal indices for the rows} \(\eta_{1}, \eta_{2}, ..., \eta_{q}\) of the pencil
+\((A + \lambda B)\) which we can yield working with the transpose of the pencil \(A^T + \lambda B^T\) or, in other words,
+with the equation
+\[
+    (A^T + \lambda B^T)\vb{y} = 0.
+\]
+
+We can now give another result on the equivalence of pencils of matrices.
+
+\begin{theorem}[Necessary condition for the equivalence of pencils]\label{thm:singular-pencils}
+    Two arbitrary equivalent pencils have the same minimal indices for rows and columns.
+\end{theorem}
+
+\subsection*{Kronecker canonical form.}
+At this point, we can put together the theorems on the equivalence of regular and singular pencil of matrices, namely
+\nameref{thm:regular-pencils} (theorem \ref{thm:regular-pencils}) and
+\nameref{thm:singular-pencils} (theorem \ref{thm:singular-pencils}) and give a result on the \textbf{equivalence of
+arbitrary matrix pairs}.
+\begin{theorem}[Kronecker]\label{thm:kronecker}
+    Two pencils \((A + \lambda B)\), \((A_{1} + \lambda B_{1})\) of rectangular \(m \times n\) matrices
+    are equivalent if and only if they have the same minimal indices for rows and columns and the same elementary finite and
+    infinite divisors.
+\end{theorem}
+
+\begin{remark}
+    Restating \nameref{thm:kronecker} (theorem \ref{thm:kronecker}) using different words, we can say that a matrix pair
+    \((A, B)\) is completely characterized by its minimal indices for rows and columns and (its) elementary finite and
+    infinite divisors and does not depend on their order.
+\end{remark}
+
+Coherently, it should be possible to define a canonical form for pencils of matrices completely determined by both
+the minimal indices for rows and columns and the elementary finite and infinite divisors, and it is. We can now introduce
+the Kronecker canonical form of a matrix pair.
+
+\begin{theorem}[Kronecker canonical form]\label{thm:kcf}
+    Let \(\Gamma(\lambda) = A + \lambda B\) be an arbitrary pencil of matrices and \(h\), \(g\) the maximal number of constant
+    independent solutions of the two equations
+    \begin{align*}
+        (A + \lambda B)\vb{x} &= 0 & (A^T + \lambda B^T)\vb{y} &= 0.
+    \end{align*}
+    The pencil \(\Gamma(\lambda)\) is strictly equivalent to a quasi-diagonal matrix
+    \begin{gather*}
+        \{
+            Z;
+            L_{\epsilon_{g+1}}, L_{\epsilon_{g+2}}, ..., L_{\epsilon_{p}};
+            L_{\eta_{h+1}}^T, L_{\eta_{h+2}}^T, ..., L_{\eta_{q}^T};
+            N^{(u_{1})}, N^{(u_{2})}, ..., N^{(u_{s})};
+            J + \lambda I
+        \},
+    \end{gather*}
+    where \(Z\) is an \(h \times g\) null matrix, \(L_{\epsilon}\) a rectangular \(\epsilon \times \epsilon + 1\) matrix of
+    the form
+    \[
+        L_{\epsilon} =
+        \begin{bmatrix}
+            \lambda        &      1     &       0      &     \ldots       &    0       &    0   \\
+            0              & \lambda    &       1      &                  & \vdots     & \vdots \\
+            \vdots         & \vdots     &     & \ddots    &      &            &        \\
+            0              &      0     &              &                  & \lambda    &    1   
+        \end{bmatrix}
+    \]
+    and
+    \[
+        N^u = I^u + \lambda H^u
+    \]
+    with \(I\) the \(u \times u\) identity matrix and H the \(u \times u\) upper shift matrix, and \(J\) a Jordan matrix.
+
+    We shall call such a matrix the Kronecker canonical form of \(\Gamma(\lambda)\) and write it
+    out as \(K(\Gamma(\lambda))\).
+\end{theorem}
+
+For a proof of \nameref{thm:kronecker} (theorem \ref{thm:kronecker}) and \nameref{thm:kcf} (theorem \ref{thm:kcf})
+the reader shall refer to the following chapter.
+
+\begin{example}
+    We now give an example of a pencil of matrices written in KCF with minimal indices \(\epsilon_{1} = 0\),
+    \(\epsilon_{2} = 0\), \(\epsilon_{3} = 2\), \(\eta_{1} = 0\), \(\eta_{2} = 0\), \(\eta_{3} = 2\) and elementary
+    divisors \(\lambda - 1\), \(\mu^2\) (caveat: all the elements of the matrix left unspecified are to be
+    interpreted as zeros).
+    \[
+        \begin{bNiceArray}{>{\strut}llllllllll}[margin=3mm]
+            \Block[draw=red]{1-1}{0 \\
+                                  0} \\
+            & \Block[draw=red]{2-3}{} \lambda &    1     &  0 \\
+            &                            0    &  \lambda &  1  \\
+            & & & & \Block[draw=red]{3-2}{} \lambda & 0 \\
+            & & & &                             1   & \lambda \\
+            & & & &                             0   &     1   \\
+            & & & & & & \Block[draw=red]{2-3}{} 1 & \lambda & 0 \\
+            & & & & & &                         0 & 1 & \lambda \\
+            & & & & & & & & & \Block[draw=red]{1-1}{} \lambda - 1 \\
+        \end{bNiceArray}.
+    \]
+\end{example}
+
+\subsection*{Fundamental applications.}

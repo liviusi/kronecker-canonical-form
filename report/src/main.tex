@@ -8,6 +8,7 @@
 \usepackage{amsthm} % theorems, examples, definitions
 \usepackage{commath} % norm
 \usepackage{amssymb}
+\usepackage{nicematrix}
 \singlespace % interlinea singola
 
 \usepackage{hyperref}
@@ -68,6 +69,8 @@
 \newtheorem*{remark}{Remark}
 \newcommand{\iu}{\mathrm{i}\mkern1mu}
 
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
 \makeatletter
 \@ifpackageloaded{hyperref}%
   {\newcommand{\mylabel}[2]% #1=name, #2 = contents
@@ -89,7 +92,7 @@
             Corso di Laurea in Informatica \par}
     
     \vspace{2cm}
-    {\huge \textbf{Fancy title} \par }
+    {\huge \textbf{Computation of Kronecker's Canonical Form in a Computer Algebra System} \par }
 
     \vspace{3cm}
 
@@ -112,9 +115,9 @@
 \pagebreak
 \include{chapters/background}
 \pagebreak
-\include{chapters/kronecker-canonical-form.tex}
+\include{chapters/theory-applications-pencils.tex}
 \pagebreak
-\include{chapters/implementation.tex}
+\include{chapters/computation-kcf.tex}
 \pagebreak
 \include{chapters/conclusions.tex}
 \bibliographystyle{plain} % We choose the "plain" reference style
