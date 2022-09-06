@@ -196,6 +196,14 @@ the Kronecker canonical form of a matrix pair.
 For a proof of \nameref{thm:kronecker} (theorem \ref{thm:kronecker}) and \nameref{thm:kcf} (theorem \ref{thm:kcf})
 the reader shall refer to the following chapter.
 
+\begin{corollary}
+    Given a matrix pair \((A, B)\) there exists a tuple of matrices \(P\), \(Q\) such that
+    \begin{align*}
+        P A Q &= K(A) & P B Q &= K(B),
+    \end{align*}
+    with P an \(m \times m\) and Q an \(n \times n\) matrices respectively.
+\end{corollary}
+
 \begin{example}
     We now give an example of a pencil of matrices written in KCF with minimal indices \(\epsilon_{1} = 0\),
     \(\epsilon_{2} = 0\), \(\epsilon_{3} = 2\), \(\eta_{1} = 0\), \(\eta_{2} = 0\), \(\eta_{3} = 2\) and elementary
@@ -218,3 +226,18 @@ the reader shall refer to the following chapter.
 \end{example}
 
 \subsection*{Fundamental applications.}
+The following section shall introduce the reader to differential-algebraic equations in order to explain what is the
+use case of the KCF of a pencil of matrices.
+
+\begin{definition}[Differential-algebraic equation]
+    An equation
+    \[
+        F(t, x, x') = 0
+    \]
+    with \(F: I \times D_{x} \times D_{x} \rightarrow \mathbb{C}^m\), \(I \subseteq \mathbb{R}\) is a compact interval,
+    \(D_{x}\), \(D_{x} \subseteq \mathbb{C}^n\) are open, \(m\), \(n \in \mathbb{N}\) is called differential-algebraic
+    equation.
+\end{definition}
+
+Differential-algebraic equations are used to model physical systems with a dynamic behaviour the states of which are
+subjected to certain constraints.
