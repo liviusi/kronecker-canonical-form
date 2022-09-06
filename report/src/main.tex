@@ -58,6 +58,7 @@
 \usepackage{subcaption}
 \usepackage{physics}
 \usepackage{minted}
+\usepackage{algorithm2e}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
@@ -80,7 +81,11 @@
     {\protected@write\@auxout{}{\string\newlabel{#1}{{#2}{\thepage}}}}}
 \makeatother
 
+\SetKw{Continue}{continue}
+\SetKw{Break}{break}
+
 \begin{document}
+\RestyleAlgo{ruled}
 \begin{titlepage}
     \clearpage\thispagestyle{empty}
     \centering

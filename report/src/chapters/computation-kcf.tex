@@ -1,5 +1,128 @@
 \section{Computation of Kronecker's Canonical Form}
+The following chapter deals with the problem of computing Kronecker's canonical form for a matrix pair \((A, B)\).
+The approach described will be shown to be correct, and an
+\href{https://github.com/liviusi/kronecker-canonical-form}{implementation}
+of it using the CAS SageMath has been made publicly available under MIT License on GitHub.
 
-\subsection*{Singular pencils.}
+
+We shall divide the procedure into two steps: the first one deals with regular pencils of matrices, the other with
+singular pencils.
+
+At the end of each of the following sections, the steps described shall be summarised in pseudocode.
 
 \subsection*{Regular pencils.}
+Throughout this section, we'll denote with \(P_{i}\) the matrix used for a similarity transformation.
+
+Let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of \(n \times n\) matrices.
+
+We can find a number \(c\) such that
+\[
+    det(A + cB) \neq 0.
+\]
+We define \(A_{1} = A + cB\) and rewrite the pencil as
+\[
+    \Gamma(\lambda) = A_{1} + (\lambda - c)B.
+\]
+\(A_{1}\) being invertible for construction allows us to premultiply the pencil by \(A_{1}^{-1}\), and thus obtain
+\[
+    I + (\lambda - c)A_{1}^{-1} B.
+\]
+We compute the JCF of \(A^{-1}B\) and partition it into two blocks
+\begin{gather*}
+    P_{1}^{-1} (A_{1}^{-1} B) P_{1} = \{ J_{0}; J_{1} \}\\
+    I + (\lambda - c)\{J_{0}; J_{1}\} = \{I - cJ_{0} + \lambda J_{0}; I - cJ_{1} + \lambda J_{1}\},
+\end{gather*}
+with \(J_{0}\) nilpotent Jordan matrix and \(det(J_{1}) \neq 0\).
+
+Now, we can postmultiply the first diagonal block by \((I -cJ_{0})^{-1}\) and obtain
+\[
+    (I - cJ_{0} + \lambda J_{0}) (I - cJ_{0})^{-1} = I + \lambda(I - cJ_{0})^{-1} J_{0},
+\]
+which can be put in JCF as
+\[
+    P_{2}^{-1} ((I - cJ_{0})^{-1} J_{0}) P_{2} = \{N^{(u_{1})}; N^{(u_{2})}; ...; N^{(u_{s})}\},
+\]
+with \(N^{(u)} = I^{(u)} + \lambda H^{(u)}\), \(I^{(u)}\) the \(u \times u\) identity matrix and \(H^{(u)}\) the
+\(u \times u\) upper shift matrix.
+
+Lastly, we postmultiply the second diagonal block by \(J_{1}^{-1}\)
+\[
+    (I - cJ_{1} + \lambda J_{1}) J_{1}^{-1} = J_{1}^{-1} - cI + \lambda I
+\]
+and write the constant term in JCF
+\[
+    P_{3}^{-1} (J_{1}^{-1} - cI) P_{3} = J.
+\]
+
+To conclude, we shall present the aforementioned steps in pseudocode.
+\begin{algorithm}
+    \caption{Procedure to compute KCF of a regular pencil.}\label{alg:kcf-regular}
+    \KwData{$\Gamma(\lambda) = A + \lambda B$: regular pencil}
+    \KwResult{$K(\Gamma(\lambda))$: KCF of the pencil of matrices $\Gamma(\lambda)$}
+    $c \gets -1$\;
+    \While{True}{
+        $c \gets $ random integer\;
+        \eIf{$det(\Gamma(c)) = 0$}{
+            \Continue
+        }
+        {
+            $A_{1} \gets A + c*B$\;
+            $J_{A_{1}} \gets $ jordan($A_{1}*B$)\;
+            $\{J_{0}, J_{1}\} \gets$ submatrices($J_{A_{1}}$)\;
+            $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
+            $J \gets $ jordan($J_{1}^{-1} - c*I$)\;
+            $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, J +\lambda I$)
+        }
+    }
+\end{algorithm}
+
+We have now proved the following theorem.
+\begin{theorem}[KCF of a regular pencil of matrices]
+    Every regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) can be reduced to a matrix of the form
+    \[
+        \begin{bmatrix}
+            N^{(u_{1})} \\
+            & N^{(u_{2})} \\
+            & & \ddots \\
+            & & & N^{(u_{s})} \\
+            & & & & J + \lambda I
+        \end{bmatrix},
+    \]
+    where the first \(s\) diagonal blocks correspond to infinite elementary divisors
+    \(\mu^{u_{1}}, ..., \mu^{u_{s}}\) of \(\Gamma(\lambda)\) and the last block is uniquely determined by the
+    finite elementary divisors of the given pencil.
+
+    \(N^{(u)}\) is a \(u \times u\) square matrix such that
+    \[
+        \begin{bmatrix}
+            1 & \lambda & & & \\
+            0 & & \ddots & & \\
+            & & & 1 & \lambda \\
+            & & & & 1
+        \end{bmatrix}
+        = I^{(u)} + \lambda H^{(u)},
+    \]
+    with \(I^{(u)}\) a \(u \times u\) identity matrix and \(H^{(u)}\) \(u \times u\) upper shift matrix.
+\end{theorem}
+
+\subsection*{Singular pencils.}
+\begin{theorem}[Reduction theorem]
+    If the equation given by a matrix pair \(\Gamma(\lambda) = (A, B)\) has a solution of minimal
+    degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is strictly equivalent to a pencil of matrices of the form
+    \[
+        \begin{bmatrix}
+            L_{\epsilon} & 0 \\
+            0 & \tilde{A} + \lambda \tilde{B}
+        \end{bmatrix},
+    \]
+    where the equation analogous for \((\tilde(A), \tilde(B))\) has no solution of degree \(\alpha < \epsilon\) and
+    \(L_{\epsilon}\) an \(\epsilon \times \epsilon + 1\) matrix such that
+    \[
+        \begin{bmatrix}
+            \lambda & 1       & 0     & \hdots & 0       &    0   \\
+            0       & \lambda & 1     &        & \vdots  & \vdots \\
+            \vdots  & \vdots & \ddots & \ddots \\
+            0       &        &        &        & \lambda & 1
+        \end{bmatrix}.
+    \]
+\end{theorem}
