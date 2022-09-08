@@ -23,6 +23,7 @@ def test_two():
 
 def test_three():
     """
+	Edge case (kind of).
     """
     A = sa.matrix(sa.SR, [[1]])
     B = sa.matrix(sa.SR, [[0]])
@@ -40,6 +41,7 @@ def test_four():
 
 def test_five():
     """
+	L_2; L_2
     """
     A = sa.matrix(sa.SR, [[0, 3, -1, 4], [2, -108, 0, 1], [-2, -1, -1, 1], [4, 1, -4, 1]])
     B = sa.matrix(sa.SR, [[0, 0, 0, -1], [0, 2, 0, 0], [0, -2, 0, -1], [0, 4, 0, -4]])
