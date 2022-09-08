@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Trapani
+    given-names: Giacomo
+title: "Computation of KCF in SR"
+version: 1.0.0
