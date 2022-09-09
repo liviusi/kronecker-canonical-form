@@ -274,22 +274,22 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
 
 Next, we shall give a few examples of linear DAEs with constant coefficients and compute their solutions.
 
-\begin{example}
+\begin{example} \label{exmp:dae-l2}
     Consider the pencil \(\Gamma(\lambda)\) and its associated DAE
     \begin{align*}
         \Gamma(\lambda) &=
         \begin{bmatrix}
             \lambda & 1 & 0 \\
             0 & \lambda & 1
-        \end{bmatrix}.
-        \begin{bmatrix}
-            1 & 0 & 0 \\
-            0 & 1 & 0
-        \end{bmatrix} \\
+        \end{bmatrix}, \\
         \begin{bmatrix}
             f_{1}(t) \\
             f_{2}(t)
         \end{bmatrix} &=
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & 1 & 0
+        \end{bmatrix}
         \begin{bmatrix}
             \dot{x_{1}} \\
             \dot{x_{2}} \\
@@ -325,4 +325,37 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
             \end{aligned}
         \right.
     \end{equation*}
+\end{example}
+
+\begin{example}
+    Consider the transpose of the pencil of matrices given in \ref{exmp:dae-l2}
+    \begin{align*}
+        \Gamma(\lambda) &=
+        \begin{bmatrix}
+            \lambda & 1 & 0 \\
+            0 & \lambda & 1
+        \end{bmatrix}.
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & 1 & 0
+        \end{bmatrix} \\
+        \begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t)
+        \end{bmatrix} &=
+        \begin{bmatrix}
+            \dot{x_{1}} \\
+            \dot{x_{2}} \\
+            \dot{x_{3}}
+        \end{bmatrix}
+        + \begin{bmatrix}
+            0 & 1 & 0 \\
+            0 & 0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{1} \\
+            x_{2} \\
+            x_{3}
+        \end{bmatrix}.
+    \end{align*}
 \end{example}
