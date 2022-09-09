@@ -2,10 +2,6 @@ import sage.all as sa
 from random import randint
 
 
-RING = sa.SR
-EMPTY_MATRIX = sa.matrix(RING, [])
-
-
 def _complete_to_a_basis(M: sa.sage.matrix) -> sa.sage.matrix:
     """
     Completes the given matrix to a basis by augmenting
@@ -118,7 +114,7 @@ def _reduction_theorem(
     P*B*Q = B_tilde.
     """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
-    EMPTY_MATRIX = sa.matrix(RING, [])
+    EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     degree, polynomial = _compute_lowest_degree_polynomial(A, -B)
     if degree <= 0:
         print("The degree of the polynomial of minimum degree " +
@@ -229,14 +225,22 @@ def _reduction_theorem(
     if not transformation:
         return ((L_A, A_STAR), (L_B, B_STAR))
     else:
-        left_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree), Y], [0, sa.identity_matrix(A_tilde.nrows() - degree)]])
-        right_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree + 1), -X], [0, sa.identity_matrix(A_tilde.ncols() - degree - 1)]])
-        return ((left_M* P**-1, Q * right_M), (L_A, A_STAR), (L_B, B_STAR))
+        left_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree), Y],
+                                         [0, sa.identity_matrix(
+                                             A_tilde.nrows() - degree)]])
+        right_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree + 1), -X],
+                                          [0, sa.identity_matrix(
+                                              A_tilde.ncols() - degree - 1)]])
+        return ((left_M * P**-1, Q * right_M), (L_A, A_STAR), (L_B, B_STAR))
 
 
 def _reduce_regular_pencil(A: sa.sage.matrix,
-                          B: sa.sage.matrix,
-                          transformation=False) -> tuple[tuple[sa.sage.matrix, sa.sage.matrix], tuple[sa.sage.matrix, sa.sage.matrix]] | tuple[
+                           B: sa.sage.matrix,
+                           transformation=False) -> tuple[tuple[
+                                sa.sage.matrix, sa.sage.matrix],
+                                                          tuple[sa.sage.matrix,
+                                                                sa.sage.matrix]
+                                                          ] | tuple[
                                         tuple[sa.sage.matrix, sa.sage.matrix],
                                         tuple[sa.sage.matrix, sa.sage.matrix],
                                         tuple[sa.sage.matrix, sa.sage.matrix]]:
@@ -262,13 +266,17 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
     P^{-1}*A*Q = identity(u) + J,
     P^{-1}*B*Q = upper_shift_matrix(u) + I.
     """
-    assert A.nrows() == A.ncols() == B.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero()
-    EMPTY_MATRIX = sa.matrix(RING, [])
+    assert (A.nrows() == A.ncols() == B.nrows() == A.ncols()
+            and not (A + sa.var('x') * B).det().is_zero())
+    EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     if A.nrows() == 0:
         if not transformation:
-            return ((EMPTY_MATRIX, EMPTY_MATRIX), (EMPTY_MATRIX, EMPTY_MATRIX))
+            return ((EMPTY_MATRIX, EMPTY_MATRIX),
+                    (EMPTY_MATRIX, EMPTY_MATRIX))
         else:
-            return (EMPTY_MATRIX, EMPTY_MATRIX), (EMPTY_MATRIX, EMPTY_MATRIX), (EMPTY_MATRIX, EMPTY_MATRIX)
+            return ((EMPTY_MATRIX, EMPTY_MATRIX),
+                    (EMPTY_MATRIX, EMPTY_MATRIX),
+                    (EMPTY_MATRIX, EMPTY_MATRIX))
     while True:
         c = randint(-10, 10)
         if (A + c*B).det().is_zero():
@@ -282,7 +290,10 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
                 J_1_LENGTH = i + 1
                 break
 
-        PERM = sa.block_matrix(J.base_ring(), [[0, sa.identity_matrix(J_1_LENGTH)], [sa.identity_matrix(J.nrows() - J_1_LENGTH), 0]])
+        PERM = sa.block_matrix(J.base_ring(), [
+            [0, sa.identity_matrix(J_1_LENGTH)],
+            [sa.identity_matrix(
+                J.nrows() - J_1_LENGTH), 0]])
 
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
         J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH)
@@ -293,13 +304,17 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
 
         # J_0 may be empty, the jordan form of an empty matrix is not defined
         if J_0.nrows() > 0 and J_0.ncols() > 0:
-            H, P_2 = ((sa.identity_matrix(J_0.nrows()) - c * J_0).inverse() * J_0).jordan_form(transformation=transformation)
+            H, P_2 = ((sa.identity_matrix(J_0.nrows())
+                       - c * J_0).inverse() * J_0).jordan_form(
+                           transformation=transformation)
         else:
             H, P_2 = EMPTY_MATRIX, EMPTY_MATRIX
         J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
 
         if J_1.nrows() > 0 and J_1.ncols() > 0:
-            M, P_3 = (J_1.inverse() - c * sa.identity_matrix(J_1.nrows())).jordan_form(transformation=transformation)
+            M, P_3 = (J_1.inverse()
+                      - c * sa.identity_matrix(J_1.nrows())).jordan_form(
+                          transformation=transformation)
         else:
             M, P_3 = EMPTY_MATRIX, EMPTY_MATRIX
         J_1_IDENTITIES = sa.identity_matrix(M.nrows())
@@ -307,12 +322,23 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
         if not transformation:
             return ((J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
         else:
-            L = A_1 * P_1 * PERM.transpose().inverse() * sa.block_diagonal_matrix([P_2, P_3])
-            R = P_1 * PERM * sa.block_diagonal_matrix([(sa.identity_matrix(J_0.nrows()) - c * J_0).inverse() * P_2, J_1.inverse() * P_3])
+            L = (A_1 * P_1 *
+                 PERM.transpose().inverse() *
+                 sa.block_diagonal_matrix([P_2, P_3]))
+            R = (P_1 * PERM *
+                 sa.block_diagonal_matrix(
+                     [(sa.identity_matrix(J_0.nrows()) - c * J_0).inverse()
+                      * P_2, J_1.inverse()
+                      * P_3]))
             return ((L, R), (J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
 
 
-def kronecker_canonical_form(A: sa.sage.matrix, B: sa.sage.matrix, transformation=False):
+def kronecker_canonical_form(A: sa.sage.matrix,
+                             B: sa.sage.matrix,
+                             transformation=False) -> tuple[
+                                 sa.sage.matrix, sa.sage.matrix] | tuple[
+                                     tuple[sa.sage.matrix, sa.sage.matrix],
+                                     tuple[sa.sage.matrix]]:
     """
     Computes Kronecker's canonical form of the given pencil
     (A + tB)x = 0 and return the tuple
@@ -326,7 +352,7 @@ def kronecker_canonical_form(A: sa.sage.matrix, B: sa.sage.matrix, transformatio
     P*B*Q = KCF_B.
     """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
-    EMPTY_MATRIX = sa.matrix(RING, [])
+    EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     kronecker_blocks = []
     to_be_transposed = False
     L = sa.identity_matrix(A.nrows())
@@ -342,9 +368,16 @@ def kronecker_canonical_form(A: sa.sage.matrix, B: sa.sage.matrix, transformatio
             B_tilde = B_tilde.transpose()
             L, R = R.H, L.H
         (P, Q), (L_A, A_STAR), (L_B, B_STAR) = _reduction_theorem(A_tilde, B_tilde, True)
-        assert (P * A_tilde * Q - sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (P * B_tilde *  Q - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
-        L = sa.block_diagonal_matrix([sa.identity_matrix(L.nrows() - P.nrows()), P]) * L
-        R = R * sa.block_diagonal_matrix([sa.identity_matrix(R.nrows() - Q.nrows()), Q])
+        assert (P * A_tilde * Q -
+                sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (
+                    P * B_tilde * Q
+                    - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
+        L = sa.block_diagonal_matrix(
+            [sa.identity_matrix(
+                L.nrows() - P.nrows()), P]) * L
+        R = R * sa.block_diagonal_matrix(
+            [sa.identity_matrix(
+                R.nrows() - Q.nrows()), Q])
         if to_be_transposed:
             A, B = A.transpose(), B.transpose()
             L_A = L_A.transpose()
@@ -365,15 +398,20 @@ def kronecker_canonical_form(A: sa.sage.matrix, B: sa.sage.matrix, transformatio
     KCF_A = sa.block_diagonal_matrix([block[0] for block in kronecker_blocks])
     KCF_B = sa.block_diagonal_matrix([block[1] for block in kronecker_blocks])
 
-    L = sa.block_diagonal_matrix(sa.identity_matrix(L.nrows() - P.nrows()), P.inverse()) * L
-    R = R * sa.block_diagonal_matrix(sa.identity_matrix(R.nrows() - Q.nrows()), Q)
+    L = sa.block_diagonal_matrix(
+        sa.identity_matrix(L.nrows() - P.nrows()), P.inverse()) * L
+    R = R * sa.block_diagonal_matrix(
+        sa.identity_matrix(R.nrows() - Q.nrows()), Q)
 
     if not transformation:
         return (KCF_A, KCF_B)
     else:
         return ((L, R), (KCF_A, KCF_B))
 
-def stringify_pencil(A: sa.sage.matrix, B: sa.sage.matrix, space=30):
+
+def stringify_pencil(A: sa.sage.matrix,
+                     B: sa.sage.matrix,
+                     space=30) -> str:
     """
     Returns a string representation of the given pencil.
     """
