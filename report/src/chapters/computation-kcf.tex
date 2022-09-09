@@ -1,8 +1,8 @@
 \section{Computation of Kronecker's Canonical Form}
 The following chapter deals with the problem of computing Kronecker's canonical form for a matrix pair \((A, B)\).
-The approach described will be shown to be correct, and an
-\href{https://github.com/liviusi/kronecker-canonical-form}{implementation}
-of it using the CAS SageMath has been made publicly available under MIT License on GitHub.
+The approach described will be shown to be correct, and an implementation
+of it using the CAS SageMath has been made publicly available under MIT License on GitHub
+\cite{Trapani_Computation_of_Kronecker_s}.
 
 
 We shall divide the procedure into two steps: the first one deals with regular pencils of matrices, the other with
@@ -11,67 +11,211 @@ singular pencils.
 At the end of each of the following sections, the steps described shall be summarised in pseudocode.
 
 \subsection*{Regular pencils.}
-Throughout this section, we'll denote with \(P_{i}\) the matrix used for a similarity transformation.
+Let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of matrices defined in a vector space over a
+field \(F\).
 
-Let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of \(n \times n\) matrices.
+First, we shall find a value \(c \in F\) such that \(det(\Gamma(c)) \neq 0\) and define the matrix 
+\[
+    A_{1} = A + cB.
+\]
 
-We can find a number \(c\) such that
+Now, we rewrite \(\Gamma(\lambda)\) in terms of \(A_{1}\),
 \[
-    det(A + cB) \neq 0.
+    \Gamma(\lambda) = A_{1} + (\lambda - c)B,
 \]
-We define \(A_{1} = A + cB\) and rewrite the pencil as
+and premultiply it by \(A_{1}^{-1}\)
+\begin{gather}
+    A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)A_{1}^{-1}B. \label{gamma-reg-1}
+\end{gather}
+
+Let us denote with \(J\) the JCF of \(A_{1}^{-1}B\) and \(P_{1}\) the similarity matrix used to compute it
 \[
-    \Gamma(\lambda) = A_{1} + (\lambda - c)B.
+    J = P_{1}^{-1}(A_{1}^{-1}B)P_{1},
 \]
-\(A_{1}\) being invertible for construction allows us to premultiply the pencil by \(A_{1}^{-1}\), and thus obtain
+and let us assume it is of the form
 \[
-    I + (\lambda - c)A_{1}^{-1} B.
+    J =
+    \begin{bmatrix}
+        J_{1} & \\
+        & J_{0}
+    \end{bmatrix}
 \]
-We compute the JCF of \(A^{-1}B\) and partition it into two blocks
+with \(J_{0}\) a nilpotent Jordan matrix and \(J_{1}\) such that \(det(J_{1}) \neq 0\) (which is the form returned by
+SageMath when computing Jordan matrices); call \(j\), \(k\) the number of rows in \(J_{0}\) and \(J_{1}\) respectively.
+
+Define the permutation matrix
+\[
+    P_{\pi} =
+    \begin{bmatrix}
+        & I^{(k)}\\
+        I^{(j)} &
+    \end{bmatrix}
+\]
+so that we can write
+\[
+    P_{\pi}^T J P_{\pi} = J' =
+    \begin{bmatrix}
+        J_{0} & \\
+        & J_{1}
+    \end{bmatrix}.
+\]
+
+Now, we rewrite \eqref{gamma-reg-1} substituting \(A_{1}^{-1}B\) with its permuted Jordan form
+\begin{gather}
+    A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}.
+    \label{gamma-reg-1.5}
+\end{gather}
+We can write the identity matrix in terms of \(P_{1}\) as \(I = P_{1}P_{1}^{-1}\) in \eqref{gamma-reg-1.5}
+\begin{align*}
+    & A_{1}^{-1} \Gamma(\lambda) = \\
+    &= P_{1}P_{1}^{-1} + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1} = \\
+    &= P_{1}(P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}).
+\end{align*}
+We premultiply it by \(P_{1}^{-1}\)
+\[
+    P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) = P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}
+\]
+and then postmultiply by \(P_{1}\)
+\[
+    P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} = I + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1}.
+\]
+
+The very same steps can be followed for \(P_{\pi}^{-T}\) and \(P_{\pi}^{-1}\).
+
+The final result is
+\begin{gather}
+    P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi} = I + (\lambda - c)J'. \label{gamma-reg-2}
+\end{gather}
+
+Now, we may work on the blocks \(J_{0}\), \(J_{1}\) of \(J'\).
+
+For the following steps, it is useful to rewrite the expression on the right side of \eqref{gamma-reg-2} so that
+the form of its diagonal blocks is explicitly readable, meaning
+\[
+    I + (\lambda - c)J' =
+    \begin{bmatrix}
+        I^{(j)} - cJ_{0} + \lambda J_{0} & \\
+        & I^{(k)} - cJ_{1} + \lambda J_{1}
+    \end{bmatrix}.
+\]
+
+Let us start from the first diagonal block
+\[
+    I^{(j)} - cJ_{0} + \lambda J_{0}.
+\]
+First, we need to postmultiply it in
+\eqref{gamma-reg-2} by \(K = (I^{(j)} - cJ_{0})^{-1}\)
 \begin{gather*}
-    P_{1}^{-1} (A_{1}^{-1} B) P_{1} = \{ J_{0}; J_{1} \}\\
-    I + (\lambda - c)\{J_{0}; J_{1}\} = \{I - cJ_{0} + \lambda J_{0}; I - cJ_{1} + \lambda J_{1}\},
+    \scalemath{0.92}{
+        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+        \begin{bmatrix}
+            K& \\
+            & I^{(k)}
+        \end{bmatrix}
+        = 
+        \begin{bmatrix}
+            I^{(j)} + \lambda K J_{0} & \\
+            & I^{(k)} - cJ_{1} + \lambda J_{1}
+        \end{bmatrix}.
+    }
 \end{gather*}
-with \(J_{0}\) nilpotent Jordan matrix and \(det(J_{1}) \neq 0\).
 
-Now, we can postmultiply the first diagonal block by \((I -cJ_{0})^{-1}\) and obtain
+Let us denote with \(H^{(j)}\) the JCF of \(K J_{0}\), \(P_{2}\) the similarity matrix
+used to compute it and \(N^{(j)} = I^{(j)} + \lambda H^{(j)}\)
 \[
-    (I - cJ_{0} + \lambda J_{0}) (I - cJ_{0})^{-1} = I + \lambda(I - cJ_{0})^{-1} J_{0},
-\]
-which can be put in JCF as
-\[
-    P_{2}^{-1} ((I - cJ_{0})^{-1} J_{0}) P_{2} = \{N^{(u_{1})}; N^{(u_{2})}; ...; N^{(u_{s})}\},
-\]
-with \(N^{(u)} = I^{(u)} + \lambda H^{(u)}\), \(I^{(u)}\) the \(u \times u\) identity matrix and \(H^{(u)}\) the
-\(u \times u\) upper shift matrix.
-
-Lastly, we postmultiply the second diagonal block by \(J_{1}^{-1}\)
-\[
-    (I - cJ_{1} + \lambda J_{1}) J_{1}^{-1} = J_{1}^{-1} - cI + \lambda I
-\]
-and write the constant term in JCF
-\[
-    P_{3}^{-1} (J_{1}^{-1} - cI) P_{3} = J.
+    N^{(j)} = I^{(j)} + \lambda H^{(j)} = I^{(j)} + \lambda P_{2}^{-1} (K J_{0}) P_{2}.
 \]
 
-To conclude, we shall present the aforementioned steps in pseudocode.
+\begin{remark}
+    H is an upper shift matrix as it is the JCF of a nilpotent matrix.
+\end{remark}
+
+Following the analogous steps to handle \(P_{2}\) and its inverse yields us
+\begin{gather}
+    \scalemath{0.92}{
+        \begin{bmatrix}
+            P_{2}^{-1} & \\
+            & I
+        \end{bmatrix}
+        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+        \begin{bmatrix}
+            KP_{2} & \\
+            & I^{(k)}
+        \end{bmatrix} =
+        \begin{bmatrix}
+            N^{(j)} & \\
+            & I^{(k)} - cJ_{1} + \lambda J_{1} 
+        \end{bmatrix}. \label{gamma-reg-3}
+    }
+\end{gather}
+
+At this point, we can focus on the second diagonal block
+\[
+    I^{(k)} - cJ_{1} + \lambda J_{1}.
+\]
+We postmultiply it in
+\eqref{gamma-reg-3} by \(J_{1}^{-1}\)
+\begin{gather}
+    \scalemath{0.92}{
+        \begin{bmatrix}
+            P_{2}^{-1} & \\
+            & I
+        \end{bmatrix}
+        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+        \begin{bmatrix}
+            KP_{2} & \\
+            & J_{1}^{-1}
+        \end{bmatrix} =
+        \begin{bmatrix}
+            N^{(j)} & \\
+            & J_{1}^{-1} + (\lambda - c)I^{(k)} 
+        \end{bmatrix}.
+    }
+\end{gather}
+
+Let us denote with \(G\) the JCF of the constant term \(J_{1}^{-1} - cI^{(k)}\) and \(P_{3}\) the similarity matrix
+used to compute it
+\[
+    J_{1}^{-1} - cI^{(k)} = P_{3}^{-1}GP_{3}.
+\]
+
+Again, we follow the same procedure to handle \(P_{3}\) and its inverse, thus obtaining our end result
+\begin{gather}
+    \scalemath{0.975}{
+        \begin{bmatrix}
+            P_{2}^{-1} & \\
+            & P_{3}^{-1}
+        \end{bmatrix}
+        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+        \begin{bmatrix}
+            KP_{2} & \\
+            & J_{1}^{-1}P_{3}
+        \end{bmatrix} =
+        \begin{bmatrix}
+            N^{(j)} & \\
+            & G + \lambda I^{(k)}
+        \end{bmatrix}. \label{gamma-reg}
+    }
+\end{gather}
+
+To conclude, we shall present the aforementioned steps used in order to compute Kronecker's canonical form
+\(K(\Gamma(\lambda))\) in pseudocode.
 \begin{algorithm}
     \caption{Procedure to compute KCF of a regular pencil.}\label{alg:kcf-regular}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: regular pencil}
     \KwResult{$K(\Gamma(\lambda))$: KCF of the pencil of matrices $\Gamma(\lambda)$}
-    $c \gets -1$\;
     \While{True}{
-        $c \gets $ random integer\;
+        $c \gets $ random value\;
         \eIf{$det(\Gamma(c)) = 0$}{
             \Continue
         }
         {
             $A_{1} \gets A + c*B$\;
-            $J_{A_{1}} \gets $ jordan($A_{1}*B$)\;
-            $\{J_{0}, J_{1}\} \gets$ submatrices($J_{A_{1}}$)\;
+            $J \gets $ jordan($A_{1}^{-1}*B$)\;
+            $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
             $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
-            $J \gets $ jordan($J_{1}^{-1} - c*I$)\;
-            $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, J +\lambda I$)
+            $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
+            $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, G +\lambda I$)
         }
     }
 \end{algorithm}
@@ -91,21 +235,102 @@ We have now proved the following theorem.
     where the first \(s\) diagonal blocks correspond to infinite elementary divisors
     \(\mu^{u_{1}}, ..., \mu^{u_{s}}\) of \(\Gamma(\lambda)\) and the last block is uniquely determined by the
     finite elementary divisors of the given pencil.
-
-    \(N^{(u)}\) is a \(u \times u\) square matrix such that
-    \[
-        \begin{bmatrix}
-            1 & \lambda & & & \\
-            0 & & \ddots & & \\
-            & & & 1 & \lambda \\
-            & & & & 1
-        \end{bmatrix}
-        = I^{(u)} + \lambda H^{(u)},
-    \]
-    with \(I^{(u)}\) a \(u \times u\) identity matrix and \(H^{(u)}\) \(u \times u\) upper shift matrix.
 \end{theorem}
 
+\begin{theorem}[Stability of KCF transformation for a regular pencil] \label{thm:stability-kcf-regular}
+    The problem of computing Kronecker's canonical form for a regular pencil
+    is ill-conditioned.
+\end{theorem} 
+
+We can see \nameref{thm:stability-kcf-regular} (theorem \ref{thm:stability-kcf-regular}) is
+trivially true as it involves the computation of many JCFs.
+
+Now, we'll give an example to show how this may influence the end result.
+
+\begin{example}
+    
+\end{example}
+
 \subsection*{Singular pencils.}
+In order to handle singular pencils of matrices, we must first prove the following theorem.
+
+\begin{theorem}
+    Given a singular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) of dimensions \(m \times n\) and
+    rank \(r < n\), the degree \(\epsilon\) of the polynomial
+    \[
+        \vb{x}(\lambda) = x_{0} - \lambda x_{1} + \lambda^2 x_{2} - ... + (-1)^{\epsilon} \lambda^\epsilon x_{\epsilon}
+    \]
+    with \(x_{\epsilon} \neq 0\) is the least value for which the sign \(<\) holds in
+    the relation \(\rho_{k} \leq (k+1)n\) where \(\rho_{k}\) is the rank of a \(k \times k + 1\)
+    matrix of the form
+    \[
+        \begin{bmatrix}
+            A & 0 & \hdots &    0   \\
+            B & A &        & \vdots \\
+            0 & B & \ddots & \\
+            \vdots & \vdots & \ddots & A \\
+            0      &    0   & \hdots & B
+        \end{bmatrix}.
+    \]
+\end{theorem}
+\begin{proof}
+    Since the columns of the pencil of matrices \(\Gamma(\lambda)\) are linearly dependent, the equation
+    \[
+        (A+\lambda B)\vb{x} = 0
+    \]
+    has a non-zero solution. We choose the solution \(\vb{x}(\lambda)\) of the least possible degree \(\epsilon\).
+
+    We substitute \(\vb{x}(\lambda)\) in the equation and obtain
+    \begin{align*}
+        Ax_{0} &= 0, & Bx_{0} - Ax_{1} &= 0,
+        & ...&, & Bx_{\epsilon-1} - Ax_{\epsilon} &= 0, &
+        Bx_{\epsilon} &= 0,
+    \end{align*}
+
+    which can, in turn, be considered as a system of linear homogenous equations for the elements
+    of the columns \(x_{0} - x_{1}, x_{2} ..., (-1)^\epsilon x_{\epsilon}\); we can write the coefficient
+    matrix of the system as
+    \[
+        M_{\epsilon} =
+        \begin{bmatrix}
+            A & 0 & \hdots &    0   \\
+            B & A &        & \vdots \\
+            0 & B & \ddots & \\
+            \vdots & \vdots & \ddots & A \\
+            0      &    0   & \hdots & B
+        \end{bmatrix}.
+    \]
+    We know by construction that the rank of the matrix \(M_{\epsilon}\) \(\rho_{\epsilon} < (\epsilon+1)n\)
+    and (that), since \(\epsilon\) is minimal, the ranks \(\rho_{0}, \rho_{1}, ..., \rho_{\epsilon-1}\)
+    of the matrices
+    \begin{align*}
+        M_{0} &=
+        \begin{bmatrix}
+            A \\
+            B
+        \end{bmatrix},
+        & M_{1} &=
+        \begin{bmatrix}
+            A & 0 \\
+            B & A \\
+            0 & B
+        \end{bmatrix},
+        & M_{\epsilon-1} &=
+        \begin{bmatrix}
+            A & 0 & \hdots &    0   \\
+            B & A &        & \vdots \\
+            0 & B & \ddots & \\
+            \vdots & \vdots & \ddots & A \\
+            0      &    0   & \hdots & B
+        \end{bmatrix}
+    \end{align*}
+    satisfy the equations \(\rho_{0} = n, \rho_{1} = 2, \rho_{\epsilon-1} = \epsilon n\) thus
+    proving the theorem.
+\end{proof}
+
+At this point, we can state and prove a fundamental theorem which will certainly aid us
+in proving \nameref{thm:kcf} (theorem \ref{thm:kcf}).
+
 \begin{theorem}[Reduction theorem]
     If the equation given by a matrix pair \(\Gamma(\lambda) = (A, B)\) has a solution of minimal
     degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is strictly equivalent to a pencil of matrices of the form
@@ -115,8 +340,8 @@ We have now proved the following theorem.
             0 & \tilde{A} + \lambda \tilde{B}
         \end{bmatrix},
     \]
-    where the equation analogous for \((\tilde(A), \tilde(B))\) has no solution of degree \(\alpha < \epsilon\) and
-    \(L_{\epsilon}\) an \(\epsilon \times \epsilon + 1\) matrix such that
+    where the equation analogous for \((\tilde{A}, \tilde{B})\) has no solution of degree \(\alpha < \epsilon\) and
+    \(L_{\epsilon}\) is an \(\epsilon \times \epsilon + 1\) matrix such that
     \[
         \begin{bmatrix}
             \lambda & 1       & 0     & \hdots & 0       &    0   \\
@@ -126,3 +351,7 @@ We have now proved the following theorem.
         \end{bmatrix}.
     \]
 \end{theorem}
+
+\begin{proof}
+    
+\end{proof}
