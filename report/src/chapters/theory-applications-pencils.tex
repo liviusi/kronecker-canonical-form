@@ -275,17 +275,16 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
 Next, we shall give a few examples of linear DAEs with constant coefficients and compute their solutions.
 
 \begin{example} \label{exmp:dae-l2}
-    Consider the pencil \(\Gamma(\lambda)\) and its associated DAE
-    \begin{align*}
-        \Gamma(\lambda) &=
+    Consider the pencil
+    \[
+        \Gamma(\lambda)
         \begin{bmatrix}
             \lambda & 1 & 0 \\
             0 & \lambda & 1
-        \end{bmatrix}, \\
-        \begin{bmatrix}
-            f_{1}(t) \\
-            f_{2}(t)
-        \end{bmatrix} &=
+        \end{bmatrix}.
+	\]
+	We write the linear DAE with constant coefficients associated with \(\Gamma(\lambda)\) as
+	\[
         \begin{bmatrix}
             1 & 0 & 0 \\
             0 & 1 & 0
@@ -303,11 +302,15 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
             x_{1} \\
             x_{2} \\
             x_{3}
+        \end{bmatrix} =
+		\begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t)
         \end{bmatrix}.
-    \end{align*}
+    \]
 
-    To compute its solutions we must solve the linear system
-    \begin{equation} \label{exmp:dae-l2:1}
+    To compute its solutions we must solve the linear system associated with the DAE specified above
+    \begin{equation}
         \left\{
         \begin{aligned}
             \dot{x_{1}} + x_{2} - f_{1}(t) & = 0 \\
@@ -315,7 +318,7 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
         \end{aligned}
         \right.
     \end{equation}
-    Denoting with \(g\) a generic \(C^2\) function, the solution of \eqref{exmp:dae-l2:1} is
+    Denoting with \(g\) a generic \(C^2\) function, the solution is
     \begin{equation*}
         \left\{
             \begin{aligned}
@@ -323,25 +326,22 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
                 x_{2} &= -\dot{x_{1}} + f_{1}(t) \\
                 x_{3} &= \ddot{x_{1}} - \dot{f_{1}}(t) + f_{2}(t)
             \end{aligned}
-        \right.
+		\right.
     \end{equation*}
 \end{example}
 
-\begin{example}
-    For this example, we'll take the transpose of the pencil of matrices given in \ref{exmp:dae-l2} and
-    the associated DAE
-    \begin{align*}
-        \Gamma(\lambda) &=
+\begin{example} \label{exmp:dae-l2T}
+    For this example, we'll take the transpose of the pencil of matrices given in \ref{exmp:dae-l2}
+    \[
+        \Gamma(\lambda) =
         \begin{bmatrix}
             \lambda & 0 \\
             1 & \lambda \\
             0 & 1
-        \end{bmatrix}. \\
-        \begin{bmatrix}
-            f_{1}(t) \\
-            f_{2}(t) \\
-            f_{3}(t)
-        \end{bmatrix} &=
+        \end{bmatrix}.
+	\]
+	The DAE associated with \(\Gamma(\lambda)\) is
+	\[
         \begin{bmatrix}
             0 & 0 \\
             1 & 0 \\
@@ -359,11 +359,16 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
         \begin{bmatrix}
             x_{1} \\
             x_{2}
+        \end{bmatrix} =
+		\begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t) \\
+            f_{3}(t)
         \end{bmatrix}.
-    \end{align*}
+    \]
 
-    We write this as a linear system:
-    \begin{equation}
+    We write this as a linear system
+    \begin{equation*}
         \left\{
             \begin{aligned}
                 & x_{1} - f_{1}(t) = 0 \\
@@ -371,5 +376,85 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
                 & \dot{x_{2}} - f_{3}(t) = 0
             \end{aligned}
         \right.
-    \end{equation}
+    \end{equation*}
+
+	Its solution is
+	\begin{equation*}
+		\left\{
+			\begin{aligned}
+				& x_{1} = f_{1}(t) \\
+				& x_{2} = f_{2}(t) - \dot{f_{1}}(t)
+			\end{aligned}
+		\right.
+	\end{equation*}
+\end{example}
+
+\begin{example}
+	Let \(\Gamma(\lambda)\) be the pencil of matrices
+	\[
+		\Gamma(\lambda) =
+		\begin{bmatrix}
+			1 & \lambda & 0 & 0 \\
+			0 & 1 & \lambda & 0 \\
+			0 & 0 & 1 & \lambda \\
+			0 & 0 & 0 & 1
+		\end{bmatrix}.
+	\]
+	Rewriting this as a linear DAE with constant coefficients yields
+	\[
+		\begin{bmatrix}
+			1 & 0 & 0 & 0 \\
+			0 & 1 & 0 & 0 \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 1
+		\end{bmatrix}
+		\begin{bmatrix}
+			\dot{x_{1}} \\
+			\dot{x_{2}} \\
+			\dot{x_{3}} \\
+			\dot{x_{4}}
+		\end{bmatrix}
+		+ \begin{bmatrix}
+			0 & 1 & 0 & 0 \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 1 \\
+			0 & 0 & 0 & 0
+		\end{bmatrix}
+		\begin{bmatrix}
+			x_{1} \\
+			x_{2} \\
+			x_{3} \\
+			x_{4}
+		\end{bmatrix}
+		=
+		\begin{bmatrix}
+			f_{1}(t) \\
+			f_{2}(t) \\
+			f_{3}(t) \\
+			f_{4}(t)
+		\end{bmatrix}
+	\]
+	We follow the same steps as in other examples
+	\begin{equation*}
+		\left\{
+			\begin{aligned}
+				& \dot{x_{1}} + x_{2} - f_{1}(t) = 0 \\
+				& \dot{x_{2}} + x_{3} - f_{2}(t) = 0 \\
+				& \dot{x_{3}} + x_{4} - f_{3}(t) = 0 \\
+				& \dot{x_{4}} - f_{4}(t) = 0
+			\end{aligned}
+		\right.
+	\end{equation*}
+
+	Yet again, we denote with \(g\) a generic \(C^2\) function. The solution is
+	\begin{equation*}
+		\left\{
+			\begin{aligned}
+				& x_{1} = g \\
+				& x_{2} = f_{1}(t) - \dot{g} \\
+				& x_{3} = f_{2}(t) - \dot{f_{1}}(t) + \ddot{g} \\
+				& x_{4} = \int f_{4}(t) dt
+			\end{aligned}
+		\right.
+	\end{equation*}
 \end{example}
