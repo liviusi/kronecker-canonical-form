@@ -172,7 +172,7 @@ the Kronecker canonical form of a matrix pair.
             J + \lambda I
         \},
     \end{gather*}
-    where \(Z\) is an \(h \times g\) null matrix, \(L_{\epsilon}\) a rectangular \(\epsilon \times \epsilon + 1\) matrix of
+    where \(Z\) is an \(h \times g\) null matrix, \(L_{\epsilon}\) a rectangular \(\epsilon \times (\epsilon + 1)\) matrix of
     the form
     \[
         L_{\epsilon} =
@@ -252,7 +252,7 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
         B \dot{x} + Ax = f(t)
     \]
     with (\(A\), \(B \in \mathbb{C}^{m \times n}\)),
-    \(f: I \rightarrow \mathbb{C}^m\) a differentiable function, \(I \subseteq \mathbb{R}\) a
+    \(f: I \rightarrow \mathbb{C}^m\) a continuous and twice-differentiable function, \(I \subseteq \mathbb{R}\) a
     compact interval and \(m \in \mathbb{N}\) is called a linear differential-algebraic equation with constant
     coefficients.
 
@@ -277,7 +277,7 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
 \begin{example} \label{exmp:dae-l2}
     Consider the pencil
     \[
-        \Gamma(\lambda)
+        \Gamma(\lambda) =
         \begin{bmatrix}
             \lambda & 1 & 0 \\
             0 & \lambda & 1
