@@ -307,55 +307,69 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
     \end{align*}
 
     To compute its solutions we must solve the linear system
-    \begin{equation} \label{sample-tap-1}
+    \begin{equation} \label{exmp:dae-l2:1}
         \left\{
         \begin{aligned}
-            \dot{x_{1}} + x_{2} + f_{1}(t) & = 0 \\
-            \dot{x_{2}} + x_{3} + f_{2}(t) & = 0
+            \dot{x_{1}} + x_{2} - f_{1}(t) & = 0 \\
+            \dot{x_{2}} + x_{3} - f_{2}(t) & = 0
         \end{aligned}
         \right.
     \end{equation}
-    Denoting with \(g\) a generic \(C^2\) function, the solution of \eqref{sample-tap-1} is
+    Denoting with \(g\) a generic \(C^2\) function, the solution of \eqref{exmp:dae-l2:1} is
     \begin{equation*}
         \left\{
             \begin{aligned}
                 x_{1} &= g \\
-                x_{2} &= -\dot{x_{1}} -f_{1}(t) \\
-                x_{3} &= \ddot{x_{1}} + \dot{f_{1}}(t) - f_{2}(t)
+                x_{2} &= -\dot{x_{1}} + f_{1}(t) \\
+                x_{3} &= \ddot{x_{1}} - \dot{f_{1}}(t) + f_{2}(t)
             \end{aligned}
         \right.
     \end{equation*}
 \end{example}
 
 \begin{example}
-    Consider the transpose of the pencil of matrices given in \ref{exmp:dae-l2}
+    For this example, we'll take the transpose of the pencil of matrices given in \ref{exmp:dae-l2} and
+    the associated DAE
     \begin{align*}
         \Gamma(\lambda) &=
         \begin{bmatrix}
-            \lambda & 1 & 0 \\
-            0 & \lambda & 1
-        \end{bmatrix}.
-        \begin{bmatrix}
-            1 & 0 & 0 \\
-            0 & 1 & 0
-        \end{bmatrix} \\
+            \lambda & 0 \\
+            1 & \lambda \\
+            0 & 1
+        \end{bmatrix}. \\
         \begin{bmatrix}
             f_{1}(t) \\
-            f_{2}(t)
+            f_{2}(t) \\
+            f_{3}(t)
         \end{bmatrix} &=
         \begin{bmatrix}
+            0 & 0 \\
+            1 & 0 \\
+            0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
             \dot{x_{1}} \\
-            \dot{x_{2}} \\
-            \dot{x_{3}}
+            \dot{x_{2}}
         \end{bmatrix}
         + \begin{bmatrix}
-            0 & 1 & 0 \\
-            0 & 0 & 1
+            1 & 0 \\
+            0 & 1 \\
+            0 & 0
         \end{bmatrix}
         \begin{bmatrix}
             x_{1} \\
-            x_{2} \\
-            x_{3}
+            x_{2}
         \end{bmatrix}.
     \end{align*}
+
+    We write this as a linear system:
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                & x_{1} - f_{1}(t) = 0 \\
+                & \dot{x_{1}} + x_{2} - f_{2}(t) = 0 \\
+                & \dot{x_{2}} - f_{3}(t) = 0
+            \end{aligned}
+        \right.
+    \end{equation}
 \end{example}
