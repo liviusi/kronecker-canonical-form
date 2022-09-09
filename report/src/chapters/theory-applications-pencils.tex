@@ -3,7 +3,7 @@ This chapter will introduce the reader to the concept of a linear pencil of matr
 chapter and the following one, a reader may refer to G\"antmacher \cite{gantmacher}, Kunkel, Mehrmann
 \cite{kunkel-mehrmann} and Beelen, Van Dooren \cite{beelen-van_dooren}.
 \begin{definition}[Linear matrix pencil]
-    A linear pencil of matrices is defined as a polynomial with matrix coefficients
+    A linear pencil of matrices is defined as a 1-degree polynomial with matrix coefficients
     \[
         \Gamma(\lambda) = A + \lambda B
     \]
@@ -210,7 +210,7 @@ the reader shall refer to the following chapter.
     divisors \(\lambda - 1\), \(\mu^2\) (caveat: all the elements of the matrix left unspecified are to be
     interpreted as zeros).
     \[
-        \begin{bNiceArray}{>{\strut}llllllllll}[margin=3mm]
+        \begin{bNiceArray}{>{\strut}lllllllll}[margin=3mm]
             \Block[draw=red]{1-1}{0 \\
                                   0} \\
             & \Block[draw=red]{2-3}{} \lambda &    1     &  0 \\
@@ -218,26 +218,111 @@ the reader shall refer to the following chapter.
             & & & & \Block[draw=red]{3-2}{} \lambda & 0 \\
             & & & &                             1   & \lambda \\
             & & & &                             0   &     1   \\
-            & & & & & & \Block[draw=red]{2-3}{} 1 & \lambda & 0 \\
-            & & & & & &                         0 & 1 & \lambda \\
-            & & & & & & & & & \Block[draw=red]{1-1}{} \lambda - 1 \\
+            & & & & & & \Block[draw=red]{2-2}{} 1 & \lambda \\
+            & & & & & &                         0 & 1 \\
+            & & & & & & & & \Block[draw=red]{1-1}{} \lambda - 1 \\
         \end{bNiceArray}.
     \]
 \end{example}
 
 \subsection*{Fundamental applications.}
-The following section shall introduce the reader to differential-algebraic equations in order to explain what is the
-use case of the KCF of a pencil of matrices.
+The following section shall introduce the reader to differential-algebraic equations (which we may shorten as DAE) in
+order to explain what is the use case of the KCF of a pencil of matrices while keeping a strong focus on examples.
 
-\begin{definition}[Differential-algebraic equation]
+\begin{definition}[Differential-algebraic equation] \label{def:dae}
     An equation
     \[
-        F(t, x, x') = 0
+        F(t, x, \dot{x}) = 0
     \]
     with \(F: I \times D_{x} \times D_{x} \rightarrow \mathbb{C}^m\), \(I \subseteq \mathbb{R}\) is a compact interval,
-    \(D_{x}\), \(D_{x} \subseteq \mathbb{C}^n\) are open, \(m\), \(n \in \mathbb{N}\) is called differential-algebraic
-    equation.
+    \(D_{x}\), \(D_{x} \subseteq \mathbb{C}^n\) are open, \(x: I \rightarrow \mathbb{C}^n\) a differentiable function
+    and \(m\), \(n \in \mathbb{N}\) is called differential-algebraic equation.
+
+    What we're attempting to determine is a function \(x\) such that
+    \[
+        \forall x \in I. F(t, x(t), \dot{x(t)}) = 0.
+    \]
 \end{definition}
 
 Differential-algebraic equations are used to model physical systems with a dynamic behaviour the states of which are
-subjected to certain constraints.
+subjected to certain constraints. For our purposes, we'll narrow the definition given above and rewrite it as follows.
+\begin{definition}[Linear DAE with constant coefficients]
+    An equation
+    \[
+        B \dot{x} + Ax = f(t)
+    \]
+    with (\(A\), \(B \in \mathbb{C}^{m \times n}\)),
+    \(f: I \rightarrow \mathbb{C}^m\) a differentiable function, \(I \subseteq \mathbb{R}\) a
+    compact interval and \(m \in \mathbb{N}\) is called a linear differential-algebraic equation with constant
+    coefficients.
+
+    It may be paired with an initial condition
+    \[
+        x(t_{0}) = x_{0}.
+    \]
+\end{definition}
+
+\begin{remark}
+    The equations \(B \dot{x} + Ax = f(t)\) and \(\tilde{B} \tilde{\dot{x}} + \tilde{A}\tilde{x} = \tilde{f}(t)\), with
+    \begin{align*}
+        \tilde{A} &= PAQ, & \tilde{B} &= PBQ, & \tilde{f} &= Pf, & \tilde{x} &= Q^{-1}x, \\
+        && P \in \mathbb{C}^{m \times m}, && Q \in \mathbb{C}^{n \times n}
+    \end{align*}
+    and \(P\), \(Q\) nonsingular matrices, are both linear differential-algebraic equations with constant coefficients and
+    the relation \(x = Q\tilde{x}\) provides a one-to-one mapping between their solution sets.
+\end{remark}
+
+Next, we shall give a few examples of linear DAEs with constant coefficients and compute their solutions.
+
+\begin{example}
+    Consider the pencil \(\Gamma(\lambda)\) and its associated DAE
+    \begin{align*}
+        \Gamma(\lambda) &=
+        \begin{bmatrix}
+            \lambda & 1 & 0 \\
+            0 & \lambda & 1
+        \end{bmatrix}.
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & 1 & 0
+        \end{bmatrix} \\
+        \begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t)
+        \end{bmatrix} &=
+        \begin{bmatrix}
+            \dot{x_{1}} \\
+            \dot{x_{2}} \\
+            \dot{x_{3}}
+        \end{bmatrix}
+        + \begin{bmatrix}
+            0 & 1 & 0 \\
+            0 & 0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{1} \\
+            x_{2} \\
+            x_{3}
+        \end{bmatrix}.
+    \end{align*}
+
+    To compute its solutions we must solve the linear system
+    \begin{equation} \label{sample-tap-1}
+        \left\{
+        \begin{aligned}
+            \dot{x_{1}} + x_{2} + f_{1}(t) & = 0 \\
+            \dot{x_{2}} + x_{3} + f_{2}(t) & = 0
+        \end{aligned}
+        \right.
+    \end{equation}
+    Denoting with \(g\) a generic \(C^2\) function, the solution of \eqref{sample-tap-1} is
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                x_{1} &= g \\
+                x_{2} &= -\dot{x_{1}} -f_{1}(t) \\
+                x_{3} &= \ddot{x_{1}} + \dot{f_{1}}(t) - f_{2}(t)
+            \end{aligned}
+        \right.
+    \end{equation*}
+\end{example}
