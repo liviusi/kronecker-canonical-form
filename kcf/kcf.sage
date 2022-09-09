@@ -1,6 +1,4 @@
-import sys
 import sage.all as sa
-from ast import literal_eval
 from random import randint
 
 
@@ -264,7 +262,7 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
     P^{-1}*A*Q = identity(u) + J,
     P^{-1}*B*Q = upper_shift_matrix(u) + I.
     """
-    assert A.nrows() == A.ncols() == B.nrows() == A.ncols()
+    assert A.nrows() == A.ncols() == B.nrows() == A.ncols() and not (A + sa.var('x') * B).det().is_zero()
     EMPTY_MATRIX = sa.matrix(RING, [])
     if A.nrows() == 0:
         if not transformation:
@@ -284,7 +282,7 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
                 J_1_LENGTH = i + 1
                 break
 
-        PERM = sa.block_matrix([[0, sa.identity_matrix(J_1_LENGTH)], [sa.identity_matrix(J.nrows() - J_1_LENGTH), 0]])
+        PERM = sa.block_matrix(J.base_ring(), [[0, sa.identity_matrix(J_1_LENGTH)], [sa.identity_matrix(J.nrows() - J_1_LENGTH), 0]])
 
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
         J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH)
@@ -390,14 +388,17 @@ def stringify_pencil(A: sa.sage.matrix, B: sa.sage.matrix, space=30):
 
 def debug() -> None:
     # Starting point is a pencil of the form (A + tB)x = 0.
-    A = sa.matrix(sa.SR, [[0, 3, -1, 4], [2, -108, 0, 1], [-2, -1, -1, 1], [4, 1, -4, 1]])
-    B = sa.matrix(sa.SR, [[0, 0, 0, -1], [0, 2, 0, 0], [0, -2, 0, -1], [0, 4, 0, -4]])
+    A = sa.matrix(sa.SR, [[2, 1, 3], [3, 2, 5], [3, 2, 6]])
+    B = sa.matrix(sa.SR, [[1, 1, 2], [1, 1, 2], [1, 1, 3]])
     (L, R), (KCF_A, KCF_B) = kronecker_canonical_form(A, B, True)
 
     # Info:
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
     print(stringify_pencil(KCF_A, KCF_B))
+    print(stringify_pencil(L*A*R, L*B*R))
+    print(sa.norm(L.inverse())*sa.norm(L))
+    print(sa.norm(R.inverse())*sa.norm(R))
     assert (L * A * R - KCF_A).is_zero()
     assert (L * B * R - KCF_B).is_zero()
 
