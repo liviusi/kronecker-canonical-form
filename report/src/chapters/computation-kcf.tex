@@ -203,7 +203,7 @@ To conclude, we shall present the aforementioned steps used in order to compute 
 \begin{algorithm}
     \caption{Procedure to compute KCF of a regular pencil.}\label{alg:kcf-regular}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: regular pencil}
-    \KwResult{$K(\Gamma(\lambda))$: KCF of the pencil of matrices $\Gamma(\lambda)$}
+    \KwResult{$K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
     \While{True}{
         $c \gets $ random value\;
         \If{$det(\Gamma(c)) \neq 0$}{
@@ -215,7 +215,8 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
     $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
     $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
-    $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, G +\lambda I$)
+    $K \gets $ diag($\{N_{i}\}, G +\lambda I$)\;
+	\Return{K}
 \end{algorithm}
 
 We have now proved the following theorem.
