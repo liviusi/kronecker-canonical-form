@@ -541,12 +541,16 @@ linear DAE with constant coefficients associated may be solved.
             \end{aligned}
         \right.
     \end{equation*}
-    Denoting with \(g\) a generic \(C^2\) function, \(D\), \(K\) arbitrary constants, the solution is
+    Denoting with \(g\) a \(C^2\) function such that
+    \[
+        \ddot{g} = \dot{f_{1}}(t) - f_{2}(t),
+    \]
+    and (with) \(D\), \(K\) arbitrary constants, the solution is
     \begin{equation*}
         \left\{
             \begin{aligned}
                 & x_{1} = g \\
-                & x_{2} = f_{1}(t) - \dot{g}\\
+                & x_{2} = f_{1}(t) - \dot{g} \\
                 & x_{3} = -\frac{1}{4} \, {\left(4Kt - 2f_{3}(t) e^{2t} + f_{4}(t)e^{2t} - 4K\right)} e^{-2t}\\
                 & x_{4} = \frac{1}{2} \, {\left(f_{4}(t) e^{2t} + 2D\right)} e^{-2t}\\
             \end{aligned}
