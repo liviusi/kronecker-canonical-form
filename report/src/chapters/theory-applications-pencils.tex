@@ -272,7 +272,8 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
     the relation \(x = Q\tilde{x}\) provides a one-to-one mapping between their solution sets.
 \end{remark}
 
-Next, we shall give a few examples of linear DAEs with constant coefficients and compute their solutions.
+Next, we shall take as examples pencils of matrices made up of the blocks described before in order to show how the
+linear DAE with constant coefficients associated may be solved.
 
 \begin{example} \label{exmp:dae-l2}
     Consider the pencil
@@ -282,9 +283,9 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
             \lambda & 1 & 0 \\
             0 & \lambda & 1
         \end{bmatrix}.
-	\]
-	We write the linear DAE with constant coefficients associated with \(\Gamma(\lambda)\) as
-	\[
+    \]
+    We write the linear DAE with constant coefficients associated with \(\Gamma(\lambda)\) as
+    \[
         \begin{bmatrix}
             1 & 0 & 0 \\
             0 & 1 & 0
@@ -303,7 +304,7 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
             x_{2} \\
             x_{3}
         \end{bmatrix} =
-		\begin{bmatrix}
+        \begin{bmatrix}
             f_{1}(t) \\
             f_{2}(t)
         \end{bmatrix}.
@@ -326,7 +327,7 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
                 x_{2} &= -\dot{x_{1}} + f_{1}(t) \\
                 x_{3} &= \ddot{x_{1}} - \dot{f_{1}}(t) + f_{2}(t)
             \end{aligned}
-		\right.
+        \right.
     \end{equation*}
 \end{example}
 
@@ -339,28 +340,28 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
             1 & \lambda \\
             0 & 1
         \end{bmatrix}.
-	\]
-	The DAE associated with \(\Gamma(\lambda)\) is
-	\[
+    \]
+    The DAE associated with \(\Gamma(\lambda)\) is
+    \[
+        \begin{bmatrix}
+            1 & 0 \\
+            0 & 1 \\
+            0 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \dot{x_{1}} \\
+            \dot{x_{2}}
+        \end{bmatrix} + 
         \begin{bmatrix}
             0 & 0 \\
             1 & 0 \\
             0 & 1
         \end{bmatrix}
         \begin{bmatrix}
-            \dot{x_{1}} \\
-            \dot{x_{2}}
-        \end{bmatrix}
-        + \begin{bmatrix}
-            1 & 0 \\
-            0 & 1 \\
-            0 & 0
-        \end{bmatrix}
-        \begin{bmatrix}
             x_{1} \\
             x_{2}
-        \end{bmatrix} =
-		\begin{bmatrix}
+        \end{bmatrix}=
+        \begin{bmatrix}
             f_{1}(t) \\
             f_{2}(t) \\
             f_{3}(t)
@@ -371,90 +372,163 @@ Next, we shall give a few examples of linear DAEs with constant coefficients and
     \begin{equation*}
         \left\{
             \begin{aligned}
-                & x_{1} - f_{1}(t) = 0 \\
-                & \dot{x_{1}} + x_{2} - f_{2}(t) = 0 \\
-                & \dot{x_{2}} - f_{3}(t) = 0
+                & \dot{x_{1}} - f_{1}(t) = 0 \\
+                & \dot{x_{2}} + x_{1} - f_{2}(t) = 0 \\
+                & x_{2} - f_{3}(t) = 0
             \end{aligned}
         \right.
     \end{equation*}
 
-	Its solution is
-	\begin{equation*}
-		\left\{
-			\begin{aligned}
-				& x_{1} = f_{1}(t) \\
-				& x_{2} = f_{2}(t) - \dot{f_{1}}(t)
-			\end{aligned}
-		\right.
-	\end{equation*}
+    The system can be solved if and only if
+    \[
+        f_{1}(t) = \dot{f_{2}}(t) - \ddot{f_{3}}(t),
+    \]
+    and its solution is
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & x_{1} = f_{2}(t) - \dot{f_{3}}(t) \\
+                & x_{2} = f_{3}(t)
+            \end{aligned}
+        \right.
+    \end{equation*}
 \end{example}
 
 \begin{example}
-	Let \(\Gamma(\lambda)\) be the pencil of matrices
-	\[
-		\Gamma(\lambda) =
-		\begin{bmatrix}
-			1 & \lambda & 0 & 0 \\
-			0 & 1 & \lambda & 0 \\
-			0 & 0 & 1 & \lambda \\
-			0 & 0 & 0 & 1
-		\end{bmatrix}.
-	\]
-	Rewriting this as a linear DAE with constant coefficients yields
-	\[
-		\begin{bmatrix}
-			1 & 0 & 0 & 0 \\
-			0 & 1 & 0 & 0 \\
-			0 & 0 & 1 & 0 \\
-			0 & 0 & 0 & 1
-		\end{bmatrix}
-		\begin{bmatrix}
-			\dot{x_{1}} \\
-			\dot{x_{2}} \\
-			\dot{x_{3}} \\
-			\dot{x_{4}}
-		\end{bmatrix}
-		+ \begin{bmatrix}
-			0 & 1 & 0 & 0 \\
-			0 & 0 & 1 & 0 \\
-			0 & 0 & 0 & 1 \\
-			0 & 0 & 0 & 0
-		\end{bmatrix}
-		\begin{bmatrix}
-			x_{1} \\
-			x_{2} \\
-			x_{3} \\
-			x_{4}
-		\end{bmatrix}
-		=
-		\begin{bmatrix}
-			f_{1}(t) \\
-			f_{2}(t) \\
-			f_{3}(t) \\
-			f_{4}(t)
-		\end{bmatrix}
-	\]
-	We follow the same steps as in other examples
-	\begin{equation*}
-		\left\{
-			\begin{aligned}
-				& \dot{x_{1}} + x_{2} - f_{1}(t) = 0 \\
-				& \dot{x_{2}} + x_{3} - f_{2}(t) = 0 \\
-				& \dot{x_{3}} + x_{4} - f_{3}(t) = 0 \\
-				& \dot{x_{4}} - f_{4}(t) = 0
-			\end{aligned}
-		\right.
-	\end{equation*}
+    Let \(\Gamma(\lambda)\) be the pencil of matrices
+    \[
+        \Gamma(\lambda) =
+        \begin{bmatrix}
+            1 & \lambda & 0 & 0 \\
+            0 & 1 & \lambda & 0 \\
+            0 & 0 & 1 & \lambda \\
+            0 & 0 & 0 & 1
+        \end{bmatrix}.
+    \]
+    Rewriting this as a linear DAE with constant coefficients yields
+    \[
+        \begin{bmatrix}
+            0 & 1 & 0 & 0 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 1 \\
+            0 & 0 & 0 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \dot{x_{1}} \\
+            \dot{x_{2}} \\
+            \dot{x_{3}} \\
+            \dot{x_{4}}
+        \end{bmatrix} +
+        \begin{bmatrix}
+            1 & 0 & 0 & 0 \\
+            0 & 1 & 0 & 0 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{1} \\
+            x_{2} \\
+            x_{3} \\
+            x_{4}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t) \\
+            f_{3}(t) \\
+            f_{4}(t)
+        \end{bmatrix}
+    \]
+    We follow the same steps as in other examples
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & \dot{x_{2}} + x_{1} - f_{1}(t) = 0 \\
+                & \dot{x_{3}} + x_{2} - f_{2}(t) = 0 \\
+                & \dot{x_{4}} + x_{3} - f_{3}(t) = 0 \\
+                & x_{4} - f_{4}(t) = 0
+            \end{aligned}
+        \right.
+    \end{equation*}
 
-	Yet again, we denote with \(g\) a generic \(C^2\) function. The solution is
-	\begin{equation*}
-		\left\{
-			\begin{aligned}
-				& x_{1} = g \\
-				& x_{2} = f_{1}(t) - \dot{g} \\
-				& x_{3} = f_{2}(t) - \dot{f_{1}}(t) + \ddot{g} \\
-				& x_{4} = \int f_{4}(t) dt
-			\end{aligned}
-		\right.
-	\end{equation*}
+    The solution is
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & x_{1} = f_{1}(t) - \dot{f_{2}}(t) + \ddot{f_{3}}(t) - \dddot{f_{4}}(t) \\
+                & x_{2} = f_{2}(t) - \dot{f_{3}}(t) + \ddot{f_{4}}(t) \\
+                & x_{3} = f_{3}(t) - \dot{f_{4}}(t) \\
+                & x_{4} = f_{4}(t)
+            \end{aligned}
+        \right.
+    \end{equation*}
+\end{example}
+
+\begin{example}
+    Let us take the pencil
+    \[
+        \Gamma(\lambda) =
+        \begin{bmatrix}
+            \lambda & 1 & 0 & 0 \\
+            0 & \lambda & 0 & 0 \\
+            0 & 0 & \lambda + 2 & 1 \\
+            0 & 0 & 0 & \lambda + 2
+        \end{bmatrix}
+    \]
+    and write the DAE associated with it
+    \[
+        \begin{bmatrix}
+            1 & 0 & 0 & 0 \\
+            0 & 1 & 0 & 0 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            \dot{x_{1}} \\
+            \dot{x_{2}} \\
+            \dot{x_{3}} \\
+            \dot{x_{4}}
+        \end{bmatrix}
+        + \begin{bmatrix}
+            0 & 1 & 0 & 0 \\
+            0 & 0 & 0 & 0 \\
+            0 & 0 & 2 & 1 \\
+            0 & 0 & 0 & 2
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{1} \\
+            x_{2} \\
+            x_{3} \\
+            x_{4}
+        \end{bmatrix}
+        = \begin{bmatrix}
+            f_{1}(t) \\
+            f_{2}(t) \\
+            f_{3}(t) \\
+            f_{4}(t)
+        \end{bmatrix}.
+    \]
+
+    The linear system to solve is
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & \dot{x_{1}} + x_{2} - f_{1}(t) = 0 \\
+                & \dot{x_{2}} - f_{2}(t) = 0 \\
+                & \dot{x_{3}} + 2x_{3} + x_{4} - f_{3}(t) = 0 \\
+                & \dot{x_{4}} + 2x_{4} - f_{4}(t) = 0
+            \end{aligned}
+        \right.
+    \end{equation*}
+    Denoting with \(g\) a generic \(C^2\) function, \(D\), \(K\) arbitrary constants, the solution is
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & x_{1} = g \\
+                & x_{2} = f_{1}(t) - \dot{g}\\
+                & x_{3} = -\frac{1}{4} \, {\left(4Kt - 2f_{3}(t) e^{2t} + f_{4}(t)e^{2t} - 4K\right)} e^{-2t}\\
+                & x_{4} = \frac{1}{2} \, {\left(f_{4}(t) e^{2t} + 2D\right)} e^{-2t}\\
+            \end{aligned}
+        \right.
+    \end{equation*}
 \end{example}
