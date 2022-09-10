@@ -54,16 +54,16 @@ all the polynomials \(p_{i}(\lambda)^{\alpha_{j, i}}\) (with \(j = 1, ..., r\)) 
 
 A similar procedure may be defined for the pencil of matrices
 \[
-    \Theta(\lambda) = \mu A + \lambda B
+    \Theta(\mu, \lambda) = \mu A + \lambda B
 \]
 leading to polynomials in two variables \((\mu, \lambda)\). Clearly, having \(\mu = 1\) would lead to obtaining the elementary
 finite divisors of \(\Gamma(\lambda)\); however, for each elementary divisor of degree \(q\) we have
 \[
     e_{i}(\mu, \lambda) = \mu^q e_{i}(\dfrac{\lambda}{\mu}),
 \]
-and, with this technique, it is possible to generate all the elementary divisors of \(\Theta(\lambda)\) except for
+and, with this technique, it is possible to generate all the elementary divisors of \(\Theta(\mu, \lambda)\) except for
 those of the form \(\mu^q\), which are called \textbf{elementary infinite divisors} of the pencil of matrices
-\(\Theta(\lambda)\).
+\(\Theta(\mu, \lambda)\).
 
 \begin{remark}
     A regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) has elementary infinite divisors if and only if
@@ -73,9 +73,34 @@ those of the form \(\mu^q\), which are called \textbf{elementary infinite diviso
 We can now give a result on the equivalence of regular pencils.
 
 \begin{theorem}[Equivalence of regular pencils of matrices]\label{thm:regular-pencils}
-    Two regular matrix pairs \((A, B)\), \((A_{1}, B_{1})\) are called equivalent if and only if they have the
+    Two regular matrix pairs
+    \begin{align*}
+        \Gamma_{1}(\lambda) &= (A_{1}, B_{1}) &
+        \Gamma_{2}(\lambda) &= (A_{2}, B_{2})
+    \end{align*}
+    are equivalent if and only if they have the
     same finite and infinite elementary divisors.
+
+    In other words, \(\Gamma_{1}\) and \(\Gamma_{2}\) are equivalent if and only if the invariant polynomials
+    of the two pencils \(\Theta_{1}(\mu, \lambda)\) and \(\Theta_{2}(\mu, \lambda)\) are equivalent, with
+    \begin{align*}
+        \Theta_{1}(\mu, \lambda) &= \mu A + \lambda B &
+        \Theta_{2}(\mu, \lambda) &= \mu A + \lambda B
+    \end{align*}
 \end{theorem}
+
+\begin{lemma}
+    For any two regular equivalent pencils of \(n \times n\) matrices the entries of which lie in a field \(F\)
+    \begin{align*}
+        \Gamma_{1}(\lambda) &= A_{1} + \lambda B_{1} &
+        \Gamma_{2}(\lambda) &= A_{2} + \lambda B_{2}
+    \end{align*}
+    there exist two nonsingular matrices \(P \in F^{n \times n}\), \(Q \in F^{n \times n}\) such that
+    \[
+        P \Gamma_{1}(\lambda) Q = \Gamma_{2}(\lambda),
+    \]
+    and we call such a transformation an \textbf{equivalence transformation}.
+\end{lemma}
 
 \subsection*{Singular pencils.}
 Next, we shall investigate the most general case of \(m \times n\) pencils of matrices in order to introduce
@@ -205,9 +230,8 @@ the reader shall refer to the following chapter.
 \end{corollary}
 
 \begin{example}
-    We now give an example of a pencil of matrices written in KCF with minimal indices \(\epsilon_{1} = 0\),
-    \(\epsilon_{2} = 0\), \(\epsilon_{3} = 2\), \(\eta_{1} = 0\), \(\eta_{2} = 0\), \(\eta_{3} = 2\) and elementary
-    divisors \(\lambda - 1\), \(\mu^2\) (caveat: all the elements of the matrix left unspecified are to be
+    We now give an example of a pencil of matrices written in KCF
+    (caveat: all the elements of the matrix left unspecified are to be
     interpreted as zeros).
     \[
         \begin{bNiceArray}{>{\strut}lllllllll}[margin=3mm]
