@@ -230,23 +230,20 @@ the reader shall refer to the following chapter.
 \end{corollary}
 
 \begin{example}
-    We now give an example of a pencil of matrices written in KCF
-    (caveat: all the elements of the matrix left unspecified are to be
-    interpreted as zeros).
+    Kronecker's canonical form of the pencil of matrices
     \[
-        \begin{bNiceArray}{>{\strut}lllllllll}[margin=3mm]
-            \Block[draw=red]{1-1}{0 \\
-                                  0} \\
-            & \Block[draw=red]{2-3}{} \lambda &    1     &  0 \\
-            &                            0    &  \lambda &  1  \\
-            & & & & \Block[draw=red]{3-2}{} \lambda & 0 \\
-            & & & &                             1   & \lambda \\
-            & & & &                             0   &     1   \\
-            & & & & & & \Block[draw=red]{2-2}{} 1 & \lambda \\
-            & & & & & &                         0 & 1 \\
-            & & & & & & & & \Block[draw=red]{1-1}{} \lambda - 1 \\
+        \begin{bNiceArray}{>{\strut}llllll}[margin=3mm]
+            \Block[draw=red]{1-1}{}0 \\
+            & \Block[draw=red]{2-1}{} \lambda \\
+            &                            1    \\
+            & & \Block[draw=red]{1-1}{} 1 \\
+            & & & \Block[draw=red]{2-2}{} 1 & \lambda \\
+            & & &                         0 & 1 \\
+            & & & & & \Block[draw=red]{1-1}{} \lambda + 1
         \end{bNiceArray}.
     \]
+    is made up of three rectangular blocks \(Z^{1 \times 1}\), \(L_{0}\), \(L_{1}^T\), two nilpotent blocks
+    \(N^{(1)}\), \(N^{(2)}\) and one Jordan block \(J + \lambda I^{(1)}\).
 \end{example}
 
 \subsection*{Fundamental applications.}
@@ -298,7 +295,7 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
 
 Next, we shall take as examples pencils of matrices made up of the blocks described before in order to show how the
 linear DAE with constant coefficients associated may be solved.
-
+\pagebreak
 \begin{example} \label{exmp:dae-l2}
     Consider the pencil
     \[
@@ -354,7 +351,7 @@ linear DAE with constant coefficients associated may be solved.
         \right.
     \end{equation*}
 \end{example}
-
+\pagebreak
 \begin{example} \label{exmp:dae-l2T}
     For this example, we'll take the transpose of the pencil of matrices given in \ref{exmp:dae-l2}
     \[
@@ -417,7 +414,7 @@ linear DAE with constant coefficients associated may be solved.
         \right.
     \end{equation*}
 \end{example}
-
+\pagebreak
 \begin{example}
     Let \(\Gamma(\lambda)\) be the pencil of matrices
     \[
@@ -487,7 +484,7 @@ linear DAE with constant coefficients associated may be solved.
         \right.
     \end{equation*}
 \end{example}
-
+\pagebreak
 \begin{example}
     Let us take the pencil
     \[
