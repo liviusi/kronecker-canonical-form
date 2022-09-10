@@ -206,18 +206,16 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     \KwResult{$K(\Gamma(\lambda))$: KCF of the pencil of matrices $\Gamma(\lambda)$}
     \While{True}{
         $c \gets $ random value\;
-        \eIf{$det(\Gamma(c)) = 0$}{
-            \Continue
-        }
-        {
-            $A_{1} \gets A + c*B$\;
-            $J \gets $ jordan($A_{1}^{-1}*B$)\;
-            $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
-            $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
-            $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
-            $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, G +\lambda I$)
+        \If{$det(\Gamma(c)) \neq 0$}{
+            \Break
         }
     }
+    $A_{1} \gets A + c*B$\;
+    $J \gets $ jordan($A_{1}^{-1}*B$)\;
+    $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
+    $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
+    $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
+    $K(\Gamma(\lambda)) \gets $ diag($\{N_{i}\}, G +\lambda I$)
 \end{algorithm}
 
 We have now proved the following theorem.
