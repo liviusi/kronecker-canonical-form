@@ -125,13 +125,14 @@ def _reduction_theorem(
 
     if degree == 0:
         if transformation:
-            return ((P**-1, Q), (sa.matrix(sa.SR, [0]),
-                                 A_tilde.submatrix(0, 1)),
-                    (sa.matrix(sa.SR, [0]), B_tilde.submatrix(0, 1)))
-        else:
-            return ((sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]),
+            return ((P**-1, Q), (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
                      A_tilde.submatrix(0, 1)),
-                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]),
+                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+                     B_tilde.submatrix(0, 1)))
+        else:
+            return ((sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+                     A_tilde.submatrix(0, 1)),
+                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
                      B_tilde.submatrix(0, 1)))
 
     L_A, L_B = [], []
@@ -396,7 +397,7 @@ def kronecker_canonical_form(A: sa.sage.matrix,
                     (P * B_tilde * Q
                      - sa.block_matrix([[L_B, B_STAR]])).is_zero())
             if to_be_transposed:
-                dependent_rows.append((L_A, L_B))
+                dependent_rows.append((L_A.transpose(), L_B.transpose()))
             else:
                 dependent_columns.append((L_A, L_B))
         else:
@@ -467,8 +468,8 @@ def stringify_pencil(A: sa.sage.matrix,
 
 def debug() -> None:
     # Starting point is a pencil of the form (A + tB)x = 0.
-    A = sa.matrix(sa.SR, [0, 0, 0]).transpose()
-    B = sa.matrix(sa.SR, [0, 0, 0]).transpose()
+    A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]]).transpose()
+    B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]]).transpose()
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
