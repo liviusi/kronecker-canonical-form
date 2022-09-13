@@ -47,6 +47,7 @@ def test_N_N():
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
+
 def test_N_J():
     A = sa.matrix(sa.SR, [[1, 0], [0, 42]])
     B = sa.matrix(sa.SR, [[0, 1], [0, 1]])
@@ -90,6 +91,7 @@ def test_N_N_J():
     assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
+
 
 def test_N_J_J():
     A = sa.matrix(sa.SR, [[1, 0, 0], [0, 42, 1], [0, 0, 42]])
