@@ -298,39 +298,41 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
         J_1 = J.submatrix(0, 0, J_1_LENGTH, J_1_LENGTH)
         J_0 = J.submatrix(J_1_LENGTH, J_1_LENGTH)
 
-        assert not (J_1.det()).is_zero()
-        if J_0.ncols() <= 0 or J_0.nrows() <= 0:
-            J_0 = EMPTY_MATRIX
+        if (J_1.det()).is_zero():
+            continue
+        break
+    if J_0.ncols() <= 0 or J_0.nrows() <= 0:
+        J_0 = EMPTY_MATRIX
 
-        # J_0 may be empty, the jordan form of an empty matrix is not defined
-        if J_0.nrows() > 0 and J_0.ncols() > 0:
-            H, P_2 = ((sa.identity_matrix(J_0.nrows())
-                       - c * J_0).inverse() * J_0).jordan_form(
-                           transformation=transformation)
-        else:
-            H, P_2 = EMPTY_MATRIX, EMPTY_MATRIX
-        J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
+    # J_0 may be empty, the jordan form of an empty matrix is not defined
+    if J_0.nrows() > 0 and J_0.ncols() > 0:
+        H, P_2 = ((sa.identity_matrix(J_0.nrows())
+                   - c * J_0).inverse() * J_0).jordan_form(
+                        transformation=transformation)
+    else:
+        H, P_2 = EMPTY_MATRIX, EMPTY_MATRIX
+    J_0_IDENTITIES = sa.identity_matrix(J_0.nrows())
 
-        if J_1.nrows() > 0 and J_1.ncols() > 0:
-            M, P_3 = (J_1.inverse()
-                      - c * sa.identity_matrix(J_1.nrows())).jordan_form(
-                          transformation=transformation)
-        else:
-            M, P_3 = EMPTY_MATRIX, EMPTY_MATRIX
-        J_1_IDENTITIES = sa.identity_matrix(M.nrows())
+    if J_1.nrows() > 0 and J_1.ncols() > 0:
+        M, P_3 = (J_1.inverse()
+                  - c * sa.identity_matrix(J_1.nrows())).jordan_form(
+                        transformation=transformation)
+    else:
+        M, P_3 = EMPTY_MATRIX, EMPTY_MATRIX
+    J_1_IDENTITIES = sa.identity_matrix(M.nrows())
 
-        if not transformation:
-            return ((J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
-        else:
-            L = (A_1 * P_1 *
-                 PERM.transpose().inverse() *
-                 sa.block_diagonal_matrix([P_2, P_3]))
-            R = (P_1 * PERM *
-                 sa.block_diagonal_matrix(
-                     [(sa.identity_matrix(J_0.nrows()) - c * J_0).inverse()
-                      * P_2, J_1.inverse()
-                      * P_3]))
-            return ((L, R), (J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
+    if not transformation:
+        return ((J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
+    else:
+        L = (A_1 * P_1 *
+             PERM.transpose().inverse() *
+             sa.block_diagonal_matrix([P_2, P_3]))
+        R = (P_1 * PERM *
+             sa.block_diagonal_matrix(
+                    [(sa.identity_matrix(J_0.nrows()) - c * J_0).inverse()
+                     * P_2, J_1.inverse()
+                     * P_3]))
+        return ((L, R), (J_0_IDENTITIES, H), (M, J_1_IDENTITIES))
 
 
 def kronecker_canonical_form(A: sa.sage.matrix,
