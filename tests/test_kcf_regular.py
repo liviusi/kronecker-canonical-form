@@ -13,7 +13,8 @@ def test_N():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -28,7 +29,8 @@ def test_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -43,7 +45,8 @@ def test_N_N():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -58,7 +61,8 @@ def test_N_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -73,7 +77,8 @@ def test_N_N_N():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -88,7 +93,8 @@ def test_N_N_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -103,7 +109,8 @@ def test_N_J_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -118,7 +125,8 @@ def test_J_J_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -133,7 +141,8 @@ def test_N_N_N_N():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -148,7 +157,8 @@ def test_N_N_N_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -163,7 +173,8 @@ def test_N_N_J_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -178,7 +189,8 @@ def test_N_J_J_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -193,6 +205,7 @@ def test_J_J_J_J():
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-    assert (L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero(), (
+    assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
+            and not L.det().is_zero() and not R.det().is_zero()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
