@@ -125,14 +125,19 @@ def _reduction_theorem(
 
     if degree == 0:
         if transformation:
-            return ((P**-1, Q), (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+            return ((P**-1, Q),
+                    (sa.matrix(sa.SR, [
+                        0 for _ in range(A_tilde.nrows())]).transpose(),
                      A_tilde.submatrix(0, 1)),
-                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+                    (sa.matrix(sa.SR, [
+                        0 for _ in range(A_tilde.nrows())]).transpose(),
                      B_tilde.submatrix(0, 1)))
         else:
-            return ((sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+            return ((sa.matrix(sa.SR, [
+                0 for _ in range(A_tilde.nrows())]).transpose(),
                      A_tilde.submatrix(0, 1)),
-                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]).transpose(),
+                    (sa.matrix(sa.SR, [
+                        0 for _ in range(A_tilde.nrows())]).transpose(),
                      B_tilde.submatrix(0, 1)))
 
     L_A, L_B = [], []
