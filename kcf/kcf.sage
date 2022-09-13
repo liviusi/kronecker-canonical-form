@@ -1,18 +1,31 @@
-from re import M
 import sage.all as sa
 from random import randint
 
 
-def _handle_linear_dependency(A: sa.sage.matrix, B: sa.sage.matrix, dependent_rows: list, dependent_columns: list) -> tuple[tuple[list, list], tuple[sa.sage.matrix, sa.sage.matrix]]:
+def _handle_linear_dependency(
+    A: sa.sage.matrix,
+    B: sa.sage.matrix,
+    dependent_rows: list,
+    dependent_columns: list) -> tuple[
+        tuple[list, list],
+        tuple[sa.sage.matrix, sa.sage.matrix]]:
+    """
+    Either adds on the left or on top of
+    the given pencil of matrices a vector made up of zeros.
+
+    It is used in handling linear dependencies amongst the entries of a pencil.
+    """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     new_A, new_B = A, B
     if not (A.is_zero() and B.is_zero()) and A.nrows() > 0:
         for _ in dependent_rows:
-            row = sa.matrix(new_A.base_ring(), [0 for _ in range(new_A.ncols())])
+            row = sa.matrix(new_A.base_ring(), [
+                0 for _ in range(new_A.ncols())])
             new_A = row.stack(new_A)
             new_B = row.stack(new_B)
         for _ in dependent_columns:
-            col = sa.matrix(new_A.base_ring(), [0 for _ in range(new_A.nrows())]).transpose()
+            col = sa.matrix(new_A.base_ring(), [
+                0 for _ in range(new_A.nrows())]).transpose()
             new_A = col.augment(new_A)
             new_B = col.augment(new_B)
         return ([], []), (new_A, new_B)
@@ -296,7 +309,8 @@ def _reduce_regular_pencil(A: sa.sage.matrix,
     P^{-1}*A*Q = identity(u) + J,
     P^{-1}*B*Q = upper_shift_matrix(u) + I.
     """
-    assert (A.nrows() == A.ncols() and B.nrows() == A.ncols() and B.ncols() == B.nrows()
+    assert (A.nrows() == A.ncols() and B.nrows() ==
+            A.ncols() and B.ncols() == B.nrows()
             and not (A + sa.var('x') * B).det().is_zero())
     EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     if A.nrows() == 0:
@@ -401,7 +415,8 @@ def kronecker_canonical_form(A: sa.sage.matrix,
 
     A_tilde, B_tilde = A, B
     while True:
-        if (A_tilde.nrows() == A_tilde.ncols() and not (A_tilde + sa.var('x') * B_tilde).det().is_zero()):
+        if (A_tilde.nrows() == A_tilde.ncols() and
+                not (A_tilde + sa.var('x') * B_tilde).det().is_zero()):
             break
         elif A_tilde.ncols() < A_tilde.nrows():
             to_be_transposed = True
@@ -439,7 +454,10 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             A_STAR, B_STAR = A_STAR.transpose(), B_STAR.transpose()
             L, R = R.H, L.H
             to_be_transposed = False
-        (dependent_rows, dependent_columns), (L_A, L_B) = _handle_linear_dependency(L_A, L_B, dependent_rows, dependent_columns)
+        ((dependent_rows, dependent_columns),
+         (L_A, L_B)) = _handle_linear_dependency(L_A, L_B,
+                                                 dependent_rows,
+                                                 dependent_columns)
         if not (L_A.is_zero() and L_B.is_zero()):
             kronecker_blocks.append((L_A, L_B))
         A_tilde = A_STAR
@@ -448,8 +466,14 @@ def kronecker_canonical_form(A: sa.sage.matrix,
     P, Q = EMPTY_MATRIX, EMPTY_MATRIX
     if A_tilde.ncols() != 0 and A_tilde.nrows() != 0:
         ((P, Q), (E_1, H), (J, E_2)) = _reduce_regular_pencil(A_tilde, B_tilde, True)
-        (dependent_rows, dependent_columns), (E_1, H) = _handle_linear_dependency(E_1, H, dependent_rows, dependent_columns)
-        (dependent_rows, dependent_columns), (J, E_2) = _handle_linear_dependency(J, E_2, dependent_rows, dependent_columns)
+        ((dependent_rows, dependent_columns),
+         (E_1, H)) = _handle_linear_dependency(E_1, H,
+                                               dependent_rows,
+                                               dependent_columns)
+        ((dependent_rows, dependent_columns),
+         (J, E_2)) = _handle_linear_dependency(J, E_2,
+                                               dependent_rows,
+                                               dependent_columns)
         kronecker_blocks.append((E_1, H))
         kronecker_blocks.append((J, E_2))
 
