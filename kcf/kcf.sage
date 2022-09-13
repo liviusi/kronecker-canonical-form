@@ -116,16 +116,23 @@ def _reduction_theorem(
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
     EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     degree, polynomial = _compute_lowest_degree_polynomial(A, -B)
-    if degree <= 0:
-        print("The degree of the polynomial of minimum degree " +
-              "in the pencil must be greater than zero.")
-        exit(1)
 
     V = sa.matrix(polynomial[0].base_ring(), polynomial).transpose()
     Q = _complete_to_a_basis(V)
     P = _complete_to_a_basis(A * V)
     A_tilde = P**-1 * A * Q
     B_tilde = P**-1 * B * Q
+
+    if degree == 0:
+        if transformation:
+            return ((P**-1, Q), (sa.matrix(sa.SR, [0]),
+                                 A_tilde.submatrix(0, 1)),
+                    (sa.matrix(sa.SR, [0]), B_tilde.submatrix(0, 1)))
+        else:
+            return ((sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]),
+                     A_tilde.submatrix(0, 1)),
+                    (sa.matrix(sa.SR, [0 for _ in range(A_tilde.nrows())]),
+                     B_tilde.submatrix(0, 1)))
 
     L_A, L_B = [], []
     # now partitioning A_tilde, B_tilde
@@ -227,10 +234,10 @@ def _reduction_theorem(
     else:
         left_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree), Y],
                                          [0, sa.identity_matrix(
-                                             A_tilde.nrows() - degree)]])
+                                            A_tilde.nrows() - degree)]])
         right_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree + 1), -X],
                                           [0, sa.identity_matrix(
-                                              A_tilde.ncols() - degree - 1)]])
+                                            A_tilde.ncols() - degree - 1)]])
         return ((left_M * P**-1, Q * right_M), (L_A, A_STAR), (L_B, B_STAR))
 
 
@@ -354,11 +361,21 @@ def kronecker_canonical_form(A: sa.sage.matrix,
     P*B*Q = KCF_B.
     """
     assert A.nrows() == B.nrows() and A.ncols() == B.ncols()
+
     EMPTY_MATRIX = sa.matrix(A.base_ring(), [])
     kronecker_blocks = []
+    dependent_rows = []
+    dependent_columns = []
     to_be_transposed = False
     L = sa.identity_matrix(A.nrows())
     R = sa.identity_matrix(A.ncols())
+
+    if A.is_zero() and B.is_zero():
+        if transformation:
+            return (L, R), (A, B)
+        else:
+            return A, B
+
     A_tilde, B_tilde = A, B
     while True:
         if (A_tilde.nrows() == A_tilde.ncols() and
@@ -370,10 +387,23 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             B_tilde = B_tilde.transpose()
             L, R = R.H, L.H
         (P, Q), (L_A, A_STAR), (L_B, B_STAR) = _reduction_theorem(A_tilde, B_tilde, True)
-        assert (P * A_tilde * Q -
-                sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (
-                    P * B_tilde * Q
-                    - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
+        # Check if a linear relation with constant coefficients
+        # amongst the columns of the pencils has been found
+        if A_STAR.nrows() == A_tilde.nrows():
+            assert (L_A.is_zero() and L_B.is_zero() and
+                    (P * A_tilde * Q
+                     - sa.block_matrix([[L_A, A_STAR]])).is_zero() and
+                    (P * B_tilde * Q
+                     - sa.block_matrix([[L_B, B_STAR]])).is_zero())
+            if to_be_transposed:
+                dependent_rows.append((L_A, L_B))
+            else:
+                dependent_columns.append((L_A, L_B))
+        else:
+            assert (P * A_tilde * Q -
+                    sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (
+                        P * B_tilde * Q
+                        - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
         L = sa.block_diagonal_matrix(
             [sa.identity_matrix(
                 L.nrows() - P.nrows()), P]) * L
@@ -387,7 +417,8 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             A_STAR, B_STAR = A_STAR.transpose(), B_STAR.transpose()
             L, R = R.H, L.H
             to_be_transposed = False
-        kronecker_blocks.append((L_A, L_B))
+        if not (L_A.is_zero() and L_B.is_zero()):
+            kronecker_blocks.append((L_A, L_B))
         A_tilde = A_STAR
         B_tilde = B_STAR
 
@@ -399,6 +430,14 @@ def kronecker_canonical_form(A: sa.sage.matrix,
 
     KCF_A = sa.block_diagonal_matrix([block[0] for block in kronecker_blocks])
     KCF_B = sa.block_diagonal_matrix([block[1] for block in kronecker_blocks])
+
+    for row_A, row_B in dependent_rows:
+        KCF_A = row_A.stack(KCF_A)
+        KCF_B = row_B.stack(KCF_B)
+
+    for col_A, col_B in dependent_columns:
+        KCF_A = col_A.augment(KCF_A)
+        KCF_B = col_B.augment(KCF_B)
 
     L = sa.block_diagonal_matrix(
         sa.identity_matrix(L.nrows() - P.nrows()), P.inverse()) * L
@@ -428,17 +467,24 @@ def stringify_pencil(A: sa.sage.matrix,
 
 def debug() -> None:
     # Starting point is a pencil of the form (A + tB)x = 0.
-    A = sa.matrix(sa.SR, [[2, 1, 3], [3, 2, 5], [3, 2, 6]])
-    B = sa.matrix(sa.SR, [[1, 1, 2], [1, 1, 2], [1, 1, 3]])
-    (L, R), (KCF_A, KCF_B) = kronecker_canonical_form(A, B, True)
-
-    # Info:
+    A = sa.matrix(sa.SR, [0, 0, 0]).transpose()
+    B = sa.matrix(sa.SR, [0, 0, 0]).transpose()
+    while True:
+        D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
+        if not (D.det().is_zero()):
+            while True:
+                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                if not (C.is_zero()):
+                    break
+            break
+    A = D.inverse() * A * C
+    B = D.inverse() * B * C
     print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
     print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
+    (L, R), (KCF_A, KCF_B) = kronecker_canonical_form(A, B, True)
+
     print(stringify_pencil(KCF_A, KCF_B))
     print(stringify_pencil(L*A*R, L*B*R))
-    print(sa.norm(L.inverse())*sa.norm(L))
-    print(sa.norm(R.inverse())*sa.norm(R))
     assert (L * A * R - KCF_A).is_zero()
     assert (L * B * R - KCF_B).is_zero()
 
