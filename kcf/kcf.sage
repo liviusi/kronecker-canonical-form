@@ -393,6 +393,7 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             B_tilde = B_tilde.transpose()
             L, R = R.H, L.H
         (P, Q), (L_A, A_STAR), (L_B, B_STAR) = _reduction_theorem(A_tilde, B_tilde, True)
+        # print(f'L:\n{stringify_pencil(L_A, L_B)}\nGAMMA:\n{stringify_pencil(A_STAR, B_STAR)}')
         # Check if a linear relation with constant coefficients
         # amongst the columns of the pencils has been found
         if A_STAR.nrows() == A_tilde.nrows():
@@ -437,13 +438,16 @@ def kronecker_canonical_form(A: sa.sage.matrix,
     KCF_A = sa.block_diagonal_matrix([block[0] for block in kronecker_blocks])
     KCF_B = sa.block_diagonal_matrix([block[1] for block in kronecker_blocks])
 
-    for row_A, row_B in dependent_rows:
-        KCF_A = row_A.stack(KCF_A)
-        KCF_B = row_B.stack(KCF_B)
+    # print(f'PENCIL:\n{stringify_pencil(KCF_A, KCF_B)}')
 
     for col_A, col_B in dependent_columns:
         KCF_A = col_A.augment(KCF_A)
         KCF_B = col_B.augment(KCF_B)
+
+    for row_A, row_B in dependent_rows:
+        # print(f'ROW:\n{stringify_pencil(row_A, row_B)}')
+        KCF_A = row_A.stack(KCF_A)
+        KCF_B = row_B.stack(KCF_B)
 
     L = sa.block_diagonal_matrix(
         sa.identity_matrix(L.nrows() - P.nrows()), P.inverse()) * L
@@ -473,8 +477,8 @@ def stringify_pencil(A: sa.sage.matrix,
 
 def debug() -> None:
     # Starting point is a pencil of the form (A + tB)x = 0.
-    A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]]).transpose()
-    B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]]).transpose()
+    A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]])
+    B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
