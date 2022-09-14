@@ -84,6 +84,27 @@
 \SetKw{Continue}{continue}
 \SetKw{Break}{break}
 
+\newcounter{cases}
+\newcounter{subcases}[cases]
+\newenvironment{cs}
+{
+    \setcounter{cases}{0}
+    \setcounter{subcases}{0}
+    \newcommand{\case}
+    {
+        \par\indent\stepcounter{cases}\textbf{Case \thecases.}
+    }
+    \newcommand{\subcase}
+    {
+        \par\indent\stepcounter{subcases}\textit{Subcase (\thesubcases):}
+    }
+}
+{
+    \par
+}
+\renewcommand*\thecases{\arabic{cases}}
+\renewcommand*\thesubcases{\roman{subcases}}
+
 \begin{document}
 \RestyleAlgo{ruled}
 \begin{titlepage}
