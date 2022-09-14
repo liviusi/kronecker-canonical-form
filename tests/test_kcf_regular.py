@@ -133,7 +133,8 @@ def test_J_J_J():
 
 def test_N_N_N_N():
     A = sa.identity_matrix(4).change_ring(sa.SR)
-    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [0, 0, 0, 0]])
+    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0],
+                          [0, 0, 0, 1], [0, 0, 0, 0]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
         if not (P.det().is_zero()):
@@ -148,8 +149,10 @@ def test_N_N_N_N():
 
 
 def test_N_N_N_J():
-    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 42]])
-    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [0, 0, 0, 1]])
+    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0],
+                          [0, 0, 1, 0], [0, 0, 0, 42]])
+    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0],
+                          [0, 0, 0, 1], [0, 0, 0, 1]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
         if not (P.det().is_zero()):
@@ -164,8 +167,10 @@ def test_N_N_N_J():
 
 
 def test_N_N_J_J():
-    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 42, 1], [0, 0, 0, 42]])
-    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0],
+                          [0, 0, 42, 1], [0, 0, 0, 42]])
+    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0],
+                          [0, 0, 1, 0], [0, 0, 0, 1]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
         if not (P.det().is_zero()):
@@ -180,8 +185,10 @@ def test_N_N_J_J():
 
 
 def test_N_J_J_J():
-    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 42, 1, 0], [0, 0, 42, 1], [0, 0, 0, 42]])
-    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    A = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 42, 1, 0],
+                          [0, 0, 42, 1], [0, 0, 0, 42]])
+    B = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 1, 0, 0],
+                          [0, 0, 1, 0], [0, 0, 0, 1]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
         if not (P.det().is_zero()):
@@ -196,8 +203,10 @@ def test_N_J_J_J():
 
 
 def test_J_J_J_J():
-    A = sa.matrix(sa.SR, [[42, 1, 0, 0], [0, 42, 1, 0], [0, 0, 42, 1], [0, 0, 0, 42]])
-    B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+    A = sa.matrix(sa.SR, [[42, 1, 0, 0], [0, 42, 1, 0],
+                          [0, 0, 42, 1], [0, 0, 0, 42]])
+    B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0],
+                          [0, 0, 1, 0], [0, 0, 0, 1]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
         if not (P.det().is_zero()):

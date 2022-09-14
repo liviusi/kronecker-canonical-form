@@ -10,7 +10,8 @@ def test_linear_dependence_columns():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -30,7 +31,8 @@ def test_linear_dependence_rows():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -50,7 +52,8 @@ def test_L1_L1T():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -70,7 +73,8 @@ def test_L2():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -90,7 +94,8 @@ def test_L2T():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -104,13 +109,16 @@ def test_L2T():
 
 
 def test_L2_L2T():
-    A = sa.matrix(sa.SR, [0, 1, 0, 0]); A = sa.block_diagonal_matrix([A, A.transpose()])
-    B = sa.matrix(sa.SR, [1, 0, 0, 0]); B = sa.block_diagonal_matrix([B, B.transpose()])
+    A = sa.matrix(sa.SR, [0, 1, 0, 0])
+    A = sa.block_diagonal_matrix([A, A.transpose()])
+    B = sa.matrix(sa.SR, [1, 0, 0, 0])
+    B = sa.block_diagonal_matrix([B, B.transpose()])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -130,7 +138,8 @@ def test_L3():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -150,7 +159,8 @@ def test_L4_two_rows():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -170,7 +180,8 @@ def test_L4T_two_rows():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -190,7 +201,8 @@ def test_L4():
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
@@ -204,13 +216,16 @@ def test_L4():
 
 
 def test_L4T():
-    A = sa.matrix(sa.SR, [[0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]]).transpose()
-    B = sa.matrix(sa.SR, [[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0]]).transpose()
+    A = sa.matrix(sa.SR, [[0, 1, 0, 0, 0], [0, 0, 1, 0, 0],
+                          [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]]).transpose()
+    B = sa.matrix(sa.SR, [[1, 0, 0, 0, 0], [0, 1, 0, 0, 0],
+                          [0, 0, 1, 0, 0], [0, 0, 0, 1, 0]]).transpose()
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
         if not (D.det().is_zero()):
             while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
+                C = sa.random_matrix(sa.ZZ, A.ncols(),
+                                     A.ncols()).change_ring(sa.SR)
                 if not (C.is_zero()):
                     break
             break
