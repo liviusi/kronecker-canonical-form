@@ -27,8 +27,9 @@ computations.
     Given a number \(x \in \mathbb{R}\), \(x \neq 0\) its representation in a floating point number system shall be written
     out as \(fl(x)\) and has the form
     \[x = sign(x) \beta^E \sum_{i=0}^{p-1}d_{i}\beta^{-i}\]
-    with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}\) (which is called mantissa) made up of natural numbers such that
-    \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\) eventually different from \(\beta - 1\).
+    with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}_{i \geq 0}\) (which is called mantissa) made up of
+	natural numbers such that \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\)
+	eventually different from \(\beta - 1\).
 
     The notation \(\delta x\) shall be used to denote the difference between a symbol \(x\) and its floating point
     approximation \(fl(x)\)
