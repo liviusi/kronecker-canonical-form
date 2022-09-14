@@ -216,7 +216,7 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
     $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
     $K \gets $ diag($\{N_{i}\}, G +\lambda I$)\;
-    \Return{K}
+    \Return{K}\;
 \end{algorithm}
 
 We have now proved the following theorem.
@@ -257,7 +257,7 @@ of \(\Gamma(\lambda)\)
 \]
 In order to define a procedure to compute it, we consider the family of matrices
 \(M_{k}\) defined as
-\begin{align*}
+\begin{align} \label{m-matrices}
     M_{0} &=
         \begin{bmatrix}
             A \\
@@ -277,7 +277,7 @@ In order to define a procedure to compute it, we consider the family of matrices
             \vdots & \vdots & \ddots & A \\
             0      &    0   & \hdots & B
         \end{bmatrix}.
-\end{align*}
+\end{align}
 The (right) kernel of a matrix \(M_{k}\) is
 \begin{align*}
    Ax_{0} &= 0, &
@@ -303,7 +303,7 @@ and those in
 \)
 are linearly independent.
 
-Denote with \(P, Q\) the matrices obtained by completing the vectors in \(B_{1}, B_{2}\) to a basis in; applying a
+Denote with \(P, Q\) the matrices obtained by completing the vectors in \(B_{2}, B_{1}\) to a basis in; applying a
 change of basis to the pencil of matrices \(\Gamma(\lambda)\) gives us
 \[
     \tilde{\Gamma}(\lambda) = \tilde{A} + \lambda \tilde{B} =  P^{-1}AQ + \lambda P^{-1}BQ,
@@ -351,29 +351,129 @@ with \(L_{\epsilon}\) the first rectangular \(\epsilon \times (\epsilon + 1)\) b
 Next, we distinguish two different cases depending on the value of the degree \(\epsilon\).
 \begin{cs}
     \case \(\epsilon > 0.\)
-
     We now need to transform the pencil of matrices \(\tilde{\Gamma}(\lambda)\) so that it is upper triangular;
     in other words, we shall determine two matrices \(X, Y\) such that
     \[
         D + \lambda F + Y(A^{*} + \lambda B^{*}) - L_{\epsilon}X = 0
     \]
     Denoting with \(\vb{y}_{i}\), \(\vb{a}_{i}\), \(\vb{b}_{i}\) the i-th row of \(Y\), column of \(A\) and
-    \(B\) respectively, we shall rewrite this condition as a system of linear equations
-    \begin{equation*}
-        \left\{
+    \(B\) respectively, and, given a matrix \(S\), with \(s_{i, j}\) the element on row \(i\) and column \(j\),
+    we shall rewrite this condition as a system of linear equations
+    \begin{equation} \label{linear-system-x}
+        \begin{aligned}
+        & \left\{
             \begin{aligned}
-                & X_{2, k} + \lambda X_{1, k} = D_{1, k} + \lambda F_{1, k} + \vb{y}_{1}\vb{a}_{k} +
+                & x_{2, k} + \lambda x_{1, k} = d_{1, k} + \lambda f_{1, k} + \vb{y}_{1}\vb{a}_{k} +
                     \lambda \vb{y}_{1}\vb{b}_{k} \\
-                & X_{3, k} + \lambda X_{2, k} = D_{2, k} + \lambda F_{2, k} + \vb{y}_{2}\vb{a}_{k} +
+                & x_{3, k} + \lambda x_{2, k} = d_{2, k} + \lambda f_{2, k} + \vb{y}_{2}\vb{a}_{k} +
                     \lambda \vb{y}_{2}\vb{b}_{k} \\
                 & \hdots \\
-                & X_{\epsilon+1, k} + \lambda X_{\epsilon, k} =
-                    D_{\epsilon, k} + \lambda F_{\epsilon, k} + \vb{y}_{\epsilon}\vb{a}_{k} +
+                & x_{\epsilon+1, k} + \lambda x_{\epsilon, k} =
+                    d_{\epsilon, k} + \lambda f_{\epsilon, k} + \vb{y}_{\epsilon}\vb{a}_{k} +
                     \lambda \vb{y}_{\epsilon}\vb{b}_{k} \\
-            \end{aligned}.
-        \right.
-    \end{equation*}
+            \end{aligned}
+        \right. \\
+        & & (k = 1, ..., n - \epsilon - 1)
+    \end{aligned}
+    \end{equation}
     To approach this problem, we shall define the \(1 \times (\epsilon - 1)\) matrix \(W\) as the differences between
-    subsequent rows in Y
+    subsequent rows in \(D\) and \(F\) flipping the sign every \(n - \epsilon - 1\) rows
+    \begin{align*}
+        W^T &=
+        \begin{bmatrix}
+            f_{2, k} - d_{1, k} \\
+            - (f_{3, k} - d_{2, k}) \\
+            \hdots \\
+            f_{\epsilon, k} - d_{\epsilon - 1, k}
+        \end{bmatrix}, &
+        \text{with } (k &= 1, ..., n - \epsilon - 1).
+    \end{align*}
+    Calling \(M\) an \(M_{\epsilon - 2}\) matrix (as defined in \eqref{m-matrices}) built from \(A^*, B^*\) and
+    solving for \(Z\) in
+    \[
+        ZM_{\epsilon - 2} = W
+    \]
+    yields a matrix of the form
+    \[
+        Z^T =
+        \begin{bmatrix}
+            \vb{y}_{1} - \vb{y}_{2} \\
+            - (\vb{y}_{2} - \vb{y}_{3}) \\
+            \hdots \\
+            \vb{y}_{\epsilon-1} - \vb{y}_{\epsilon}
+        \end{bmatrix}.
+    \]
+    We can now recover \(Y\) and, subsequently, \(X\) from the linear system in \eqref{linear-system-x} so that
+    we may apply the transformation
+    \[
+        \begin{bmatrix}
+            I^{(\epsilon)} & Y \\
+            0 & I^{(m - \epsilon)}
+        \end{bmatrix}
+        \begin{bmatrix}
+            L_{\epsilon} & D + \lambda F \\
+            0 & A^* + \lambda B^*
+        \end{bmatrix}
+        \begin{bmatrix}
+            I^{(\epsilon + 1)} & -X \\
+            0 & I^{(n - \epsilon - 1)}
+        \end{bmatrix}
+        = \begin{bmatrix}
+            L_{\epsilon} & 0 \\
+            0 & A^* + \lambda B^*
+        \end{bmatrix}.
+    \]
+
+    For completion, we shall lay out the algorithm for a single step of the procedure to compute
+    Kronecker's canonical form \(K(\Gamma(\lambda))\) of a singular pencil of matrices in pseudocode.
+
+    \pagebreak
+
+    \begin{algorithm}
+        \caption{Procedure to compute KCF of a singular pencil.}\label{alg:kcf-singular}
+        \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
+        \KwResult{$K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
+        $V \gets $ polynomial of minimal degree $\in ker(\Gamma)$\;
+        $Q \gets $ complete to a basis($V$)\;
+        $P \gets $ complete to a basis($AV$)\;
+        $\tilde{A} = P^{-1}AQ$\;
+        $\tilde{B} = P^{-1}BQ$\;
+        $L_{\epsilon}, D, F, A^*, B^* \gets $ partition pencil($\tilde{A} + \lambda \tilde{B}$)\;
+        \eIf{$degree(V) \neq 0$}{
+            $M \gets $ build $M_{\epsilon}(A^*, B^*, \epsilon-1)$\;
+            $W \gets $ build $W(F, D)$\;
+            $Z \gets WM^{-1}$\;
+            $Y \gets $ partition(Z)\;
+            $X \gets $ solve system in \eqref{linear-system-x}\;
+            $L \gets $ block matrix($[[I, Y], [0, I]]$)\;
+            $R \gets$ block matrix($[[I, -X], [0, I]]$)\;
+            \Return{$LP^{-1}\Gamma(\lambda)QR$}\;
+        }
+        {\Return{$P^{-1}\Gamma(\lambda)Q$}\;}
+    \end{algorithm}
+
+    We have now proved the following theorem.
+    \begin{theorem}[Reduction theorem]
+        Given a pencil of matrices \(\Gamma(\lambda) = A + \lambda B\), if the polynomial of minimal degree \(\epsilon\)
+        in the (right) kernel of \(\Gamma(\lambda)\) has degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is equivalent
+        to a pencil of the form
+        \[
+            \begin{bmatrix}
+                L_{\epsilon} & 0 \\
+                0 & A^* + \lambda B^*
+            \end{bmatrix}
+        \]
+    \end{theorem}
     \case \(\epsilon = 0.\)
+
+    In this case, the columns of the pencil are connected by linear relations with constant coefficients.
+
+    This implies the transformation given by matrices \(P, Q\) returns a pencil of the form
+    \[
+        \begin{bmatrix}
+            0 & A^* + \lambda B^*
+        \end{bmatrix},
+    \]
+    and this procedure can be conducted as many times as the number of independent constant solutions of the
+    equation \((A + \lambda B)x = 0\) so that we may reduce the problem to \textbf{Case 1}.
 \end{cs}
