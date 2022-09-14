@@ -506,29 +506,9 @@ def stringify_pencil(A: sa.sage.matrix,
     return s
 
 
-def debug() -> None:
-    # Starting point is a pencil of the form (A + tB)x = 0.
-    A = sa.matrix(sa.SR, [[0, 0], [0, 0]])
-    B = sa.matrix(sa.SR, [[1, 0], [1, 0]])
-    while True:
-        D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero() or D.is_zero()):
-            while True:
-                C = sa.random_matrix(sa.ZZ, A.ncols(), A.ncols()).change_ring(sa.SR)
-                if not (C.is_zero()):
-                    break
-            break
-    A = D.inverse() * A * C
-    B = D.inverse() * B * C
-    print(f'Matrix space parent of A: {A.parent()}\n{A}\n')
-    print(f'Matrix space parent of B: {B.parent()}\n{B}\n')
-    (L, R), (KCF_A, KCF_B) = kronecker_canonical_form(A, B, True)
-
-    print(stringify_pencil(KCF_A, KCF_B))
-    print(stringify_pencil(L*A*R, L*B*R))
-    assert (L * A * R - KCF_A).is_zero()
-    assert (L * B * R - KCF_B).is_zero()
+def main() -> None:
+    return
 
 
 if __name__ == "__main__":
-    debug()
+    main()
