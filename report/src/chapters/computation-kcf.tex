@@ -5,7 +5,7 @@ of it using the CAS SageMath has been made publicly available under MIT License 
 \cite{Trapani_Computation_of_Kronecker_s}.
 
 
-We shall divide the procedure into two steps: the first one deals with regular pencils of matrices, the other with
+We shall divide it into two subproblems: the first one deals with regular pencils of matrices, the other with
 singular pencils.
 
 At the end of each of the following sections, the steps described shall be summarised in pseudocode.
@@ -216,7 +216,7 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
     $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
     $K \gets $ diag($\{N_{i}\}, G +\lambda I$)\;
-	\Return{K}
+    \Return{K}
 \end{algorithm}
 
 We have now proved the following theorem.
@@ -228,7 +228,7 @@ We have now proved the following theorem.
             & N^{(u_{2})} \\
             & & \ddots \\
             & & & N^{(u_{s})} \\
-            & & & & J + \lambda I
+            & & & & G + \lambda I
         \end{bmatrix},
     \]
     where the first \(s\) diagonal blocks correspond to infinite elementary divisors
@@ -244,113 +244,136 @@ We have now proved the following theorem.
 We can see \nameref{thm:stability-kcf-regular} (theorem \ref{thm:stability-kcf-regular}) is
 trivially true as it involves the computation of many JCFs.
 
-Now, we'll give an example to show how this may influence the end result.
-
-\begin{example}
-    
-\end{example}
-
 \subsection*{Singular pencils.}
-In order to handle singular pencils of matrices, we must first prove the following theorem.
 
-\begin{theorem}
-    Given a singular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) of dimensions \(m \times n\) and
-    rank \(r < n\), the degree \(\epsilon\) of the polynomial
-    \[
-        \vb{x}(\lambda) = x_{0} - \lambda x_{1} + \lambda^2 x_{2} - ... + (-1)^{\epsilon} \lambda^\epsilon x_{\epsilon}
-    \]
-    with \(x_{\epsilon} \neq 0\) is the least value for which the sign \(<\) holds in
-    the relation \(\rho_{k} \leq (k+1)n\) where \(\rho_{k}\) is the rank of a \(k \times k + 1\)
-    matrix of the form
-    \[
-        \begin{bmatrix}
-            A & 0 & \hdots &    0   \\
-            B & A &        & \vdots \\
-            0 & B & \ddots & \\
-            \vdots & \vdots & \ddots & A \\
-            0      &    0   & \hdots & B
-        \end{bmatrix}.
-    \]
-\end{theorem}
-\begin{proof}
-    Since the columns of the pencil of matrices \(\Gamma(\lambda)\) are linearly dependent, the equation
-    \[
-        (A+\lambda B)\vb{x} = 0
-    \]
-    has a non-zero solution. We choose the solution \(\vb{x}(\lambda)\) of the least possible degree \(\epsilon\).
+Let \(\Gamma(\lambda)\) be a singular pencil of \(m \times n\) matrices the entries of which lie in a field \(F\),
+and assume without loss of generality the relation \(r < n\) holds, with \(r\) the rank of the pencil
+\[\Gamma(\lambda) = A + \lambda B.\]
 
-    We substitute \(\vb{x}(\lambda)\) in the equation and obtain
-    \begin{align*}
-        Ax_{0} &= 0, & Bx_{0} - Ax_{1} &= 0,
-        & ...&, & Bx_{\epsilon-1} - Ax_{\epsilon} &= 0, &
-        Bx_{\epsilon} &= 0,
-    \end{align*}
-
-    which can, in turn, be considered as a system of linear homogenous equations for the elements
-    of the columns \(x_{0} - x_{1}, x_{2} ..., (-1)^\epsilon x_{\epsilon}\); we can write the coefficient
-    matrix of the system as
-    \[
-        M_{\epsilon} =
-        \begin{bmatrix}
-            A & 0 & \hdots &    0   \\
-            B & A &        & \vdots \\
-            0 & B & \ddots & \\
-            \vdots & \vdots & \ddots & A \\
-            0      &    0   & \hdots & B
-        \end{bmatrix}.
-    \]
-    We know by construction that the rank of the matrix \(M_{\epsilon}\) \(\rho_{\epsilon} < (\epsilon+1)n\)
-    and (that), since \(\epsilon\) is minimal, the ranks \(\rho_{0}, \rho_{1}, ..., \rho_{\epsilon-1}\)
-    of the matrices
-    \begin{align*}
-        M_{0} &=
+First, we shall find the polynomial \(x(\lambda)\) of minimal degree \(\epsilon\) in the (right) kernel
+of \(\Gamma(\lambda)\)
+\[
+    x(\lambda) = x_{0} - \lambda x_{1} + \lambda^2 x_{2} + ... + (-1)^\epsilon \lambda^\epsilon x_{\epsilon}.
+\]
+In order to define a procedure to compute it, we consider the family of matrices
+\(M_{k}\) defined as
+\begin{align*}
+    M_{0} &=
         \begin{bmatrix}
             A \\
             B
         \end{bmatrix},
-        & M_{1} &=
+    & M_{1} &=
         \begin{bmatrix}
             A & 0 \\
             B & A \\
             0 & B
         \end{bmatrix},
-        & M_{\epsilon-1} &=
+    & M_{k-1} &=
         \begin{bmatrix}
             A & 0 & \hdots &    0   \\
             B & A &        & \vdots \\
             0 & B & \ddots & \\
             \vdots & \vdots & \ddots & A \\
             0      &    0   & \hdots & B
-        \end{bmatrix}
-    \end{align*}
-    satisfy the equations \(\rho_{0} = n, \rho_{1} = 2, \rho_{\epsilon-1} = \epsilon n\) thus
-    proving the theorem.
-\end{proof}
-
-At this point, we can state and prove a fundamental theorem which will certainly aid us
-in proving \nameref{thm:kcf} (theorem \ref{thm:kcf}).
-
-\begin{theorem}[Reduction theorem]
-    If the equation given by a matrix pair \(\Gamma(\lambda) = (A, B)\) has a solution of minimal
-    degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is strictly equivalent to a pencil of matrices of the form
-    \[
-        \begin{bmatrix}
-            L_{\epsilon} & 0 \\
-            0 & \tilde{A} + \lambda \tilde{B}
-        \end{bmatrix},
-    \]
-    where the equation analogous for \((\tilde{A}, \tilde{B})\) has no solution of degree \(\alpha < \epsilon\) and
-    \(L_{\epsilon}\) is an \(\epsilon \times (\epsilon + 1)\) matrix such that
-    \[
-        \begin{bmatrix}
-            \lambda & 1       & 0     & \hdots & 0       &    0   \\
-            0       & \lambda & 1     &        & \vdots  & \vdots \\
-            \vdots  & \vdots & \ddots & \ddots \\
-            0       &        &        &        & \lambda & 1
         \end{bmatrix}.
-    \]
-\end{theorem}
+\end{align*}
+The (right) kernel of a matrix \(M_{k}\) is
+\begin{align*}
+   Ax_{0} &= 0, &
+   Bx_{0} - Ax_{1} &= 0, &
+   & ..., &
+   Bx_{k-1} - Ax_{k} &= 0, &
+   Bx_{k} &= 0,
+\end{align*}
+and its basis matrix is the vector associated with the polynomial \(g(\lambda)\) of degree \(k\). Note that if
+there is no polynomial of degree \(k\) in the kernel of the pencil \(\Gamma(\lambda)\), then \(ker(M_{k})\) is empty.
 
-\begin{proof}
-    
-\end{proof}
+Iteratively building the succession of matrices \(\{M_{i}\}_{i \geq 0}\) and computing their right kernels
+yields us the polynomial
+\(x(\lambda)\), which is what we were looking for.
+
+We know by construction both the vectors in
+\(
+    B_{1} = \{x_{0}, x_{1}, ..., x_{\epsilon}\}
+\)
+and those in
+\(
+    B_{2} = \{Ax_{0}, Ax_{1}, ..., Ax_{\epsilon}\}
+\)
+are linearly independent.
+
+Denote with \(P, Q\) the matrices obtained by completing the vectors in \(B_{1}, B_{2}\) to a basis in; applying a
+change of basis to the pencil of matrices \(\Gamma(\lambda)\) gives us
+\[
+    \tilde{\Gamma}(\lambda) = \tilde{A} + \lambda \tilde{B} =  P^{-1}AQ + \lambda P^{-1}BQ,
+\]
+with \(\tilde{A}\), \(\tilde{B}\) of the kind
+\[
+    \tilde{A} =
+        \begin{bNiceArray}{>{\strut}llllllll}[margin=3mm]
+            \Block[draw=red]{1-5}{}
+            0 & 1 & & \hdots & 0 & * & \hdots & * \\
+            0 & 0 & 1 & \hdots & 0 & * & \hdots & * \\
+            \vdots & \vdots & & \ddots & \vdots & \hdotsfor{3} \\
+            0 & 0 & & & 1 & * & \hdots & *\\
+            0 & 0 & & & 0 & * & \hdots & * \\
+            \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots \\
+            0 & 0 & & \hdots & 0 & * & \hdots & *
+        \end{bNiceArray},
+\]
+\[
+    \tilde{B} =
+        \begin{bNiceArray}{>{\strut}llllllll}[margin=3mm]
+            \Block[draw=red]{1-5}{}
+            1 & 0 & \hdots & 0 & 0 & * & \hdots & * \\
+            0 & 1 & \hdots & 0 & 0 & * & \hdots & * \\
+            \vdots & & \ddots & & \vdots & \hdotsfor{3} \\ 
+            0 & 0 & \hdots & 1  & 0 & * & \hdots & *\\
+            0 & 0 & & & 0 & * & \hdots & *\\
+            0 & 0 & & & 0 & * & \hdots & * \\
+            \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots \\
+            0 & 0 & & \hdots & 0 & * & \hdots & *
+        \end{bNiceArray};
+\]
+the coloured block spans over the first \(\epsilon + 1\) columns, the notation \(* \hdots *\) is used to
+denote a block with no relevant structure.
+
+For the sake of clarity, we shall partition the pencil of matrices \(\tilde{\Gamma}(\lambda)\) as
+\[
+    \begin{bmatrix}
+        L_{\epsilon} & D + \lambda F \\
+        0 & A^{*} + \lambda B^{*}
+    \end{bmatrix},
+\]
+with \(L_{\epsilon}\) the first rectangular \(\epsilon \times (\epsilon + 1)\) block.
+
+Next, we distinguish two different cases depending on the value of the degree \(\epsilon\).
+\begin{cs}
+    \case \(\epsilon > 0.\)
+
+    We now need to transform the pencil of matrices \(\tilde{\Gamma}(\lambda)\) so that it is upper triangular;
+    in other words, we shall determine two matrices \(X, Y\) such that
+    \[
+        D + \lambda F + Y(A^{*} + \lambda B^{*}) - L_{\epsilon}X = 0
+    \]
+    Denoting with \(\vb{y}_{i}\), \(\vb{a}_{i}\), \(\vb{b}_{i}\) the i-th row of \(Y\), column of \(A\) and
+    \(B\) respectively, we shall rewrite this condition as a system of linear equations
+    \begin{equation*}
+        \left\{
+            \begin{aligned}
+                & X_{2, k} + \lambda X_{1, k} = D_{1, k} + \lambda F_{1, k} + \vb{y}_{1}\vb{a}_{k} +
+                    \lambda \vb{y}_{1}\vb{b}_{k} \\
+                & X_{3, k} + \lambda X_{2, k} = D_{2, k} + \lambda F_{2, k} + \vb{y}_{2}\vb{a}_{k} +
+                    \lambda \vb{y}_{2}\vb{b}_{k} \\
+                & \hdots \\
+                & X_{\epsilon+1, k} + \lambda X_{\epsilon, k} =
+                    D_{\epsilon, k} + \lambda F_{\epsilon, k} + \vb{y}_{\epsilon}\vb{a}_{k} +
+                    \lambda \vb{y}_{\epsilon}\vb{b}_{k} \\
+            \end{aligned}.
+        \right.
+    \end{equation*}
+    To approach this problem, we shall define the \(1 \times (\epsilon - 1)\) matrix \(W\) as the differences between
+    subsequent rows in Y
+    \case \(\epsilon = 0.\)
+\end{cs}
