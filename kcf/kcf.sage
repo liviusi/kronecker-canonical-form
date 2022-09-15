@@ -126,14 +126,14 @@ def _reduction_theorem(
     [0 0 1 ... 0 |   D    ]
     [0 0 0 ... 1 |        ]
     [------------|------- ]
-    [     0      | A_STAR ]
+    [     0      | A_WIDEHAT ]
 
     B_tilde = P^-1 * B * Q =
     [1 0 0 ... 0 |        ]
     [0 1 0 ... 0 |   F    ]
     [0 0 ... 1 0 |        ]
     [------------|------- ]
-    [     0      | B_STAR ]
+    [     0      | B_WIDEHAT ]
 
     and returns A_tilde, B_tilde.
 
@@ -199,13 +199,13 @@ def _reduction_theorem(
         D.append(row)
     D = sa.matrix(A.base_ring(), D)
 
-    A_STAR = []
+    A_WIDEHAT = []
     for i in range(L_A.nrows(), A.nrows()):
         row = []
         for j in range(L_A.ncols(), A.ncols()):
             row.append(A_tilde[i, j])
-        A_STAR.append(row)
-    A_STAR = sa.matrix(A.base_ring(), A_STAR)
+        A_WIDEHAT.append(row)
+    A_WIDEHAT = sa.matrix(A.base_ring(), A_WIDEHAT)
 
     F = []
     for i in range(L_B.nrows()):
@@ -215,18 +215,18 @@ def _reduction_theorem(
         F.append(row)
     F = sa.matrix(B.base_ring(), F)
 
-    B_STAR = []
+    B_WIDEHAT = []
     for i in range(L_B.nrows(), B.nrows()):
         row = []
         for j in range(L_B.ncols(), B.ncols()):
             row.append(B_tilde[i, j])
-        B_STAR.append(row)
-    B_STAR = sa.matrix(B.base_ring(), B_STAR)
+        B_WIDEHAT.append(row)
+    B_WIDEHAT = sa.matrix(B.base_ring(), B_WIDEHAT)
 
     W = Z = Y = None
 
     if degree - 1 > 0:
-        M = _build_coefficient_matrix(A_STAR, B_STAR, degree-1)
+        M = _build_coefficient_matrix(A_WIDEHAT, B_WIDEHAT, degree-1)
         if degree > 1:
             sign = -1
             W = []
@@ -251,22 +251,22 @@ def _reduction_theorem(
                 Y.append(row)
             Y = sa.matrix(A.base_ring(), Y)
     else:
-        Y = sa.matrix(A.base_ring(), [[1 for _ in range(B_STAR.nrows())]])
+        Y = sa.matrix(A.base_ring(), [[1 for _ in range(B_WIDEHAT.nrows())]])
 
-    X = [[None for _ in range(A_STAR.ncols())] for _ in range(degree + 1)]
+    X = [[None for _ in range(A_WIDEHAT.ncols())] for _ in range(degree + 1)]
     for i in range(degree):
-        for j in range(A_STAR.ncols()):
-            X[i][j] = F[i, j] + Y.row(i) * B_STAR.column(j)
-    for j in range(A_STAR.ncols()):
-        X[degree][j] = D[degree - 1, j] + Y.row(degree - 1) * A_STAR.column(j)
+        for j in range(A_WIDEHAT.ncols()):
+            X[i][j] = F[i, j] + Y.row(i) * B_WIDEHAT.column(j)
+    for j in range(A_WIDEHAT.ncols()):
+        X[degree][j] = D[degree - 1, j] + Y.row(degree - 1) * A_WIDEHAT.column(j)
 
     X = sa.matrix(A.base_ring(), X)
 
-    assert ((D + Y * A_STAR - L_A * X).is_zero()) and (
-        (F + Y * B_STAR - L_B * X).is_zero())
+    assert ((D + Y * A_WIDEHAT - L_A * X).is_zero()) and (
+        (F + Y * B_WIDEHAT - L_B * X).is_zero())
 
     if not transformation:
-        return ((L_A, A_STAR), (L_B, B_STAR))
+        return ((L_A, A_WIDEHAT), (L_B, B_WIDEHAT))
     else:
         left_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree), Y],
                                          [0, sa.identity_matrix(
@@ -274,7 +274,7 @@ def _reduction_theorem(
         right_M = sa.block_matrix(sa.SR, [[sa.identity_matrix(degree + 1), -X],
                                           [0, sa.identity_matrix(
                                             A_tilde.ncols() - degree - 1)]])
-        return ((left_M * P**-1, Q * right_M), (L_A, A_STAR), (L_B, B_STAR))
+        return ((left_M * P**-1, Q * right_M), (L_A, A_WIDEHAT), (L_B, B_WIDEHAT))
 
 
 def _reduce_regular_pencil(A: sa.sage.matrix,
@@ -423,24 +423,24 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             A_tilde = A_tilde.transpose()
             B_tilde = B_tilde.transpose()
             L, R = R.H, L.H
-        (P, Q), (L_A, A_STAR), (L_B, B_STAR) = _reduction_theorem(A_tilde, B_tilde, True)
+        (P, Q), (L_A, A_WIDEHAT), (L_B, B_WIDEHAT) = _reduction_theorem(A_tilde, B_tilde, True)
         # Check if a linear relation with constant coefficients
         # amongst the columns of the pencils has been found
-        if A_STAR.nrows() == A_tilde.nrows():
+        if A_WIDEHAT.nrows() == A_tilde.nrows():
             assert (L_A.is_zero() and L_B.is_zero() and
                     (P * A_tilde * Q
-                     - sa.block_matrix([[L_A, A_STAR]])).is_zero() and
+                     - sa.block_matrix([[L_A, A_WIDEHAT]])).is_zero() and
                     (P * B_tilde * Q
-                     - sa.block_matrix([[L_B, B_STAR]])).is_zero())
+                     - sa.block_matrix([[L_B, B_WIDEHAT]])).is_zero())
             if to_be_transposed:
                 dependent_rows.append((L_A.transpose(), L_B.transpose()))
             else:
                 dependent_columns.append((L_A, L_B))
         else:
             assert (P * A_tilde * Q -
-                    sa.block_diagonal_matrix([L_A, A_STAR])).is_zero() and (
+                    sa.block_diagonal_matrix([L_A, A_WIDEHAT])).is_zero() and (
                         P * B_tilde * Q
-                        - sa.block_diagonal_matrix([L_B, B_STAR])).is_zero()
+                        - sa.block_diagonal_matrix([L_B, B_WIDEHAT])).is_zero()
         L = sa.block_diagonal_matrix(
             [sa.identity_matrix(
                 L.nrows() - P.nrows()), P]) * L
@@ -451,7 +451,7 @@ def kronecker_canonical_form(A: sa.sage.matrix,
             A, B = A.transpose(), B.transpose()
             L_A = L_A.transpose()
             L_B = L_B.transpose()
-            A_STAR, B_STAR = A_STAR.transpose(), B_STAR.transpose()
+            A_WIDEHAT, B_WIDEHAT = A_WIDEHAT.transpose(), B_WIDEHAT.transpose()
             L, R = R.H, L.H
             to_be_transposed = False
         ((dependent_rows, dependent_columns),
@@ -460,8 +460,8 @@ def kronecker_canonical_form(A: sa.sage.matrix,
                                                  dependent_columns)
         if not (L_A.is_zero() and L_B.is_zero()):
             kronecker_blocks.append((L_A, L_B))
-        A_tilde = A_STAR
-        B_tilde = B_STAR
+        A_tilde = A_WIDEHAT
+        B_tilde = B_WIDEHAT
 
     P, Q = EMPTY_MATRIX, EMPTY_MATRIX
     if A_tilde.ncols() != 0 and A_tilde.nrows() != 0:
