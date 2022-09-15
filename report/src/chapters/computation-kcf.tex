@@ -14,189 +14,211 @@ At the end of each of the following sections, the steps described shall be summa
 Let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of matrices defined in a vector space over a
 field \(F\).
 
-First, we shall find a value \(c \in F\) such that \(det(\Gamma(c)) \neq 0\) and define the matrix 
-\[
-    A_{1} = A + cB.
-\]
-
-Now, we rewrite \(\Gamma(\lambda)\) in terms of \(A_{1}\),
-\[
-    \Gamma(\lambda) = A_{1} + (\lambda - c)B,
-\]
-and premultiply it by \(A_{1}^{-1}\)
-\begin{gather}
-    A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)A_{1}^{-1}B. \label{gamma-reg-1}
-\end{gather}
-
-Let us denote with \(J\) the JCF of \(A_{1}^{-1}B\) and \(P_{1}\) the similarity matrix used to compute it
-\[
-    J = P_{1}^{-1}(A_{1}^{-1}B)P_{1},
-\]
-and let us assume it is of the form
-\[
-    J =
-    \begin{bmatrix}
-        J_{1} & \\
-        & J_{0}
-    \end{bmatrix}
-\]
-with \(J_{0}\) a nilpotent Jordan matrix and \(J_{1}\) such that \(det(J_{1}) \neq 0\) (which is the form returned by
-SageMath when computing Jordan matrices); call \(j\), \(k\) the number of rows in \(J_{0}\) and \(J_{1}\) respectively.
-
-Define the permutation matrix
-\[
-    P_{\pi} =
-    \begin{bmatrix}
-        & I^{(k)}\\
-        I^{(j)} &
-    \end{bmatrix}
-\]
-so that we can write
-\[
-    P_{\pi}^T J P_{\pi} = J' =
-    \begin{bmatrix}
-        J_{0} & \\
-        & J_{1}
-    \end{bmatrix}.
-\]
-
-Now, we rewrite \eqref{gamma-reg-1} substituting \(A_{1}^{-1}B\) with its permuted Jordan form
-\begin{gather}
-    A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}.
-    \label{gamma-reg-1.5}
-\end{gather}
-We can write the identity matrix in terms of \(P_{1}\) as \(I = P_{1}P_{1}^{-1}\) in \eqref{gamma-reg-1.5}
-\begin{align*}
-    & A_{1}^{-1} \Gamma(\lambda) = \\
-    &= P_{1}P_{1}^{-1} + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1} = \\
-    &= P_{1}(P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}).
-\end{align*}
-We premultiply it by \(P_{1}^{-1}\)
-\[
-    P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) = P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}
-\]
-and then postmultiply by \(P_{1}\)
-\[
-    P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} = I + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1}.
-\]
-
-The very same steps can be followed for \(P_{\pi}^{-T}\) and \(P_{\pi}^{-1}\).
-
-The final result is
-\begin{gather}
-    P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi} = I + (\lambda - c)J'. \label{gamma-reg-2}
-\end{gather}
-
-Now, we may work on the blocks \(J_{0}\), \(J_{1}\) of \(J'\).
-
-For the following steps, it is useful to rewrite the expression on the right side of \eqref{gamma-reg-2} so that
-the form of its diagonal blocks is explicitly readable, meaning
-\[
-    I + (\lambda - c)J' =
-    \begin{bmatrix}
-        I^{(j)} - cJ_{0} + \lambda J_{0} & \\
-        & I^{(k)} - cJ_{1} + \lambda J_{1}
-    \end{bmatrix}.
-\]
-
-Let us start from the first diagonal block
-\[
-    I^{(j)} - cJ_{0} + \lambda J_{0}.
-\]
-First, we need to postmultiply it in
-\eqref{gamma-reg-2} by \(K = (I^{(j)} - cJ_{0})^{-1}\)
-\begin{gather*}
-    \scalemath{0.92}{
-        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+First, let us clarify what we are about to prove.
+\begin{theorem}[KCF of a regular pencil of matrices]
+    Every regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) can be reduced to a matrix of the form
+    \[
         \begin{bmatrix}
-            K& \\
-            & I^{(k)}
+            N^{(u_{1})} \\
+            & N^{(u_{2})} \\
+            & & \ddots \\
+            & & & N^{(u_{s})} \\
+            & & & & G + \lambda I
+        \end{bmatrix},
+    \]
+    where the first \(s\) diagonal blocks correspond to infinite elementary divisors
+    \(\mu^{u_{1}}, ..., \mu^{u_{s}}\) of \(\Gamma(\lambda)\) and the last block is uniquely determined by the
+    finite elementary divisors of the given pencil.
+\end{theorem}
+
+\begin{proof}
+    The following proof will describe a procedure to reduce \(\Gamma(\lambda)\) to Kronecker's canonical form.
+
+    First, we shall find a value \(c \in F\) such that \(det(\Gamma(c)) \neq 0\) and define the matrix 
+    \[
+        A_{1} = A + cB.
+    \]
+
+    Now, we rewrite \(\Gamma(\lambda)\) in terms of \(A_{1}\),
+    \[
+        \Gamma(\lambda) = A_{1} + (\lambda - c)B,
+    \]
+    and premultiply it by \(A_{1}^{-1}\)
+    \begin{gather}
+        A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)A_{1}^{-1}B. \label{gamma-reg-1}
+    \end{gather}
+
+    Let us denote with \(J\) the JCF of \(A_{1}^{-1}B\) and \(P_{1}\) the similarity matrix used to compute it
+    \[
+        J = P_{1}^{-1}(A_{1}^{-1}B)P_{1},
+    \]
+    and let us assume it is of the form
+    \[
+        J =
+        \begin{bmatrix}
+            J_{1} & \\
+            & J_{0}
         \end{bmatrix}
-        = 
+    \]
+    with \(J_{0}\) a nilpotent Jordan matrix and \(J_{1}\) such that \(det(J_{1}) \neq 0\) (which is the form returned by
+    SageMath when computing Jordan matrices); call \(j\), \(k\) the number of rows in \(J_{0}\) and \(J_{1}\) respectively.
+
+    Define the permutation matrix
+    \[
+        P_{\pi} =
         \begin{bmatrix}
-            I^{(j)} + \lambda K J_{0} & \\
+            & I^{(k)}\\
+            I^{(j)} &
+        \end{bmatrix}
+    \]
+    so that we can write
+    \[
+        P_{\pi}^T J P_{\pi} = J' =
+        \begin{bmatrix}
+            J_{0} & \\
+            & J_{1}
+        \end{bmatrix}.
+    \]
+
+    Now, we rewrite \eqref{gamma-reg-1} substituting \(A_{1}^{-1}B\) with its permuted Jordan form
+    \begin{gather}
+        A_{1}^{-1} \Gamma(\lambda) = I + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}.
+        \label{gamma-reg-1.5}
+    \end{gather}
+    We can write the identity matrix in terms of \(P_{1}\) as \(I = P_{1}P_{1}^{-1}\) in \eqref{gamma-reg-1.5}
+    \begin{align*}
+        & A_{1}^{-1} \Gamma(\lambda) = \\
+        &= P_{1}P_{1}^{-1} + (\lambda - c)P_{1} P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1} = \\
+        &= P_{1}(P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}).
+    \end{align*}
+    We premultiply it by \(P_{1}^{-1}\)
+    \[
+        P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) = P_{1}^{-1} + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1} P_{1}^{-1}
+    \]
+    and then postmultiply by \(P_{1}\)
+    \[
+        P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} = I + (\lambda - c)P_{\pi}^{-T} J' P_{\pi}^{-1}.
+    \]
+
+    The very same steps can be followed for \(P_{\pi}^{-T}\) and \(P_{\pi}^{-1}\).
+
+    The final result is
+    \begin{gather}
+        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi} = I + (\lambda - c)J'. \label{gamma-reg-2}
+    \end{gather}
+
+    Now, we may work on the blocks \(J_{0}\), \(J_{1}\) of \(J'\).
+
+    For the following steps, it is useful to rewrite the expression on the right side of \eqref{gamma-reg-2} so that
+    the form of its diagonal blocks is explicitly readable, meaning
+    \[
+        I + (\lambda - c)J' =
+        \begin{bmatrix}
+            I^{(j)} - cJ_{0} + \lambda J_{0} & \\
             & I^{(k)} - cJ_{1} + \lambda J_{1}
         \end{bmatrix}.
-    }
-\end{gather*}
+    \]
 
-Let us denote with \(H^{(j)}\) the JCF of \(K J_{0}\), \(P_{2}\) the similarity matrix
-used to compute it and \(N^{(j)} = I^{(j)} + \lambda H^{(j)}\)
-\[
-    N^{(j)} = I^{(j)} + \lambda H^{(j)} = I^{(j)} + \lambda P_{2}^{-1} (K J_{0}) P_{2}.
-\]
+    Let us start from the first diagonal block
+    \[
+        I^{(j)} - cJ_{0} + \lambda J_{0}.
+    \]
+    First, we need to postmultiply it in
+    \eqref{gamma-reg-2} by \(K = (I^{(j)} - cJ_{0})^{-1}\)
+    \begin{gather*}
+        \scalemath{0.92}{
+            P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+            \begin{bmatrix}
+                K& \\
+                & I^{(k)}
+            \end{bmatrix}
+            = 
+            \begin{bmatrix}
+                I^{(j)} + \lambda K J_{0} & \\
+                & I^{(k)} - cJ_{1} + \lambda J_{1}
+            \end{bmatrix}.
+        }
+    \end{gather*}
 
-\begin{remark}
-    H is an upper shift matrix as it is the JCF of a nilpotent matrix.
-\end{remark}
+    Let us denote with \(H^{(j)}\) the JCF of \(K J_{0}\), \(P_{2}\) the similarity matrix
+    used to compute it and \(N^{(j)} = I^{(j)} + \lambda H^{(j)}\)
+    \[
+        N^{(j)} = I^{(j)} + \lambda H^{(j)} = I^{(j)} + \lambda P_{2}^{-1} (K J_{0}) P_{2}.
+    \]
 
-Following the analogous steps to handle \(P_{2}\) and its inverse yields us
-\begin{gather}
-    \scalemath{0.92}{
-        \begin{bmatrix}
-            P_{2}^{-1} & \\
-            & I
-        \end{bmatrix}
-        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
-        \begin{bmatrix}
-            KP_{2} & \\
-            & I^{(k)}
-        \end{bmatrix} =
-        \begin{bmatrix}
-            N^{(j)} & \\
-            & I^{(k)} - cJ_{1} + \lambda J_{1} 
-        \end{bmatrix}. \label{gamma-reg-3}
-    }
-\end{gather}
+    \begin{remark}
+        H is an upper shift matrix as it is the JCF of a nilpotent matrix.
+    \end{remark}
 
-At this point, we can focus on the second diagonal block
-\[
-    I^{(k)} - cJ_{1} + \lambda J_{1}.
-\]
-We postmultiply it in
-\eqref{gamma-reg-3} by \(J_{1}^{-1}\)
-\begin{gather}
-    \scalemath{0.92}{
-        \begin{bmatrix}
-            P_{2}^{-1} & \\
-            & I
-        \end{bmatrix}
-        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
-        \begin{bmatrix}
-            KP_{2} & \\
-            & J_{1}^{-1}
-        \end{bmatrix} =
-        \begin{bmatrix}
-            N^{(j)} & \\
-            & J_{1}^{-1} + (\lambda - c)I^{(k)} 
-        \end{bmatrix}.
-    }
-\end{gather}
+    Following the analogous steps to handle \(P_{2}\) and its inverse yields us
+    \begin{gather}
+        \scalemath{0.92}{
+            \begin{bmatrix}
+                P_{2}^{-1} & \\
+                & I
+            \end{bmatrix}
+            P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+            \begin{bmatrix}
+                KP_{2} & \\
+                & I^{(k)}
+            \end{bmatrix} =
+            \begin{bmatrix}
+                N^{(j)} & \\
+                & I^{(k)} - cJ_{1} + \lambda J_{1} 
+            \end{bmatrix}. \label{gamma-reg-3}
+        }
+    \end{gather}
 
-Let us denote with \(G\) the JCF of the constant term \(J_{1}^{-1} - cI^{(k)}\) and \(P_{3}\) the similarity matrix
-used to compute it
-\[
-    J_{1}^{-1} - cI^{(k)} = P_{3}^{-1}GP_{3}.
-\]
+    At this point, we can focus on the second diagonal block
+    \[
+        I^{(k)} - cJ_{1} + \lambda J_{1}.
+    \]
+    We postmultiply it in
+    \eqref{gamma-reg-3} by \(J_{1}^{-1}\)
+    \begin{gather}
+        \scalemath{0.92}{
+            \begin{bmatrix}
+                P_{2}^{-1} & \\
+                & I
+            \end{bmatrix}
+            P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+            \begin{bmatrix}
+                KP_{2} & \\
+                & J_{1}^{-1}
+            \end{bmatrix} =
+            \begin{bmatrix}
+                N^{(j)} & \\
+                & J_{1}^{-1} + (\lambda - c)I^{(k)} 
+            \end{bmatrix}.
+        }
+    \end{gather}
 
-Again, we follow the same procedure to handle \(P_{3}\) and its inverse, thus obtaining our end result
-\begin{gather}
-    \scalemath{0.975}{
-        \begin{bmatrix}
-            P_{2}^{-1} & \\
-            & P_{3}^{-1}
-        \end{bmatrix}
-        P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
-        \begin{bmatrix}
-            KP_{2} & \\
-            & J_{1}^{-1}P_{3}
-        \end{bmatrix} =
-        \begin{bmatrix}
-            N^{(j)} & \\
-            & G + \lambda I^{(k)}
-        \end{bmatrix}. \label{gamma-reg}
-    }
-\end{gather}
+    Let us denote with \(G\) the JCF of the constant term \(J_{1}^{-1} - cI^{(k)}\) and \(P_{3}\) the similarity matrix
+    used to compute it
+    \[
+        J_{1}^{-1} - cI^{(k)} = P_{3}^{-1}GP_{3}.
+    \]
+
+    Again, we follow the same procedure to handle \(P_{3}\) and its inverse, thus obtaining our end result
+    \begin{gather}
+        \scalemath{0.975}{
+            \begin{bmatrix}
+                P_{2}^{-1} & \\
+                & P_{3}^{-1}
+            \end{bmatrix}
+            P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
+            \begin{bmatrix}
+                KP_{2} & \\
+                & J_{1}^{-1}P_{3}
+            \end{bmatrix} =
+            \begin{bmatrix}
+                N^{(j)} & \\
+                & G + \lambda I^{(k)}
+            \end{bmatrix}. \label{gamma-reg}
+        }
+    \end{gather}
+\end{proof}
+
 
 To conclude, we shall present the aforementioned steps used in order to compute Kronecker's canonical form
 \(K(\Gamma(\lambda))\) in pseudocode.
@@ -219,57 +241,35 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     \Return{K}\;
 \end{algorithm}
 
-We have now proved the following theorem.
-\begin{theorem}[KCF of a regular pencil of matrices]
-    Every regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) can be reduced to a matrix of the form
-    \[
-        \begin{bmatrix}
-            N^{(u_{1})} \\
-            & N^{(u_{2})} \\
-            & & \ddots \\
-            & & & N^{(u_{s})} \\
-            & & & & G + \lambda I
-        \end{bmatrix},
-    \]
-    where the first \(s\) diagonal blocks correspond to infinite elementary divisors
-    \(\mu^{u_{1}}, ..., \mu^{u_{s}}\) of \(\Gamma(\lambda)\) and the last block is uniquely determined by the
-    finite elementary divisors of the given pencil.
-\end{theorem}
-
-\begin{theorem}[Stability of KCF transformation for a regular pencil] \label{thm:stability-kcf-regular}
-    The problem of computing Kronecker's canonical form for a regular pencil
-    is ill-conditioned.
-\end{theorem} 
-
-We can see \nameref{thm:stability-kcf-regular} (theorem \ref{thm:stability-kcf-regular}) is
-trivially true as it involves the computation of many JCFs.
-
 \subsection*{Singular pencils.}
 
-Let \(\Gamma(\lambda)\) be a singular pencil of \(m \times n\) matrices the entries of which lie in a field \(F\),
-and assume without loss of generality the relation \(r < n\) holds, with \(r\) the rank of the pencil
+Let \(\Gamma(\lambda)\) be a singular pencil of \(m \times n\) matrices the entries of which lie in a field \(F\)
 \[\Gamma(\lambda) = A + \lambda B.\]
+The pencil being singular implies either \(r < m\) or \(r < n\) with \(r\) rank of the pencil in the field \(F(\lambda)\)
+of rational functions; let us assume without loss of generality the
+relation \(r < n\) holds: otherwise, we shall work with the transpose of the pencil of matrices
+\(\Gamma^{T}(\lambda) = A^T + \lambda B^T\) in order to reduce the problem to the case we shall describe hereafter.
 
-First, we shall find the polynomial \(x(\lambda)\) of minimal degree \(\epsilon\) in the (right) kernel
+First, we shall find a polynomial \(x(\lambda)\) of minimal degree \(\epsilon\) in the (right) kernel
 of \(\Gamma(\lambda)\)
 \[
     x(\lambda) = x_{0} - \lambda x_{1} + \lambda^2 x_{2} + ... + (-1)^\epsilon \lambda^\epsilon x_{\epsilon}.
 \]
 In order to define a procedure to compute it, we consider the family of matrices
-\(M_{k}\) defined as
-\begin{align} \label{m-matrices}
-    M_{0} &=
+\(M_{k}^{(A, B)}\) defined as
+\begin{align*}
+    M_{0}^{(A, B)} &=
         \begin{bmatrix}
             A \\
             B
         \end{bmatrix},
-    & M_{1} &=
+    & M_{1}^{(A, B)} &=
         \begin{bmatrix}
             A & 0 \\
             B & A \\
             0 & B
         \end{bmatrix},
-    & M_{k-1} &=
+    & M_{k}^{(A, B)} &=
         \begin{bmatrix}
             A & 0 & \hdots &    0   \\
             B & A &        & \vdots \\
@@ -277,159 +277,180 @@ In order to define a procedure to compute it, we consider the family of matrices
             \vdots & \vdots & \ddots & A \\
             0      &    0   & \hdots & B
         \end{bmatrix}.
-\end{align}
-The (right) kernel of a matrix \(M_{k}\) is
-\begin{align*}
-   Ax_{0} &= 0, &
-   Bx_{0} - Ax_{1} &= 0, &
-   & ..., &
-   Bx_{k-1} - Ax_{k} &= 0, &
-   Bx_{k} &= 0,
 \end{align*}
-and its basis matrix is the vector associated with the polynomial \(g(\lambda)\) of degree \(k\). Note that if
-there is no polynomial of degree \(k\) in the kernel of the pencil \(\Gamma(\lambda)\), then \(ker(M_{k})\) is empty.
+The basis matrix of the (right) kernel of a matrix \(M_{k}\) - split into blocks of size \(k+1\) - identifies
+the polynomial \(g(\lambda)\) of degree \(k\) which satisfies the equations
+\begin{align*}
+   Ag_{0} &= 0, &
+   Bg_{0} - Ag_{1} &= 0, &
+   & ..., &
+   Bg_{k-1} - Ag_{k} &= 0, &
+   Bg_{k} &= 0.
+\end{align*}
+Note that if there is no polynomial of degree \(k\) in the kernel of the pencil
+\(\Gamma(\lambda)\), then \(ker(M_{k})\) is empty.
 
-Iteratively building the succession of matrices \(\{M_{i}\}_{i \geq 0}\) and computing their right kernels
-yields us the polynomial
-\(x(\lambda)\), which is what we were looking for.
+Iteratively building the succession of matrices \(\{M_{i}\}_{i \geq 0}\) and computing their kernels
+yields us the polynomial \(x(\lambda)\), which is what we were looking for.
 
-We know by construction both the vectors in
-\(
-    B_{1} = \{x_{0}, x_{1}, ..., x_{\epsilon}\}
-\)
-and those in
-\(
-    B_{2} = \{Ax_{0}, Ax_{1}, ..., Ax_{\epsilon}\}
-\)
-are linearly independent.
-
-Denote with \(P, Q\) the matrices obtained by completing the vectors in \(B_{2}, B_{1}\) to a basis in; applying a
-change of basis to the pencil of matrices \(\Gamma(\lambda)\) gives us
-\[
-    \tilde{\Gamma}(\lambda) = \tilde{A} + \lambda \tilde{B} =  P^{-1}AQ + \lambda P^{-1}BQ,
-\]
-with \(\tilde{A}\), \(\tilde{B}\) of the kind
-\[
-    \tilde{A} =
-        \begin{bNiceArray}{>{\strut}llllllll}[margin=3mm]
-            \Block[draw=red]{1-5}{}
-            0 & 1 & & \hdots & 0 & * & \hdots & * \\
-            0 & 0 & 1 & \hdots & 0 & * & \hdots & * \\
-            \vdots & \vdots & & \ddots & \vdots & \hdotsfor{3} \\
-            0 & 0 & & & 1 & * & \hdots & *\\
-            0 & 0 & & & 0 & * & \hdots & * \\
-            \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots \\
-            0 & 0 & & \hdots & 0 & * & \hdots & *
-        \end{bNiceArray},
-\]
-\[
-    \tilde{B} =
-        \begin{bNiceArray}{>{\strut}llllllll}[margin=3mm]
-            \Block[draw=red]{1-5}{}
-            1 & 0 & \hdots & 0 & 0 & * & \hdots & * \\
-            0 & 1 & \hdots & 0 & 0 & * & \hdots & * \\
-            \vdots & & \ddots & & \vdots & \hdotsfor{3} \\ 
-            0 & 0 & \hdots & 1  & 0 & * & \hdots & *\\
-            0 & 0 & & & 0 & * & \hdots & *\\
-            0 & 0 & & & 0 & * & \hdots & * \\
-            \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots & \hdots \\
-            0 & 0 & & \hdots & 0 & * & \hdots & *
-        \end{bNiceArray};
-\]
-the coloured block spans over the first \(\epsilon + 1\) columns, the notation \(* \hdots *\) is used to
-denote a block with no relevant structure.
-
-For the sake of clarity, we shall partition the pencil of matrices \(\tilde{\Gamma}(\lambda)\) as
-\[
-    \begin{bmatrix}
-        L_{\epsilon} & D + \lambda F \\
-        0 & A^{*} + \lambda B^{*}
-    \end{bmatrix},
-\]
-with \(L_{\epsilon}\) the first rectangular \(\epsilon \times (\epsilon + 1)\) block.
-
-Next, we distinguish two different cases depending on the value of the degree \(\epsilon\).
+Depending on the value of \(\epsilon\), we shall distinguish two cases.
+\pagebreak
 \begin{cs}
     \case \(\epsilon > 0.\)
-    We now need to transform the pencil of matrices \(\tilde{\Gamma}(\lambda)\) so that it is upper triangular;
-    in other words, we shall determine two matrices \(X, Y\) such that
-    \[
-        D + \lambda F + Y(A^{*} + \lambda B^{*}) - L_{\epsilon}X = 0
-    \]
-    Denoting with \(\vb{y}_{i}\), \(\vb{a}_{i}\), \(\vb{b}_{i}\) the i-th row of \(Y\), column of \(A\) and
-    \(B\) respectively, and, given a matrix \(S\), with \(s_{i, j}\) the element on row \(i\) and column \(j\),
-    we shall rewrite this condition as a system of linear equations
-    \begin{equation} \label{linear-system-x}
-        \begin{aligned}
-        & \left\{
-            \begin{aligned}
-                & x_{2, k} + \lambda x_{1, k} = d_{1, k} + \lambda f_{1, k} + \vb{y}_{1}\vb{a}_{k} +
-                    \lambda \vb{y}_{1}\vb{b}_{k} \\
-                & x_{3, k} + \lambda x_{2, k} = d_{2, k} + \lambda f_{2, k} + \vb{y}_{2}\vb{a}_{k} +
-                    \lambda \vb{y}_{2}\vb{b}_{k} \\
-                & \hdots \\
-                & x_{\epsilon+1, k} + \lambda x_{\epsilon, k} =
-                    d_{\epsilon, k} + \lambda f_{\epsilon, k} + \vb{y}_{\epsilon}\vb{a}_{k} +
-                    \lambda \vb{y}_{\epsilon}\vb{b}_{k} \\
-            \end{aligned}
-        \right. \\
-        & & (k = 1, ..., n - \epsilon - 1)
-    \end{aligned}
-    \end{equation}
-    To approach this problem, we shall define the \(1 \times (\epsilon - 1)\) matrix \(W\) as the differences between
-    subsequent rows in \(D\) and \(F\) flipping the sign every \(n - \epsilon - 1\) rows
-    \begin{align*}
-        W^T &=
-        \begin{bmatrix}
-            f_{2, k} - d_{1, k} \\
-            - (f_{3, k} - d_{2, k}) \\
-            \hdots \\
-            f_{\epsilon, k} - d_{\epsilon - 1, k}
-        \end{bmatrix}, &
-        \text{with } (k &= 1, ..., n - \epsilon - 1).
-    \end{align*}
-    Calling \(M\) an \(M_{\epsilon - 2}\) matrix (as defined in \eqref{m-matrices}) built from \(A^*, B^*\) and
-    solving for \(Z\) in
-    \[
-        ZM_{\epsilon - 2} = W
-    \]
-    yields a matrix of the form
-    \[
-        Z^T =
-        \begin{bmatrix}
-            \vb{y}_{1} - \vb{y}_{2} \\
-            - (\vb{y}_{2} - \vb{y}_{3}) \\
-            \hdots \\
-            \vb{y}_{\epsilon-1} - \vb{y}_{\epsilon}
-        \end{bmatrix}.
-    \]
-    We can now recover \(Y\) and, subsequently, \(X\) from the linear system in \eqref{linear-system-x} so that
-    we may apply the transformation
-    \[
-        \begin{bmatrix}
-            I^{(\epsilon)} & Y \\
-            0 & I^{(m - \epsilon)}
-        \end{bmatrix}
-        \begin{bmatrix}
-            L_{\epsilon} & D + \lambda F \\
-            0 & A^* + \lambda B^*
-        \end{bmatrix}
-        \begin{bmatrix}
-            I^{(\epsilon + 1)} & -X \\
-            0 & I^{(n - \epsilon - 1)}
-        \end{bmatrix}
-        = \begin{bmatrix}
-            L_{\epsilon} & 0 \\
-            0 & A^* + \lambda B^*
-        \end{bmatrix}.
-    \]
 
-    For completion, we shall lay out the algorithm for a single step of the procedure to compute
-    Kronecker's canonical form \(K(\Gamma(\lambda))\) of a singular pencil of matrices in pseudocode.
+    We want to prove the following theorem.
+    \begin{theorem}[Reduction theorem] \label{thm:reduction-theorem}
+        Given a pencil of matrices \(\Gamma(\lambda)\), if the polynomial of minimal degree \(\epsilon\)
+        in the (right) kernel of \(\Gamma(\lambda)\) has degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is equivalent
+        to a pencil of the form
+        \[
+            \begin{bmatrix}
+                L_{\epsilon} & 0 \\
+                0 & A^* + \lambda B^*
+            \end{bmatrix}.
+        \]
+    \end{theorem}
+    \begin{proof}
+        We shall prove the theorem by defining a procedure to compute such a transformation.
+
+        We know both the vectors in \(B_1, B_2\) are linearly independent (a reader shall refer to Gantmacher
+        for the proof), with
+        \begin{align*}
+            B_{1} &= \{x_{0}, x_{1}, ..., x_{\epsilon}\}, &
+            B_{2} &= \{Ax_{0}, Ax_{1}, ..., Ax_{\epsilon}\}.
+        \end{align*}
+
+        Denote with \(P, Q\) the matrices obtained by completing the vectors in \(B_{2}, B_{1}\) to a basis in
+        \(F^m, F^n\) respectively; applying a
+        change of basis to the pencil of matrices \(\Gamma(\lambda)\) gives us
+        \[
+            \tilde{\Gamma}(\lambda) = \tilde{A} + \lambda \tilde{B} =  P^{-1}AQ + \lambda P^{-1}BQ,
+        \]
+        with \(\tilde{A}\), \(\tilde{B}\) of the kind
+        \begin{align*}
+            \tilde{A} &=
+                \begin{bNiceArray}{>{\strut}lll}[margin=3mm]
+                    \Block[draw=red]{1-2}{}
+                    H^{(\epsilon)} & O & * \hdots *
+                \end{bNiceArray}, &
+            \tilde{B} &=
+                \begin{bNiceArray}{>{\strut}lll}[margin=3mm]
+                    \Block[draw=red]{1-2}{}
+                    I^{(\epsilon)} & O & * \hdots *
+                \end{bNiceArray};
+        \end{align*}
+        the notation \(* \hdots *\) is used for a block with no relevant structure, \(O\) is a null
+        (column) vector of length \(\epsilon\).
+
+        For the sake of clarity, we shall partition the pencil of matrices \(\tilde{\Gamma}(\lambda)\) as
+        \[
+            \begin{bmatrix}
+                L_{\epsilon} & D + \lambda F \\
+                0 & A^{*} + \lambda B^{*}
+            \end{bmatrix}
+        \]
+        with \(L_{\epsilon}\) the first rectangular \(\epsilon \times (\epsilon + 1)\) block.
+
+        Now we need to transform the pencil of matrices \(\tilde{\Gamma}(\lambda)\) so that it is upper triangular.
+
+        We shall do this via the transformation
+        \begin{equation} \label{singular-transformation}
+            \begin{bmatrix}
+                I^{(\epsilon)} & Y \\
+                0 & I^{(m - \epsilon)}
+            \end{bmatrix}
+            \begin{bmatrix}
+                L_{\epsilon} & D + \lambda F \\
+                0 & A^* + \lambda B^*
+            \end{bmatrix}
+            \begin{bmatrix}
+                I^{(\epsilon + 1)} & -X \\
+                0 & I^{(n - \epsilon - 1)}
+            \end{bmatrix}.
+        \end{equation}
+        Applying the transformation in \eqref{singular-transformation} yields
+        \[
+            \begin{bmatrix}
+                L_{\epsilon} & D + \lambda F + Y(A^{*} + \lambda B^{*}) - L_{\epsilon}X \\
+                0 & A^* + \lambda B^*
+            \end{bmatrix}.
+        \]
+        In other words, to make the pencil \(\tilde{\Gamma}(\lambda)\) upper triangular, we shall determine
+        two matrices \(X, Y\) such that
+        \[
+            D + \lambda F + Y(A^{*} + \lambda B^{*}) - L_{\epsilon}X = 0.
+        \]
+        Denoting with \(\vb{y}_{i}\), \(\vb{a}_{i}\), \(\vb{b}_{i}\) the i-th row of \(Y\), column of \(A\) and
+        \(B\) respectively,
+        we shall rewrite this condition as a system of linear equations
+        \begin{equation} \label{linear-system-x}
+            \begin{aligned}
+            & \left\{
+                \begin{aligned}
+                    & x_{2, k} + \lambda x_{1, k} = d_{1, k} + \lambda f_{1, k} + \vb{y}_{1}\vb{a}_{k} +
+                        \lambda \vb{y}_{1}\vb{b}_{k} \\
+                    & x_{3, k} + \lambda x_{2, k} = d_{2, k} + \lambda f_{2, k} + \vb{y}_{2}\vb{a}_{k} +
+                        \lambda \vb{y}_{2}\vb{b}_{k} \\
+                    & \hdots \\
+                    & x_{\epsilon+1, k} + \lambda x_{\epsilon, k} =
+                        d_{\epsilon, k} + \lambda f_{\epsilon, k} + \vb{y}_{\epsilon}\vb{a}_{k} +
+                        \lambda \vb{y}_{\epsilon}\vb{b}_{k} \\
+                \end{aligned}
+            \right. \\
+            & & (k = 1, ..., n - \epsilon - 1)
+        \end{aligned}
+        \end{equation}
+        To approach this problem, we shall define the \(1 \times (n - \epsilon - 1)\) matrix \(W\) as the differences between
+        subsequent rows in \(D\) and \(F\) flipping the sign every \(m - \epsilon - 1\) elements, but first let us
+        differentiate between two other subcases.
+        
+        To make this definition easier to understand, we shall present the pseudocode of an algorithm to compute \(W\).
+        Now, we shall distinguish two other subcases.
+        \subcase \(\epsilon = 1.\)
+
+            In this case, there are no conditions on the values of the elements of \(Y\); we shall choose arbitrary values
+            for its entries and compute those in \(X\) according to the last equation in the linear
+            system in \eqref{linear-system-x}.
+        \subcase \(\epsilon > 1.\)
+
+        In this case, we shall define the matrix \(W\) according to the definition given above; in an attempt to make
+        the explanation easier to understand, we shall give the pseudocode.
+
+        \begin{algorithm*}
+            \caption{Procedure to compute W.}
+            $sign \gets -1$\;
+            $W \gets []$\;
+            $i \gets 0$\;
+            \For(){$i < n - \epsilon - 1$}{
+                $j \gets 0$\;
+                \For(){$j < m - \epsilon - 1$}{
+                    \If{$j \bmod (m - \epsilon - 1) = 0$}{
+                        $sign \gets sign * (-1)$\;
+                    }
+                    append($W$, $sign * (f_{i+1, j} - d_{i, j})$)\;
+                }
+            }
+            \Return{matrix($W$)}
+        \end{algorithm*}
+
+        Solving for \(Z\) in \(ZM_{\epsilon-2}^{(A^*, B^*)} = W\) yields a matrix of the form
+        \[
+            Z^T =
+            \begin{bmatrix}
+                \vb{y}_{1} - \vb{y}_{2} \\
+                - (\vb{y}_{2} - \vb{y}_{3}) \\
+                \hdots \\
+                \vb{y}_{\epsilon-1} - \vb{y}_{\epsilon}
+            \end{bmatrix}.
+        \]
+        We can now recover \(Y\) and, subsequently, \(X\) from the linear system in \eqref{linear-system-x}.
+    \end{proof}
+
+    To help make the procedure more intelligible, we shall present the pseudocode to apply the transformation in
+    \nameref{thm:reduction-theorem} (theorem \ref{thm:reduction-theorem}).
 
     \pagebreak
-
-    \begin{algorithm}
+    \begin{algorithm}[!h]
         \caption{Procedure to compute KCF of a singular pencil.}\label{alg:kcf-singular}
         \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
         \KwResult{$K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
@@ -451,20 +472,8 @@ Next, we distinguish two different cases depending on the value of the degree \(
         }
         {\Return{$P^{-1}\Gamma(\lambda)Q$}\;}
     \end{algorithm}
-
-    We have now proved the following theorem.
-    \begin{theorem}[Reduction theorem]
-        Given a pencil of matrices \(\Gamma(\lambda) = A + \lambda B\), if the polynomial of minimal degree \(\epsilon\)
-        in the (right) kernel of \(\Gamma(\lambda)\) has degree \(\epsilon > 0\), then \(\Gamma(\lambda)\) is equivalent
-        to a pencil of the form
-        \[
-            \begin{bmatrix}
-                L_{\epsilon} & 0 \\
-                0 & A^* + \lambda B^*
-            \end{bmatrix}
-        \]
-    \end{theorem}
     \case \(\epsilon = 0.\)
+\end{cs}
 
     In this case, the columns of the pencil are connected by linear relations with constant coefficients.
 
@@ -476,4 +485,3 @@ Next, we distinguish two different cases depending on the value of the degree \(
     \]
     and this procedure can be conducted as many times as the number of independent constant solutions of the
     equation \((A + \lambda B)x = 0\) so that we may reduce the problem to \textbf{Case 1}.
-\end{cs}
