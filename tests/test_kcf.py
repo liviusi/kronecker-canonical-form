@@ -117,12 +117,12 @@ def test_L2_L1T_J():
 
 
 def test_L3_N2_J2():
-    L2_A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]])
-    L2_B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]])
-    A = sa.block_diagonal_matrix([L2_A,
+    L3_A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]])
+    L3_B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]])
+    A = sa.block_diagonal_matrix([L3_A,
                                   sa.identity_matrix(2),
                                   sa.matrix(sa.SR, [[42, 1], [0, 42]])])
-    B = sa.block_diagonal_matrix([L2_B,
+    B = sa.block_diagonal_matrix([L3_B,
                                   sa.matrix(sa.SR, [[0, 1], [0, 0]]),
                                   sa.identity_matrix(2)])
     while True:
@@ -144,13 +144,13 @@ def test_L3_N2_J2():
 
 
 def test_L3T_N2_J2():
-    L2_A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]])
-    L2_B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]])
-    A = sa.block_diagonal_matrix([L2_A,
+    L3_A = sa.matrix(sa.SR, [[0, 1, 0, 0], [0, 0, 1, 0]])
+    L3_B = sa.matrix(sa.SR, [[1, 0, 0, 0], [0, 1, 0, 0]])
+    A = sa.block_diagonal_matrix([L3_A,
                                   sa.identity_matrix(2),
                                   sa.matrix(sa.SR, [[42, 1],
                                                     [0, 42]])]).transpose()
-    B = sa.block_diagonal_matrix([L2_B,
+    B = sa.block_diagonal_matrix([L3_B,
                                   sa.matrix(sa.SR, [[0, 1], [0, 0]]),
                                   sa.identity_matrix(2)]).transpose()
     while True:
