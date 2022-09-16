@@ -222,25 +222,33 @@ First, let us clarify what we are about to prove.
 
 To conclude, we shall present the aforementioned steps used in order to compute Kronecker's canonical form
 \(K(\Gamma(\lambda))\) in pseudocode.
-\begin{algorithm}
-    \caption{Procedure to compute KCF of a regular pencil.}\label{alg:kcf-regular}
+\pagebreak
+\begin{algorithm}[!h]\label{alg:kcf-regular}
+    \caption{Procedure to compute KCF of a regular pencil.}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: regular pencil}
-    \KwResult{$K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
+    \KwResult{$(P, Q), K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
     \While{True}{
         $c \gets $ random value\;
         \If{$det(\Gamma(c)) \neq 0$}{
+            \Continue
+        }
+        $A_{1} \gets A + c*B$\;
+        $P_1, J \gets $ jordan($A_{1}^{-1}*B$)\;
+        $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
+        \If{$det(J_1) = 0$}{
             \Break
         }
     }
-    $A_{1} \gets A + c*B$\;
-    $J \gets $ jordan($A_{1}^{-1}*B$)\;
-    $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
-    $\{N_{i}\}_{i \geq 0} \gets $ jordan($(I - c*J_{0})^{-1} * J_{0}$)\;
-    $G \gets $ jordan($J_{1}^{-1} - c*I$)\;
-    $K \gets $ diag($\{N_{i}\}, G +\lambda I$)\;
-    \Return{K}\;
+    $u \gets $nrows($J_0$)\;
+    $M \gets (I^{(u)} - c*J_{0})^{-1}$\;
+    $P_2, N \gets $ jordan($M * J_0$)\;
+    $P_3, G \gets $ jordan($J_{1}^{-1} - c*I$)\;
+    $K \gets $ diag($N, G +\lambda I$)\;
+    $P \gets A_1 * P_1 * $ block diagonal matrix([$P_2, P_3$])\;
+    $Q \gets P_1 * $ block diagonal matrix([$M * P_2, J_1^{-1} * P_3$])\;
+    \Return{$(P, Q), K$}\;
 \end{algorithm}
-
+\pagebreak
 \subsection*{Singular pencils.}
 
 Let \(\Gamma(\lambda)\) be a singular pencil of \(m \times n\) matrices the entries of which lie in a field \(F\)
@@ -455,10 +463,10 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
     \nameref{thm:reduction-theorem} (theorem \ref{thm:reduction-theorem}).
 
     \pagebreak
-    \begin{algorithm}[!h]
-        \caption{Procedure to compute KCF of a singular pencil.}\label{alg:kcf-singular}
+    \begin{algorithm}[!h]\label{alg:kcf-singular}
+        \caption{Procedure to reduce a singular pencil.}
         \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
-        \KwResult{$K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
+        \KwResult{$K$: Reduced form of $\Gamma(\lambda)$}
         $V \gets $ polynomial of minimal degree $\in ker(\Gamma)$\;
         $Q \gets $ complete to a basis($V$)\;
         $P \gets $ complete to a basis($AV$)\;
@@ -507,7 +515,8 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
             0 & \hdots & 0 & \widehat{A} + \lambda \widehat{B}
         \end{bNiceArray}.
     \]
-    Note there are no constant independent solutions in the pencil \(\widehat{A} + \lambda \widehat{B}\).
+    Note there are no constant independent solutions in the pencil \(\widehat{A} + \lambda \widehat{B}\)
+    and the coloured block is a rectangular \(h \times g\) null matrix.
 \end{cs}
 
 We shall end our considerations on singular pencils by declaring the following lemma the proof of which can be
@@ -519,4 +528,50 @@ found in \cite[pp. 32-33]{gantmacher}.
     kernel of degree less than \(\epsilon\).
 \end{lemma}
 
-Next, we shall show in pseudocode an algorithm to compute Kronecker's canonical form of an arbitrary pencil of matrices.
+Next, we shall show on the following page the pseudocode for an algorithm to compute Kronecker's canonical form of
+an arbitrary pencil of matrices.
+
+\pagebreak
+
+\begin{algorithm}
+    \caption{Procedure to compute KCF of an arbitrary pencil.}\label{alg:kcf}
+    \KwData{$\Gamma(\lambda) = A + \lambda B$: pencil of \(m \times n\) matrices}
+    \KwResult{$K$: Kronecker's canonical form of $\Gamma(\lambda)$}
+    \eIf{$A$ is zero and $B$ is zero}{
+        \Return{$\Gamma(\lambda)$}\;
+    }
+    {
+        $\tilde{\Gamma}(\lambda) \gets A + \lambda B$\;
+        $L, R, transpose \gets I^{(m)}, I^{(n)}, False$\;
+        \While{True}{
+            \eIf{dimensions($\tilde{A}$) = dimensions($\tilde{B}$) and
+                det($\tilde{\Gamma}(\lambda) \neq 0$)}{
+                    \Break\;
+                }
+            {
+                \If{$ncols(\tilde{A}) < nrows(\tilde{A}$)}
+                {
+                    $\tilde{\Gamma}(\lambda) \gets \tilde{\Gamma}^T(\lambda)$\;
+                    $L, R, transpose \gets R^*, L^*, True$\;
+                }
+                $(P, Q), \tilde{\Gamma}(\lambda) \gets $ \Call Reduction theorem($\tilde{\Gamma}(\lambda)$)\;
+                $u, w \gets$ nrows($P$), nrows($Q$)\;
+                $L \gets $ block diagonal matrix([$I^{(m - u)}, P$]) $ * L$\;
+                $R \gets R * $ block diagonal matrix([$I^{(n - w)}, Q$])\;
+                $\_, \tilde{\Gamma}(\lambda) \gets $ partition($\tilde{\Gamma}(\lambda)$)\;
+                \If{transpose}{
+                    $\tilde{\Gamma}(\lambda) \gets \tilde{\Gamma}^T(\lambda)$\;
+                    $L, R, transpose \gets R^*, L^*, False$\;
+                }
+            }
+        }
+        $P, Q \gets $ empty matrix, empty matrix\;
+        \If{dimensions($\tilde{A}$) $\neq (0, 0)$}{
+            $(P, Q), \_ \gets$  \Call KCF Regular Pencil($\tilde{\Gamma}(\lambda)$)\;
+        }
+        $u \gets$ nrows($P$)\;
+        $L \gets $ block diagonal matrix([$I^{(m - u)}, P^{-1}$]) $ * L$\;
+        $R \gets R * $ block diagonal matrix([$I^{(n - u)}, Q$])\;
+        \Return{$L*\Gamma(\lambda)*Q$}
+    }
+\end{algorithm}
