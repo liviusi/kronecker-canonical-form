@@ -1,10 +1,12 @@
 SAGE = $(shell which sage)
 
-.PHONY: tests
+TARGETS = tests build
 
-default: tests
+.DEFAULT_GOAL := build
 
-tests:
+build:
 	$(SAGE) ./kcf/kcf.sage
 	@mv ./kcf/kcf.sage.py ./kcf/kcf_sage.py
+
+tests: build
 	pytest ./tests/
