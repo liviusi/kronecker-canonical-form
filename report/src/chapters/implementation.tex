@@ -67,9 +67,61 @@ At this point, it is possible to include the functions defined either in a Pytho
 from kcf_sage import kcf
 \end{minted}
 
+\subsection*{Time complexity.}
+As the algorithm works with computer algebra, an actual estimation of the time complexity of elementary operations
+(such as the sum of two variables) is implementation-dependent; what we can do is estimate the number of operations
+needed at each step and give a measure of the complexity of the whole procedure based on it.
+
+Assume the starting point is an arbitrary pencil of \(m \times n\) matrices \(\Gamma(\lambda) = A+\lambda B\).
+
+The method \mintinline{bash}{_reduction_theorem}, which operates on singular pencils of matrices,
+is called \(p + q\) times, with \(p\) the number of \(L_\epsilon\) blocks and \(q\)
+that of \(L^T_\eta\) blocks; internally, it calls \mintinline{bash}{_compute_lowest_degree_polynomial}, which
+iteratively computes the right kernel of an \(M_i\) matrix with \(i = 0, ..., k\) and \(k\) is the minimal degree
+of the polynomial at this point.
+
+\begin{remark}
+    The time complexity for Gaussian elimination on an \(m \times n\) matrix is
+    \(\Theta(mn \min(m, n))\) \cite{boyd_vandenberghe_2018}.
+\end{remark}
+
+To summarize, the number of operations needed to reduce an arbitrary singular pencil of matrices is
+\[
+    \mathcal{O}((p + q)\alpha mn \min(m, n)) = \mathcal{O}(\alpha mn \min(m, n)^2),
+\]
+with \(\alpha = \max(\{\epsilon_0, ..., \epsilon_p, \eta_0, ..., \eta_q\})\).
+
+Next, let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of \(n \times n\) matrices. To make calculations
+easier, we shall assume the factorization of the characteristic polynomial of \(\Gamma(\lambda)\) is known.
+
+\begin{remark}
+    Given the factorization of the characteristic polynomial of an \(n \times n\) matrix, the time complexity
+    for the algorithm to compute its Jordan canonical form is \(\mathcal{O}(n^4)\)
+    \cite{DBLP:journals/corr/abs-cs-0412005}.
+\end{remark}
+
+We can conclude the number of operations for a regular matrix pair is
+\[
+    \mathcal{O}(3n^4) = \mathcal{O}(n^4).
+\]
+Tying all together, the number of operations needed to compute Kronecker's canonical form is
+\[
+    \mathcal{O}(\alpha mn \min(m, n)^2 + (\max(m, n) - p - q)^4).
+\]
+
+\begin{remark}
+    To make calculations feasible, we shall expect the \(n' \times n'\) regular block in an arbitrary pencil of
+    \(m \times n\) matrices not to be bigger than a \(4 \times 4\) matrix as it is necessary to factor an
+    \(n'\)-degree polynomial, which is not possible via symbolic computations in the general case for polynomials
+    of degree \(5\) or more. This means the number of operations the algorithm needs is typically no more than
+    \[
+        256 + \alpha mn \min(m, n)^2.
+    \]
+\end{remark}
+
 \subsection*{Minimal working example.}
-Pencils of matrices are chosen to be represented as two variables. The following snippet shall explain how to
-call the functions defined in order to compute Kronecker's canonical form of the pencil
+Pencils of matrices are chosen to be represented as two variables. The snippet provided on the following page
+shall explain how to call the functions defined in order to compute Kronecker's canonical form of the pencil
 \(\Gamma(\lambda) = A + \lambda B\) subjected to an arbitrary change of basis, with
 \begin{align*}
     A &=
@@ -91,6 +143,7 @@ call the functions defined in order to compute Kronecker's canonical form of the
         & & & & & & 1
     \end{bmatrix}.
 \end{align*}
+\pagebreak
 \begin{minted}[numbersep=5pt,
     frame=lines,
     framesep=2mm]{python}
