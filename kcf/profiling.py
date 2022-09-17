@@ -1,6 +1,7 @@
 import kcf_sage as kcf
 import sage.all as sa
-from random import randbytes, randint
+from random import choices, randint
+import string
 import cProfile, pstats
 
 
@@ -24,7 +25,7 @@ def batch(filename:str, size: int) -> list[tuple]:
 
 def main() -> None:
     for i in range(10):
-        batch(f'./profiles/{randbytes(10)}-stats-{i}', 10)
+        batch(f"./profiles/{''.join(choices(string.ascii_uppercase + string.digits, k=5))}-stats-{i}", 10)
 
 
 if __name__ == "__main__":
