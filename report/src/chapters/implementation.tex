@@ -1,1 +1,125 @@
 \section{Implementation}
+The following chapter shall go into a few technical details on the implementation of the algorithm provided in
+\cite{Trapani_Computation_of_Kronecker_s}.
+
+\subsection*{Setup instructions.}
+First, it is required to clone the repository.
+
+In order to test the code provided or include it in scripts, it is required to follow the following steps.
+
+Setup Python \cite{van1995python} on your machine; the version the algorithm has been implemented with
+is \textbf{Python 3.10.6}.
+
+Setup SageMath \cite{sage} on your machine and make sure Python can handle SageMath code, this should be achieved
+by installing the Python package \textit{sagemath}; on success, the following snippet does not produce any
+errors.
+\begin{minted}[frame=lines, framesep=2mm]{python}
+from sage.all import *
+\end{minted}
+
+Last, install \textbf{make} and the Python package \textbf{pytest}.
+
+Next, a dump on the versions of the aforementioned utilities.
+\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
+|\textcolor{red}{\$}| python --version
+Python 3.10.6
+|\textcolor{red}{\$}| sage --version
+SageMath version 9.6, Release Date: 2022-05-15
+|\textcolor{red}{\$}| make --version
+GNU Make 4.3
+|\textcolor{red}{\$}| pytest --version
+pytest 7.1.2
+\end{minted}
+
+\subsection*{How to run tests.}
+The method chosen to test the code provided is unit testing, which pytest makes possible.
+To run the test suite, it is required to execute the following command from the root of the repository.
+\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
+|\textcolor{red}{\$}| make tests
+\end{minted}
+
+It is also possible to get a report on the test coverage provided by the test suite.
+\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
+|\textcolor{red}{\$}| coverage run -m pytest -v tests && coverage report -m
+\end{minted}
+
+The output indicates every line of code has been run, except for those used for debugging purposes and those
+which do not give as an output the matrices used when computing a transformation.
+
+\subsection*{How to use.}
+Invoking the command \mintinline{bash}{sage} on a script named \mintinline{bash}{script.sage} produces a (pre-)parsed
+Python module named \mintinline{bash}{script.sage.py} and subsequently runs it. The newly produced file can also
+be run with \mintinline{bash}{python script.sage.py} as it is a valid Python module, but its name containing
+\mintinline{bash}{.sage.py} makes it unusable from either SageMath or Python as an external module. This means the
+following code produces errors.
+\begin{minted}[frame=lines, framesep=2mm]{python}
+from script.sage import *
+\end{minted}
+
+This problem can be solved by renaming the resulting file, as in the \textbf{Makefile} provided; thus, the first step to
+use the provided code is to run
+\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
+|\textcolor{red}{\$}| make
+\end{minted}
+
+At this point, it is possible to include the functions defined either in a Python or a SageMath environment.
+\begin{minted}[frame=lines, framesep=2mm]{python}
+from kcf_sage import kcf
+\end{minted}
+
+\subsection*{Minimal working example.}
+Pencils of matrices are chosen to be represented as two variables. The following snippet shall explain how to
+call the functions defined in order to compute Kronecker's canonical form of the pencil
+\(\Gamma(\lambda) = A + \lambda B\) subjected to an arbitrary change of basis, with
+\begin{align*}
+    A &=
+    \begin{bmatrix}
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 \\
+        & & & & 1 & 0 \\
+        & & & & 0 & 1 \\
+        & & & & & & 42
+    \end{bmatrix} &
+    B &=
+    \begin{bmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        & & & & 0 & 1 \\
+        & & & & 0 & 0 \\
+        & & & & & & 1
+    \end{bmatrix}.
+\end{align*}
+\begin{minted}[numbersep=5pt,
+    frame=lines,
+    framesep=2mm]{python}
+import sage.all as sa
+from kcf import kcf_sage as kcf
+L3_A = sa.matrix(sa.SR, [[0, 1, 0, 0],
+      [0, 0, 1, 0], [0, 0, 0, 1]])
+L3_B = sa.matrix(sa.SR, [[1, 0, 0, 0],
+      [0, 1, 0, 0], [0, 0, 1, 0]])
+A = sa.block_diagonal_matrix([L3_A,
+      sa.identity_matrix(2),
+      sa.matrix(sa.SR, [[42]])])
+B = sa.block_diagonal_matrix([L3_B,
+      sa.matrix(sa.SR, [[0, 1], [0, 0]]),
+      sa.identity_matrix(1)])
+while True:
+    D = sa.random_matrix(sa.ZZ,
+          A.nrows(), A.nrows()).change_ring(sa.SR)
+    if not (D.det().is_zero()):
+      while True:
+          C = sa.random_matrix(sa.ZZ, A.ncols(),
+                A.ncols()).change_ring(sa.SR)
+          if not (C.is_zero()):
+              break
+      break
+A = D.inverse() * A * C
+B = D.inverse() * B * C
+(L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
+assert ((L*A*R - KCF_A).is_zero() and not L.det().is_zero()
+      and (L*B*R - KCF_B).is_zero() and not R.det().is_zero())
+print(f'KCF:\n{kcf.stringify_pencil(KCF_A, KCF_B)}')
+\end{minted}
