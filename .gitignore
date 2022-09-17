@@ -145,4 +145,5 @@ dmypy.json
 *.bbl
 *.blg
 *.json
+*.listing
 report/src/_minted-main
