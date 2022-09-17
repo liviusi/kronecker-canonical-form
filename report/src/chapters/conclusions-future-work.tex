@@ -1,0 +1,12 @@
+\section{Conclusions and future work.}
+We have surveyed the problem of computing Kronecker's canonical form of an arbitrary pencil of matrices in SageMath,
+making use of its support for symbolic computations.
+
+Defining a procedure to calculate the matrices needed to transform a matrix pair to its Kronecker's canonical form,
+we have proved \nameref{thm:kcf} (theorem \ref{thm:kcf}). The result is a software implementation of this very same
+procedure in SageMath\cite{Trapani_Computation_of_Kronecker_s}, which has been tested to ensure it is properly working.
+
+Despite what has been accomplished, more work can be done on optimizations. A direction for future work
+would include redefining the method used to compute the polynomial of minimal degree \(\epsilon\) in the right kernel of
+the pencil of matrices in input; every iteration, it builds an \(M_\epsilon\) matrix (refer to chapter
+\textbf{Computation of Kronecker's Canonical Form}) and computes from scratch its right kernel.
