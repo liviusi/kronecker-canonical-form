@@ -1,31 +1,30 @@
 import kcf_sage as kcf
 import sage.all as sa
-from random import choices, randint
-import string
-import cProfile, pstats
+from random import randint
+import cProfile
+import pstats
 
 
 def random_pencil(m: int, n: int) -> tuple:
-    return sa.random_matrix(sa.ZZ, m, n).change_ring(sa.SR), sa.random_matrix(sa.ZZ, m, n).change_ring(sa.SR)
+    return (sa.random_matrix(sa.ZZ, m, n).change_ring(sa.SR),
+            sa.random_matrix(sa.ZZ, m, n).change_ring(sa.SR))
 
 
-def batch(filename:str, size: int) -> list[tuple]:
+def run() -> tuple[int, int, pstats.Stats]:
     pr = cProfile.Profile()
-    for i in range(size):
-        m = randint(1, 20)
-        n = randint(1, 20)
-        name = f'{filename}-{i}.log'
-        pr.enable()
-        kcf.kronecker_canonical_form(*random_pencil(m, n))
-        pr.disable()
-        pstats.Stats(pr).dump_stats(name)
-        with open(name, "a") as f:
-            f.write(f"\nDimensions: ({m}, {n})")
+    m = randint(1, 20)
+    n = randint(1, 20)
+    pr.enable()
+    kcf.kronecker_canonical_form(*random_pencil(m, n))
+    pr.disable()
+    return m, n, pstats.Stats(pr)
 
 
 def main() -> None:
-    for i in range(10):
-        batch(f"./profiles/{''.join(choices(string.ascii_uppercase + string.digits, k=5))}-stats-{i}", 10)
+    for _ in range(10):
+        m, n, s = run()
+        print(f'Dimensions: ({m}, {n})')
+        s.print_stats('kcf')
 
 
 if __name__ == "__main__":
