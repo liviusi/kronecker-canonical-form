@@ -28,8 +28,8 @@ computations.
     out as \(fl(x)\) and has the form
     \[x = sign(x) \beta^E \sum_{i=0}^{p-1}d_{i}\beta^{-i}\]
     with \(L \leq E \leq U\) and the sequence \(\{d_{i}\}_{i \geq 0}\) (which is called mantissa) made up of
-	natural numbers such that \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\)
-	eventually different from \(\beta - 1\).
+    natural numbers such that \(d_{0} \neq 0\), \(0 \leq d_{i} \leq \beta - 1\) and \(d_{i}\)
+    eventually different from \(\beta - 1\).
 
     The notation \(\delta x\) shall be used to denote the difference between a symbol \(x\) and its floating point
     approximation \(fl(x)\)
@@ -166,10 +166,11 @@ Hereafter, an example in which symbolic computations are put against numerical (
             numbersep=5pt,
             gobble=2,
             frame=lines,
-            framesep=2mm]{sage}
-        sage: matrix(SR, [[sqrt(2), 1], [2, sqrt(2)]]).det()
+            framesep=2mm,
+            escapeinside=||]{sage}
+        |\textcolor{blue}{sage}|: matrix(SR, [[sqrt(2), 1], [2, sqrt(2)]]).det()
         0
-        sage: matrix(CDF, [[sqrt(2), 1], [2, sqrt(2)]]).det()
+        |\textcolor{blue}{sage}|: matrix(CDF, [[sqrt(2), 1], [2, sqrt(2)]]).det()
         -3.14018491736755e-16
     \end{minted}
     We can observe that in SR \((\sqrt{2})^2 = 2\) since no approximations are made.
@@ -184,11 +185,12 @@ Hereafter, an example in which symbolic computations are put against numerical (
             numbersep=5pt,
             gobble=2,
             frame=lines,
-            framesep=2mm]{sage}
-        sage: p = x^6 + 5*x^5 - 3*x^4 -42*x^3 + 12*x^2 - x + 1
-        sage: p.roots(ring=SR)
+            framesep=2mm,
+            escapeinside=||]{sage}
+        |\textcolor{blue}{sage}|: p = x^6 + 5*x^5 - 3*x^4 -42*x^3 + 12*x^2 - x + 1
+        |\textcolor{blue}{sage}|: p.roots(ring=SR)
             RuntimeError: no explicit roots found
-        sage: p.roots(ring=CDF)
+        |\textcolor{blue}{sage}|: p.roots(ring=CDF)
         [(-3.865705050148171 - 1.5654017866113432*I, 1),
         (-3.8657050501481702 + 1.5654017866113419*I, 1),
         (-0.04843174828928114 - 0.2430512799158686*I, 1),
@@ -371,34 +373,35 @@ To conclude, we shall show the JCF of \(A\) and \(B\) defined in SR computed by 
     numbersep=5pt,
     gobble=2,
     frame=lines,
-    framesep=2mm]{sage}
-    sage: A = matrix(SR, [
+    framesep=2mm,
+    escapeinside=||]{sage}
+    |\textcolor{blue}{sage}|: A = matrix(SR, [
                 [1 if i == j-1
                     else 0 for j in range(4)]
                 for i in range(4)
             ])
-    sage: B = matrix(SR, [
+    |\textcolor{blue}{sage}|: B = matrix(SR, [
                 [1 if i == j-1
                     else x if j == 0 and i == 3
                         else 0 for j in range(4)]
                 for i in range(4)
             ])
-    sage: A
+    |\textcolor{blue}{sage}|: A
     [0 1 0 0]
     [0 0 1 0]
     [0 0 0 1]
     [0 0 0 0]
-    sage: A.jordan_form()
+    |\textcolor{blue}{sage}|: A.jordan_form()
     [0 1 0 0]
     [0 0 1 0]
     [0 0 0 1]
     [0 0 0 0]
-    sage: B
+    |\textcolor{blue}{sage}|: B
     [0 1 0 0]
     [0 0 1 0]
     [0 0 0 1]
     [x 0 0 0]
-    sage: B.jordan_form()
+    |\textcolor{blue}{sage}|: B.jordan_form()
     [ I*x^(1/4)|         0|         0|         0]
     [----------+----------+----------+----------]
     [         0|  -x^(1/4)|         0|         0]
@@ -417,21 +420,22 @@ Suppose \(x = 10^{-10}\).
     numbersep=5pt,
     gobble=2,
     frame=lines,
-    framesep=2mm]{sage}
-    sage: B = matrix(SR, [
+    framesep=2mm,
+    escapeinside=||]{sage}
+    |\textcolor{blue}{sage}|: B = matrix(SR, [
                 [1 if i == j-1
                     else 10**-10 if j == 0 and i == 3
                         else 0 for j in range(4)]
                 for i in range(4)
             ])
-    sage: B
+    |\textcolor{blue}{sage}|: B
     [            0             1             0             0]
     [            0             0             1             0]
     [            0             0             0             1]
     [1/10000000000             0             0             0]
-    sage: P =  = B.jordan_form(transformation=True)[1]
-    sage: cond = norm(P.inverse()) * norm(P)
-    sage: cond
+    |\textcolor{blue}{sage}|: P =  = B.jordan_form(transformation=True)[1]
+    |\textcolor{blue}{sage}|: cond = norm(P.inverse()) * norm(P)
+    |\textcolor{blue}{sage}|: cond
     31622776.60168379
 \end{minted}
 We can see that \(\kappa(P) \gg 1\), as stated in \nameref{thm:stability-jcf} (theorem \ref{thm:stability-jcf}).
