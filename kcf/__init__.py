@@ -1,1 +1,1 @@
-__all__ = ['kronecker_canonical_form']
+__all__ = ['kronecker_canonical_form', 'stringify_pencil']
