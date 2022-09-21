@@ -8,13 +8,13 @@ def test_L0_L0T():
     B = sa.matrix(sa.SR, [[0]])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
-        if not (P.det().is_zero()):
+        if not (P.is_singular()):
             break
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -28,13 +28,13 @@ def test_L1_L1T_N2():
                                   sa.matrix(sa.SR, [[0, 1], [0, 0]])])
     while True:
         P = sa.random_matrix(sa.ZZ, *A.dimensions()).change_ring(sa.SR)
-        if not (P.det().is_zero()):
+        if not (P.is_singular()):
             break
     A = P.inverse() * A * P
     B = P.inverse() * B * P
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -46,7 +46,7 @@ def test_L1_L1_N():
     B = sa.block_diagonal_matrix([B, B, sa.matrix(sa.SR, [0])])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -57,7 +57,7 @@ def test_L1_L1_N():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -73,7 +73,7 @@ def test_L1_L2T_N():
                                   sa.matrix(sa.SR, [0])])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -84,7 +84,7 @@ def test_L1_L2T_N():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -100,7 +100,7 @@ def test_L2_L1T_J():
                                   sa.identity_matrix(1)])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -111,7 +111,7 @@ def test_L2_L1T_J():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -127,7 +127,7 @@ def test_L3_N2_J2():
                                   sa.identity_matrix(2)])
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -138,7 +138,7 @@ def test_L3_N2_J2():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -155,7 +155,7 @@ def test_L3T_N2_J2():
                                   sa.identity_matrix(2)]).transpose()
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -166,7 +166,7 @@ def test_L3T_N2_J2():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
 
@@ -183,7 +183,7 @@ def test_L3_N3_J2_F3():
                                   sa.identity_matrix(2)]).transpose()
     while True:
         D = sa.random_matrix(sa.ZZ, A.nrows(), A.nrows()).change_ring(sa.SR)
-        if not (D.det().is_zero()):
+        if not (D.is_singular()):
             while True:
                 C = sa.random_matrix(sa.ZZ, A.ncols(),
                                      A.ncols()).change_ring(sa.SR)
@@ -194,6 +194,6 @@ def test_L3_N3_J2_F3():
     B = D.inverse() * B * C
     (L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
     assert ((L*A*R - KCF_A).is_zero() and (L*B*R - KCF_B).is_zero()
-            and not L.det().is_zero() and not R.det().is_zero()), (
+            and not L.is_singular() and not R.is_singular()), (
         f"Gotten:\n{kcf.stringify_pencil(KCF_A, KCF_B)}\n",
         f"Expected:\n{kcf.stringify_pencil(L*A*R, L*B*R)}")
