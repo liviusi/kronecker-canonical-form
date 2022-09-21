@@ -81,6 +81,18 @@
     {\protected@write\@auxout{}{\string\newlabel{#1}{{#2}{\thepage}}}}}
 \makeatother
 
+\makeatletter
+\let\original@algocf@latexcaption\algocf@latexcaption
+\long\def\algocf@latexcaption#1[#2]{%
+  \@ifundefined{NR@gettitle}{%
+    \def\@currentlabelname{#2}%
+  }{%
+    \NR@gettitle{#2}%
+  }%
+  \original@algocf@latexcaption{#1}[{#2}]%
+}
+\makeatother
+
 \SetKw{Continue}{continue}
 \SetKw{Break}{break}
 \SetKw{Call}{call}

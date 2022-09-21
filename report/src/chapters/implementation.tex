@@ -5,21 +5,6 @@ The following chapter shall go into a few technical details on the implementatio
 For the code to run on your local machine, it is required to setup \textbf{Python} \cite{van1995python},
 \textbf{SageMath} and \textbf{Pytest}.
 
-\subsection*{How to run tests.}
-The method chosen to test the code provided is unit testing, which pytest makes possible.
-To run the test suite, it is required to execute the following command from the root of the repository.
-\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
-|\textcolor{red}{\$}| make tests
-\end{minted}
-
-It is also possible to get a report on the test coverage provided by the test suite.
-\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
-|\textcolor{red}{\$}| coverage run -m pytest -v tests && coverage report -m
-\end{minted}
-
-The output indicates every line of code has been run, except for those used for debugging purposes and those
-which do not give as an output the matrices used when computing a transformation.
-
 \subsection*{How to use.}
 Invoking the command \mintinline{bash}{sage} on a script named \mintinline{bash}{script.sage} produces a (pre-)parsed
 Python module named \mintinline{bash}{script.sage.py} and subsequently runs it. The newly produced file can also
@@ -33,14 +18,32 @@ from script.sage import *
 This problem can be solved by renaming the resulting file, as in the \textbf{Makefile} provided.
 
 At this point, it is possible to include the functions defined either in a Python or a SageMath environment.
-\begin{minted}[frame=lines, framesep=2mm]{python}
-from kcf_sage import kcf
-\end{minted}
+
+The function implementing the algorithm defined in \nameref{alg:kcf} (algorithm \ref{alg:kcf}) has been designed
+so that a SageMath developer may find its usage similar to that of \mintinline{bash}{jordan_form}: its signature
+contains the optional boolean parameter \mintinline{bash}{transformation}; if explicitly toggled on, the function
+shall return the transformation matrices too, as is the case with the method \mintinline{bash}{jordan_form}.
+
+\subsection*{Testing the code.}
+To ensure there are no errors in the implementation, a suitable
+test suite has been provided. We've chosen to use a functional testing technique known as \textbf{unit testing},
+and the test suite accurately tests the function \mintinline{bash}{kcf}.
+
+We've defined matrices already in Kronecker's canonical form and applied a random change of basis in order to have
+deterministic output from non-deterministic input so that we may assume we have covered every possible case.
+
+There are three files populated with functions to build completely regular, singular and a mix of both
+pencils of matrices, apply a random change of basis transformation, compute Kronecker's canonical form for each
+of them and, last, assert the transformation given in output is correct.
+
+The tool used for testing - \textit{pytest} - can also provide information on
+the test coverage, which is 91\%.
+
 
 \subsection*{Time complexity.}
 As the algorithm works with computer algebra, an actual estimation of the time complexity of elementary operations
-(such as the sum of two variables) is implementation-dependent; what we can do is estimate the number of operations
-needed at each step and give a measure of the complexity of the whole procedure based on it.
+(such as the sum of two variables) is implementation, ring and value-dependent; what we can do is calculate
+the number of operations needed at each step and give a measure of the complexity of the whole procedure based on it.
 
 Assume the starting point is an arbitrary pencil of \(m \times n\) matrices \(\Gamma(\lambda) = A+\lambda B\).
 
@@ -78,16 +81,6 @@ Tying all together, the number of operations needed to compute Kronecker's canon
 \[
     \mathcal{O}(\alpha mn \min(m, n)^2 + (\max(m, n) - p - q)^4).
 \]
-
-\begin{remark}
-    To make calculations feasible, we shall expect the \(n' \times n'\) regular block in an arbitrary pencil of
-    \(m \times n\) matrices not to be bigger than a \(4 \times 4\) matrix as it is necessary to factor an
-    \(n'\)-degree polynomial, which is not possible via symbolic computations in the general case for polynomials
-    of degree \(5\) or more. This means the number of operations the algorithm needs is typically no more than
-    \[
-        256 + \alpha mn \min(m, n)^2.
-    \]
-\end{remark}
 
 \subsection*{Minimal working example.}
 Pencils of matrices are chosen to be represented as two variables. The snippet provided on the following page
