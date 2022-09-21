@@ -1,14 +1,33 @@
 \section{Conclusions and future work.}
-We have surveyed the problem of computing Kronecker's canonical form of an arbitrary pencil of matrices in SageMath,
-making use of its support for symbolic computations.
+We have surveyed the problem of computing Kronecker's canonical form of an arbitrary pencil of matrices, which has
+applications in calculating the solutions for differential-algebraic equations, and made use of SageMath's \cite{sage}
+support for symbolic computations to implement an algorithm to compute such canonical form. It is also important
+to emphasize how such a procedure was not publicly available before.
 
 Defining a procedure to calculate the matrices needed to transform a matrix pair to its Kronecker's canonical form,
-we have proved \nameref{thm:kcf} (theorem \ref{thm:kcf}). The result is a software implementation of this very same
-procedure in SageMath\cite{Trapani_Computation_of_Kronecker_s}, which has been tested to ensure it is properly working.
+we have proved \nameref{thm:kcf} (theorem \ref{thm:kcf}) and shown an algorithm for it in \nameref{alg:kcf}
+(algorithm \ref{alg:kcf}).
+
+The result is a software implementation of this very same procedure \cite{Trapani_Computation_of_Kronecker_s},
+which has been tested to a sufficient degree to ensure it is properly working.
 
 Despite what has been accomplished, more work can be done on optimizations. A direction for future work
 would include redefining the method used to compute the polynomial of minimal degree \(\epsilon\) in the right kernel of
 the pencil of matrices in input; every iteration, it builds an \(M_\epsilon\) matrix (refer to chapter
 \textbf{Computation of Kronecker's Canonical Form}) and computes from scratch its right kernel.
 
-todo: include profiling data so that the reader may see what the actual bottlenecks are
+We can see how the work required to put an \(M_{\epsilon}^{(A, B)}\) matrix in echelon form partially
+overlaps with that needed for an \(M_{\epsilon-1}^{(A, B)}\) matrix as the equations solved by the two polynomials
+\(g(\lambda)\), \(p(\lambda)\) calculated from these two matrices are
+\begin{align*}
+    Ag_{0} &= 0, &
+    Bg_{0} - Ag_{1} &= 0, &
+    & ..., &
+    Bg_{\epsilon-1} - Ag_{\epsilon} &= 0, &
+    Bg_{\epsilon} &= 0 \text{ and} \\
+    Ap_{0} &= 0, &
+    Bp_{0} - Ap_{1} &= 0, &
+    & ..., &
+    Bp_{\epsilon-2} - Ap_{\epsilon-1} &= 0, &
+    Bp_{\epsilon-1} &= 0.
+\end{align*}
