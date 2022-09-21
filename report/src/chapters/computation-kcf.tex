@@ -287,7 +287,7 @@ In order to define a procedure to compute it, we consider the family of \((k+1) 
         \end{bmatrix}.
 \end{align*}
 The basis matrix of the (right) kernel of a matrix \(M_{k}\) - split into blocks of size \(k+1\) - identifies
-the polynomial \(g(\lambda)\) of degree \(k\) which satisfies the equations
+a polynomial \(g(\lambda)\) of degree \(k\) which satisfies the equations
 \begin{align*}
    Ag_{0} &= 0, &
    Bg_{0} - Ag_{1} &= 0, &
@@ -510,9 +510,10 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
         \widehat{\Gamma}(\lambda) =
     \begin{bNiceArray}{>{\strut}llll}[margin=3mm]
             \Block[color=red]{3-3}{}
-            0 & \hdots & 0 & 0 \\
+            0 & \hdots & 0 \\
             \vdots & & \vdots & \\
-            0 & \hdots & 0 & \widehat{A} + \lambda \widehat{B}
+            0 & \hdots & 0 & \\
+            & & & \widehat{A} + \lambda \widehat{B}
         \end{bNiceArray}.
     \]
     Note there are no constant independent solutions in the pencil \(\widehat{A} + \lambda \widehat{B}\)
@@ -534,21 +535,30 @@ an arbitrary pencil of matrices.
 \pagebreak
 
 \begin{algorithm}
+    \SetKwBlock{Begin}{Begin}{}
+    \SetKwFor{While}{while}{}{}
     \caption{Procedure to compute KCF of an arbitrary pencil.}\label{alg:kcf}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: pencil of \(m \times n\) matrices}
     \KwResult{$K$: Kronecker's canonical form of $\Gamma(\lambda)$}
-    \eIf{$A$ is zero and $B$ is zero}{
-        \Return{$\Gamma(\lambda)$}\;
-    }
-    {
+    \Begin{
+        \tcc{Edge case handling: A, B may be null matrices}
+        \If{$A$ is zero and $B$ is zero}{
+            \Return{$\Gamma(\lambda)$}\;
+        }
+        \tcc{L, R are the left and right transformation matrices respectively}
         $\tilde{\Gamma}(\lambda) \gets A + \lambda B$\;
-        $L, R, transpose \gets I^{(m)}, I^{(n)}, False$\;
+        $L, R \gets I^{(m)}, I^{(n)}$\;
+        \tcc{Toggled on when if the rightmost block on the bottom row has a left kernel}
+        $transpose \gets False$\;
+        \tcc{Repeat while the rightmost block on the bottom row is singular}
         \While{True}{
-            \eIf{dimensions($\tilde{A}$) = dimensions($\tilde{B}$) and
+            \tcc{If the block is now regular}
+            \If{dimensions($\tilde{A}$) = dimensions($\tilde{B}$) and
                 det($\tilde{\Gamma}(\lambda) \neq 0$)}{
                     \Break\;
                 }
             {
+                \tcc{If the block has a left kernel}
                 \If{$ncols(\tilde{A}) < nrows(\tilde{A}$)}
                 {
                     $\tilde{\Gamma}(\lambda) \gets \tilde{\Gamma}^T(\lambda)$\;
@@ -556,22 +566,37 @@ an arbitrary pencil of matrices.
                 }
                 $(P, Q), \tilde{\Gamma}(\lambda) \gets $ \Call Reduction theorem($\tilde{\Gamma}(\lambda)$)\;
                 $u, w \gets$ nrows($P$), nrows($Q$)\;
+                \tcc{Compose matrix transformations}
                 $L \gets $ block diagonal matrix([$I^{(m - u)}, P$]) $ * L$\;
                 $R \gets R * $ block diagonal matrix([$I^{(n - w)}, Q$])\;
+                \tcc{$\tilde{\Gamma}(\lambda)$ is now the rightmost block on the bottom row}
                 $\_, \tilde{\Gamma}(\lambda) \gets $ partition($\tilde{\Gamma}(\lambda)$)\;
-                \If{transpose}{
-                    $\tilde{\Gamma}(\lambda) \gets \tilde{\Gamma}^T(\lambda)$\;
-                    $L, R, transpose \gets R^*, L^*, False$\;
-                }
+            }
+        }
+    }
+\end{algorithm}
+\pagebreak
+\begin{algorithm}
+    \SetKwBlock{Begin}{}{end}
+    \Begin{
+        \Begin{
+            \tcc{Next iteration, we shall check if there exists a right kernel first}
+            \If{transpose}{
+                $\tilde{\Gamma}(\lambda) \gets \tilde{\Gamma}^T(\lambda)$\;
+                $L, R \gets R^*, L^*$\;
+                $transpose \gets False$\;
             }
         }
         $P, Q \gets $ empty matrix, empty matrix\;
+        \tcc{Check if $\tilde{\Gamma}(\lambda)$ is non-empty}
         \If{dimensions($\tilde{A}$) $\neq (0, 0)$}{
             $(P, Q), \_ \gets$  \Call KCF Regular Pencil($\tilde{\Gamma}(\lambda)$)\;
         }
         $u \gets$ nrows($P$)\;
+        \tcc{Compose matrix transformations}
         $L \gets $ block diagonal matrix([$I^{(m - u)}, P^{-1}$]) $ * L$\;
         $R \gets R * $ block diagonal matrix([$I^{(n - u)}, Q$])\;
-        \Return{$L*\Gamma(\lambda)*Q$}
+        \tcc{Return KCF of $\Gamma(\lambda)$}
+        \Return{$L*\Gamma(\lambda)*R$}
     }
 \end{algorithm}
