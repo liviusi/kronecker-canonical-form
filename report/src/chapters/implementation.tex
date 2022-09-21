@@ -2,34 +2,8 @@
 The following chapter shall go into a few technical details on the implementation of the algorithm provided in
 \cite{Trapani_Computation_of_Kronecker_s}.
 
-\subsection*{Setup instructions.}
-First, it is required to clone the repository.
-
-In order to test the code provided or include it in scripts, it is required to follow the following steps.
-
-Setup Python \cite{van1995python} on your machine; the version the algorithm has been implemented with
-is \textbf{Python 3.10.6}.
-
-Setup SageMath \cite{sage} on your machine and make sure Python can handle SageMath code, this should be achieved
-by installing the Python package \textit{sagemath}; on success, the following snippet does not produce any
-errors.
-\begin{minted}[frame=lines, framesep=2mm]{python}
-from sage.all import *
-\end{minted}
-
-Last, install \textbf{make} and the Python package \textbf{pytest}.
-
-Next, a dump on the versions of the aforementioned utilities.
-\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
-|\textcolor{red}{\$}| python --version
-Python 3.10.6
-|\textcolor{red}{\$}| sage --version
-SageMath version 9.6, Release Date: 2022-05-15
-|\textcolor{red}{\$}| make --version
-GNU Make 4.3
-|\textcolor{red}{\$}| pytest --version
-pytest 7.1.2
-\end{minted}
+For the code to run on your local machine, it is required to setup \textbf{Python} \cite{van1995python},
+\textbf{SageMath} and \textbf{Pytest}.
 
 \subsection*{How to run tests.}
 The method chosen to test the code provided is unit testing, which pytest makes possible.
@@ -56,11 +30,7 @@ following code produces errors.
 from script.sage import *
 \end{minted}
 
-This problem can be solved by renaming the resulting file, as in the \textbf{Makefile} provided; thus, the first step to
-use the provided code is to run
-\begin{minted}[frame=lines, framesep=2mm, escapeinside=||, texcomments]{python}
-|\textcolor{red}{\$}| make
-\end{minted}
+This problem can be solved by renaming the resulting file, as in the \textbf{Makefile} provided.
 
 At this point, it is possible to include the functions defined either in a Python or a SageMath environment.
 \begin{minted}[frame=lines, framesep=2mm]{python}
@@ -149,30 +119,39 @@ shall explain how to call the functions defined in order to compute Kronecker's 
     framesep=2mm]{python}
 import sage.all as sa
 from kcf import kcf_sage as kcf
+
+
+def random_invertible_matrix(n: int):
+    while True:
+        M = sa.random_matrix(sa.ZZ, n, n)
+        if not (M.is_singular()):
+            return M.change_ring(sa.SR)
+
+
 L3_A = sa.matrix(sa.SR, [[0, 1, 0, 0],
-      [0, 0, 1, 0], [0, 0, 0, 1]])
+                         [0, 0, 1, 0],
+                         [0, 0, 0, 1]])
 L3_B = sa.matrix(sa.SR, [[1, 0, 0, 0],
-      [0, 1, 0, 0], [0, 0, 1, 0]])
+                         [0, 1, 0, 0],
+                         [0, 0, 1, 0]])
 A = sa.block_diagonal_matrix([L3_A,
-      sa.identity_matrix(2),
-      sa.matrix(sa.SR, [[42]])])
+                              sa.identity_matrix(2),
+                              sa.matrix(sa.SR, [[42]])])
 B = sa.block_diagonal_matrix([L3_B,
-      sa.matrix(sa.SR, [[0, 1], [0, 0]]),
-      sa.identity_matrix(1)])
-while True:
-    D = sa.random_matrix(sa.ZZ,
-          A.nrows(), A.nrows()).change_ring(sa.SR)
-    if not (D.det().is_zero()):
-      while True:
-          C = sa.random_matrix(sa.ZZ, A.ncols(),
-                A.ncols()).change_ring(sa.SR)
-          if not (C.is_zero()):
-              break
-      break
+                              sa.matrix(sa.SR, [[0, 1],
+                                                [0, 0]]),
+                              sa.identity_matrix(1)])
+
+D = random_invertible_matrix(A.nrows())
+C = random_invertible_matrix(A.ncols())
+
 A = D.inverse() * A * C
 B = D.inverse() * B * C
-(L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(A, B, True)
-assert ((L*A*R - KCF_A).is_zero() and not L.det().is_zero()
-      and (L*B*R - KCF_B).is_zero() and not R.det().is_zero())
+
+(L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(
+    A, B, transformation=True)
+assert ((L*A*R - KCF_A).is_zero()
+        and (L*B*R - KCF_B).is_zero()
+        and not L.is_singular() and not R.is_singular())
 print(f'KCF:\n{kcf.stringify_pencil(KCF_A, KCF_B)}')
 \end{minted}
