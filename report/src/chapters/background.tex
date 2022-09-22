@@ -17,7 +17,9 @@ which - by contrast - use \textit{both numbers and symbols}.
 
 First, we shall introduce the concept of \textbf{floating point number system}, which is the system used to handle numerical
 computations.
-\begin{definition}[Normalized-floating point number system]
+
+For further explanations, refer to Quarteroni, Saleri, Sacco \cite{numerical-mathematics}.
+\begin{definition}[Normalized-floating point number system] \cite[p. 46]{numerical-mathematics}
     A normalized-floating point number system \(F\) is characterized by the 4-tuple of integers \(\beta, p, L, U\):
     \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
         \item \(\beta\) is called base or radix,
@@ -44,7 +46,7 @@ finite numbers; in other words, a floating point number system may introduce err
 A de facto standard for computers to work with floating point approximations is IEEE 754 \cite{ieeefp}, the details of which
 shall not be discussed.
 
-\begin{definition}[Machine epsilon]
+\begin{definition}[Machine epsilon] \cite[p. 49]{numerical-mathematics}
     Machine epsilon is the maximum possible absolute relative error in representing a nonzero real number \(x\) in a
     floating point number system
     \[\epsilon_{mach} = \max \limits_{x} \dfrac{\vert x - fl(x) \vert}{\vert x \vert}.\]
@@ -71,7 +73,7 @@ shall not be discussed.
 Introducing a small change (i.e. an ``error") in the input argument may either cause a large or a small change in the result.
 Now, we shall define what condition numbers are.
 
-\begin{definition}[Condition number]
+\begin{definition}[Condition number]\cite[p. 33]{numerical-mathematics}
     A condition number of a problem measures the sensitivity of the solution to small perturbations in the input data.
     Given a function \(f \), we define
     \[
@@ -112,7 +114,7 @@ Tying all this together we can conclude
     \dfrac{\norm{\delta \vb{b}}}{\norm{\vb{b}}}.
 \]
 
-\begin{definition}[Condition number of a matrix]
+\begin{definition}[Condition number of a matrix]\cite[p. 36]{numerical-mathematics}
     The condition number of a non-singular matrix A is defined as:
     \[
         \kappa(A) = \norm{A^{-1}} \norm{A}.
@@ -228,7 +230,9 @@ of their computation; a reader may also consult Axler \cite{axler} or Strang \ci
     \( A \vb{u} = \lambda \vb{u} \) is equivalent to \( (A - \lambda I)\vb{u} = 0 \).
 
     It follows that the eigenvalues of A are the roots of
-    \[ det(A - \lambda I) \]
+    \[
+        det(A - \lambda I)
+    \]
     which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch_{A}(\lambda)\).
 \end{remark}
 
@@ -279,7 +283,7 @@ Assuming \(\norm{\delta A} = 1\) and using the definition of dot product for \(\
     \vert \delta \lambda \vert \leq \dfrac{1}{\vert \cos(\theta_{\lambda}) \vert} \vert \delta \epsilon \vert.
 \]
 
-\begin{definition}[Condition number of an eigenvalue]
+\begin{definition}[Condition number of an eigenvalue]\cite{stewart1990matrix}
     Given a square matrix \(A\), the eigenvalue \(\lambda \in \mathbb{C}\) and \(\theta_{\lambda}\) the angle between the left
     and right eigenvectors associated with \(\lambda\), the quantity
     \[k_{A}(\lambda) = \dfrac{1}{\cos(\theta_{\lambda})}\]
