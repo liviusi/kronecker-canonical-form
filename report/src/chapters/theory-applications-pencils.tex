@@ -14,7 +14,7 @@ chapter and the following one, a reader may refer to G\"antmacher \cite{gantmach
 
 \subsection*{Regular pencils.}
 Now, we consider the case where \((A + \lambda B)\) is a regular pencil of matrices.
-\begin{definition}[Regular pencil]
+\begin{definition}[Regular pencil]\cite[p. 25]{gantmacher}
     A matrix pair \((A, B)\) is said to be regular if and only if \(A\) and \(B\) are square matrices of the same size and
     the determinant \(det(A + \lambda B)\) is not identically zero.
 \end{definition}
@@ -32,7 +32,8 @@ Denote with \(D_{j}(\lambda)\) the greatest common divisor of all minors of orde
     ..., \
     D_{1}(\lambda), D_{0}(\lambda)
 \end{gather*}
-we define the \textbf{invariant polynomials} of the pencil of matrices \(\Gamma(\lambda)\) as the fractions
+we define the \textbf{invariant polynomials} \cite[p. 26]{gantmacher} of the pencil of matrices
+\(\Gamma(\lambda)\) as the fractions
 \begin{gather*}
     i_{1}(\lambda) = \dfrac{D_{r}(\lambda)}{D_{r-1}(\lambda)}, \
     i_{2}(\lambda) = \dfrac{D_{r-1}(\lambda)}{D_{r-2}(\lambda)}, \
@@ -49,8 +50,9 @@ We can now write the expansion of the invariant polynomials into irreducible fac
 \end{gather*}
 with \(p_{i}\) an irreducible polynomial appearing in the expansion.
 
-We define the \textbf{elementary}(\textbf{finite}) \textbf{divisors} \(e_{i}\) of the pencil of matrices \(\Gamma(\lambda)\)
-all the polynomials \(p_{i}(\lambda)^{\alpha_{j, i}}\) (with \(j = 1, ..., r\)) that are not equal to one.
+We define the \textbf{elementary} (\textbf{finite}) \textbf{divisors} \cite[p. 27]{gantmacher} \(e_{i}\) of
+the pencil of matrices \(\Gamma(\lambda)\) all the polynomials \(p_{i}(\lambda)^{\alpha_{j, i}}\)
+(with \(j = 1, ..., r\)) that are not equal to one.
 
 A similar procedure may be defined for the pencil of matrices
 \[
@@ -62,17 +64,17 @@ finite divisors of \(\Gamma(\lambda)\); however, for each elementary divisor of 
     e_{i}(\mu, \lambda) = \mu^q e_{i}(\dfrac{\lambda}{\mu}),
 \]
 and, with this technique, it is possible to generate all the elementary divisors of \(\Theta(\mu, \lambda)\) except for
-those of the form \(\mu^q\), which are called \textbf{elementary infinite divisors} of the pencil of matrices
-\(\Theta(\mu, \lambda)\).
+those of the form \(\mu^q\), which are called \textbf{elementary infinite divisors} \cite[p. 27]{gantmacher} of
+the pencil of matrices \(\Theta(\mu, \lambda)\).
 
-\begin{remark}
+\begin{remark} \cite[p. 27]{gantmacher}
     A regular pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) has elementary infinite divisors if and only if
     \(det(B) = 0\).
 \end{remark}
 
 We can now give a result on the equivalence of regular pencils.
 
-\begin{theorem}[Equivalence of regular pencils of matrices]\label{thm:regular-pencils}
+\begin{theorem}[Equivalence of regular pencils of matrices]\cite[p. 27]{gantmacher} \label{thm:regular-pencils}
     Two regular matrix pairs
     \begin{align*}
         \Gamma_{1}(\lambda) &= (A_{1}, B_{1}) &
@@ -89,7 +91,7 @@ We can now give a result on the equivalence of regular pencils.
     \end{align*}
 \end{theorem}
 
-\begin{lemma}
+\begin{lemma} \cite[eq. 2.14]{ikramov}
     For any two regular equivalent pencils of \(n \times n\) matrices the entries of which lie in a field \(F\)
     \begin{align*}
         \Gamma_{1}(\lambda) &= A_{1} + \lambda B_{1} &
@@ -105,7 +107,7 @@ We can now give a result on the equivalence of regular pencils.
 \subsection*{Singular pencils.}
 Next, we shall investigate the most general case of \(m \times n\) pencils of matrices in order to introduce
 the reader to the concept of minimal indices of a pencil of matrices.
-\begin{definition}[Singular pencil]
+\begin{definition}[Singular pencil]\cite[p. 25]{gantmacher}
     A matrix pair \(A, B\) is said to be singular if and only if it is not regular.
 \end{definition}
 
@@ -145,18 +147,19 @@ To summarize, from an equation \((A + \lambda B)\vb{x} = 0\) we can obtain a seq
 \[
     \epsilon_{1} \leq \epsilon_{2} \leq ... \leq \epsilon_{p},
 \]
-and we define \(\epsilon_{i}\) a \textbf{minimal index for the columns} of the pencil of matrices \(\Gamma(\lambda)\).
+and we define \(\epsilon_{i}\) a \textbf{minimal index for the columns} \cite[p. 38]{gantmacher} of the pencil of matrices
+\(\Gamma(\lambda)\).
 
-We can also introduce \textbf{minimal indices for the rows} \(\eta_{1}, \eta_{2}, ..., \eta_{q}\) of the pencil
-\((A + \lambda B)\) which we can yield working with the transpose of the pencil \(A^T + \lambda B^T\) or, in other words,
-with the equation
+We can also introduce \textbf{minimal indices for the rows} \cite[p. 38]{gantmacher} \(\eta_{1}, \eta_{2}, ..., \eta_{q}\)
+of the pencil \((A + \lambda B)\) which we can yield working with the transpose of the pencil \(A^T + \lambda B^T\)
+or, in other words, with the equation
 \[
     (A^T + \lambda B^T)\vb{y} = 0.
 \]
 
 We can now give another result on the equivalence of pencils of matrices.
 
-\begin{theorem}[Necessary condition for the equivalence of pencils]\label{thm:singular-pencils}
+\begin{theorem}[Necessary condition for the equivalence of pencils] \cite[p. 39]{gantmacher} \label{thm:singular-pencils}
     Two arbitrary equivalent pencils have the same minimal indices for rows and columns.
 \end{theorem}
 
@@ -165,7 +168,7 @@ At this point, we can put together the theorems on the equivalence of regular an
 \nameref{thm:regular-pencils} (theorem \ref{thm:regular-pencils}) and
 \nameref{thm:singular-pencils} (theorem \ref{thm:singular-pencils}) and give a result on the \textbf{equivalence of
 arbitrary matrix pairs}.
-\begin{theorem}[Kronecker]\label{thm:kronecker}
+\begin{theorem}[Kronecker] \cite[thm. 5]{gantmacher} \label{thm:kronecker}
     Two pencils \((A + \lambda B)\), \((A_{1} + \lambda B_{1})\) of rectangular \(m \times n\) matrices
     are equivalent if and only if they have the same minimal indices for rows and columns and the same elementary finite and
     infinite divisors.
@@ -188,31 +191,47 @@ the Kronecker canonical form of a matrix pair.
         (A + \lambda B)\vb{x} &= 0 & (A^T + \lambda B^T)\vb{y} &= 0.
     \end{align*}
     The pencil \(\Gamma(\lambda)\) is strictly equivalent to a quasi-diagonal matrix
-    \begin{gather*}
-        \{
-            Z;
-            L_{\epsilon_{g+1}}, L_{\epsilon_{g+2}}, ..., L_{\epsilon_{p}};
-            L_{\eta_{h+1}}^T, L_{\eta_{h+2}}^T, ..., L_{\eta_{q}^T};
-            N^{(u_{1})}, N^{(u_{2})}, ..., N^{(u_{s})};
-            J + \lambda I
-        \},
-    \end{gather*}
-    where \(Z\) is an \(h \times g\) null matrix, \(L_{\epsilon}\) a rectangular \(\epsilon \times (\epsilon + 1)\) matrix of
-    the form
     \[
-        L_{\epsilon} =
+        \begin{bmatrix}
+            O^{(h, g)} \\
+            & L \\
+            & & L^T \\
+            & & & N \\
+            & & & & G + \lambda I
+        \end{bmatrix}
+    \]
+    with \(G\) a Jordan matrix, and the (other) blocks defined as
+    \begin{align*}
+        L &= \begin{bmatrix}
+            L_{\epsilon_{h+1}} \\
+            & L_{\epsilon_{h+2}} \\
+            & & \ddots \\
+            & & & L_{\epsilon_{p}}
+        \end{bmatrix}, &
+        L^T &= \begin{bmatrix}
+            L_{\eta_{h+1}}^T \\
+            & L_{\eta_{h+2}}^T \\
+            & & \ddots \\
+            & & & L_{\eta_{q}^T}
+        \end{bmatrix}, &\\
+        N &= \begin{bmatrix}
+            N^{(u_{1})} \\
+            & N^{(u_{2})} \\ 
+            & & \ddots \\
+            & & & N^{(u_{s})}
+        \end{bmatrix}, &
+        L_{i} &=
         \begin{bmatrix}
             \lambda        &      1     &       0      &     \ldots       &    0       &    0   \\
             0              & \lambda    &       1      &                  & \vdots     & \vdots \\
             \vdots         & \vdots     &     & \ddots    &      &            &        \\
             0              &      0     &              &                  & \lambda    &    1   
-        \end{bmatrix}
-    \]
-    and
+        \end{bmatrix};
+    \end{align*}
+    \(L_{i}\) is a rectangular \(i \times (i + 1)\) matrix and
     \[
-        N^u = I^u + \lambda H^u
+        N^{(u)} = I^{(u)} + \lambda H^{(u)}.
     \]
-    with \(I\) the \(u \times u\) identity matrix and H the \(u \times u\) upper shift matrix, and \(J\) a Jordan matrix.
 
     We shall call such a matrix the Kronecker canonical form of \(\Gamma(\lambda)\) and write it
     out as \(K(\Gamma(\lambda))\).
@@ -242,15 +261,15 @@ the reader shall refer to the following chapter.
             & & & & & \Block[draw=red]{1-1}{} \lambda + 1
         \end{bNiceArray}.
     \]
-    is made up of three rectangular blocks \(Z^{1 \times 1}\), \(L_{0}\), \(L_{1}^T\), two nilpotent blocks
-    \(N^{(1)}\), \(N^{(2)}\) and one Jordan block \(J + \lambda I^{(1)}\).
+    is made up of three blocks \(O^{(1, 1)}\), \(L_{0}\), \(L_{1}^T\), two nilpotent blocks
+    \(N^{(1)}\), \(N^{(2)}\) and one Jordan block \(G + \lambda I^{(1)}\).
 \end{example}
 
 \subsection*{Fundamental applications.}
 The following section shall introduce the reader to differential-algebraic equations (which we may shorten as DAE) in
 order to explain what is the use case of the KCF of a pencil of matrices while keeping a strong focus on examples.
 
-\begin{definition}[Differential-algebraic equation] \label{def:dae}
+\begin{definition}[Differential-algebraic equation] \cite[p. 3]{kunkel-mehrmann}\label{def:dae}
     An equation
     \[
         F(t, x, \dot{x}) = 0
@@ -267,7 +286,7 @@ order to explain what is the use case of the KCF of a pencil of matrices while k
 
 Differential-algebraic equations are used to model physical systems with a dynamic behaviour the states of which are
 subjected to certain constraints. For our purposes, we'll narrow the definition given above and rewrite it as follows.
-\begin{definition}[Linear DAE with constant coefficients]
+\begin{definition}[Linear DAE with constant coefficients] \cite[p. 13]{kunkel-mehrmann}
     An equation
     \[
         B \dot{x} + Ax = f(t)
@@ -283,7 +302,7 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
     \]
 \end{definition}
 
-\begin{remark}
+\begin{remark}\cite[p. 14]{kunkel-mehrmann}
     The equations \(B \dot{x} + Ax = f(t)\) and \(\tilde{B} \tilde{\dot{x}} + \tilde{A}\tilde{x} = \tilde{f}(t)\), with
     \begin{align*}
         \tilde{A} &= PAQ, & \tilde{B} &= PBQ, & \tilde{f} &= Pf, & \tilde{x} &= Q^{-1}x, \\
