@@ -8,7 +8,7 @@ every part.
 
 Subsequently, definitions and properties of eigenvalues and eigenvectors shall be concisely introduced.
 
-Lastly, we shall describe the Jordan canonical form of a matrix.
+Lastly, we shall describe Jordan's canonical form of a matrix.
 
 \subsection*{Computer algebra.}
 Computers have fundamentally two ways to reason about a mathematical expression: \textbf{numerical computations}, which are
@@ -19,7 +19,7 @@ First, we shall introduce the concept of \textbf{floating point number system}, 
 computations.
 
 For further explanations, refer to Quarteroni, Saleri, Sacco \cite{numerical-mathematics}.
-\begin{definition}[Normalized-floating point number system] \cite[p. 46]{numerical-mathematics}
+\begin{definition}[Normalized-floating point number system] \cite[2.5.2]{numerical-mathematics}
     A normalized-floating point number system \(F\) is characterized by the 4-tuple of integers \(\beta, p, L, U\):
     \begin{itemize}[topsep=0pt, itemsep=0pt, parsep=0pt]
         \item \(\beta\) is called base or radix,
@@ -290,9 +290,9 @@ Assuming \(\norm{\delta A} = 1\) and using the definition of dot product for \(\
     is called the condition number of the eigenvalue \(\lambda\).
 \end{definition}
     
-\subsection*{Jordan canonical form}
+\subsection*{Jordan's canonical form}
 In the following section, we shall define \textbf{Jordan matrices} and discuss the stability of a transformation of a matrix
-into its Jordan canonical form.
+into its Jordan's canonical form.
 \begin{definition}[Jordan matrix]
     A diagonal block matrix M is called a Jordan matrix if and only if each block along the diagonal is of the form
     \[
@@ -314,7 +314,7 @@ into its Jordan canonical form.
 \begin{remark}
     Let \(V\) be a vector space defined over a field \(F\) and \(A\) a matrix defined in V. If the characteristic
     polynomial of A \(ch_{A}(t)\) can be factorized into its linear factors over \(K\), then \(A\) is similar to a
-    Jordan matrix \(J\). We define \(J\) the \textbf{Jordan canonical form} (\textbf{JCF}) of \(A\).
+    Jordan matrix \(J\). We define \(J\) \textbf{Jordan's canonical form} (\textbf{JCF}) of \(A\).
 \end{remark}
 
 \begin{definition}[Defective matrix, defective eigenvalue]
