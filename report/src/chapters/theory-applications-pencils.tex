@@ -14,7 +14,7 @@ chapter and the following one, a reader may refer to G\"antmacher \cite{gantmach
 
 \subsection*{Regular pencils.}
 Now, we consider the case where \((A + \lambda B)\) is a regular pencil of matrices.
-\begin{definition}[Regular pencil]\cite[p. 25]{gantmacher}
+\begin{definition}[Regular pencil]\cite[p. 25, Definition 2]{gantmacher}
     A matrix pair \((A, B)\) is said to be regular if and only if \(A\) and \(B\) are square matrices of the same size and
     the determinant \(det(A + \lambda B)\) is not identically zero.
 \end{definition}
@@ -74,7 +74,7 @@ the pencil of matrices \(\Theta(\mu, \lambda)\).
 
 We can now give a result on the equivalence of regular pencils.
 
-\begin{theorem}[Equivalence of regular pencils of matrices]\cite[p. 27]{gantmacher} \label{thm:regular-pencils}
+\begin{theorem}[Equivalence of regular pencils of matrices]\cite[p. 27, Theorem 2]{gantmacher} \label{thm:regular-pencils}
     Two regular matrix pairs
     \begin{align*}
         \Gamma_{1}(\lambda) &= (A_{1}, B_{1}) &
@@ -91,7 +91,7 @@ We can now give a result on the equivalence of regular pencils.
     \end{align*}
 \end{theorem}
 
-\begin{lemma} \cite[eq. 2.14]{ikramov}
+\begin{lemma} \cite[Equation 2.14]{ikramov}
     For any two regular equivalent pencils of \(n \times n\) matrices the entries of which lie in a field \(F\)
     \begin{align*}
         \Gamma_{1}(\lambda) &= A_{1} + \lambda B_{1} &
@@ -107,7 +107,7 @@ We can now give a result on the equivalence of regular pencils.
 \subsection*{Singular pencils.}
 Next, we shall investigate the most general case of \(m \times n\) pencils of matrices in order to introduce
 the reader to the concept of minimal indices of a pencil of matrices.
-\begin{definition}[Singular pencil]\cite[p. 25]{gantmacher}
+\begin{definition}[Singular pencil]\cite[p. 25, Definition 2]{gantmacher}
     A matrix pair \(A, B\) is said to be singular if and only if it is not regular.
 \end{definition}
 
@@ -168,7 +168,7 @@ At this point, we can put together the theorems on the equivalence of regular an
 \nameref{thm:regular-pencils} (theorem \ref{thm:regular-pencils}) and
 \nameref{thm:singular-pencils} (theorem \ref{thm:singular-pencils}) and give a result on the \textbf{equivalence of
 arbitrary matrix pairs}.
-\begin{theorem}[Kronecker] \cite[thm. 5]{gantmacher} \label{thm:kronecker}
+\begin{theorem}[Kronecker] \cite[p. 40, Theorem 5]{gantmacher} \label{thm:kronecker}
     Two pencils \((A + \lambda B)\), \((A_{1} + \lambda B_{1})\) of rectangular \(m \times n\) matrices
     are equivalent if and only if they have the same minimal indices for rows and columns and the same elementary finite and
     infinite divisors.
@@ -269,7 +269,7 @@ the reader shall refer to the following chapter.
 The following section shall introduce the reader to differential-algebraic equations (which we may shorten as DAE) in
 order to explain what is the use case of the KCF of a pencil of matrices while keeping a strong focus on examples.
 
-\begin{definition}[Differential-algebraic equation] \cite[p. 3]{kunkel-mehrmann}\label{def:dae}
+\begin{definition}[Differential-algebraic equation] \cite[p. 3, Equation 1.1]{kunkel-mehrmann}\label{def:dae}
     An equation
     \[
         F(t, x, \dot{x}) = 0
@@ -286,7 +286,7 @@ order to explain what is the use case of the KCF of a pencil of matrices while k
 
 Differential-algebraic equations are used to model physical systems with a dynamic behaviour the states of which are
 subjected to certain constraints. For our purposes, we'll narrow the definition given above and rewrite it as follows.
-\begin{definition}[Linear DAE with constant coefficients] \cite[p. 13]{kunkel-mehrmann}
+\begin{definition}[Linear DAE with constant coefficients] \cite[p. 13, Equation 2.1]{kunkel-mehrmann}
     An equation
     \[
         B \dot{x} + Ax = f(t)
@@ -302,7 +302,7 @@ subjected to certain constraints. For our purposes, we'll narrow the definition 
     \]
 \end{definition}
 
-\begin{remark}\cite[p. 14]{kunkel-mehrmann}
+\begin{remark}\cite[p. 13]{kunkel-mehrmann}
     The equations \(B \dot{x} + Ax = f(t)\) and \(\tilde{B} \tilde{\dot{x}} + \tilde{A}\tilde{x} = \tilde{f}(t)\), with
     \begin{align*}
         \tilde{A} &= PAQ, & \tilde{B} &= PBQ, & \tilde{f} &= Pf, & \tilde{x} &= Q^{-1}x, \\
