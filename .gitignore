@@ -148,4 +148,5 @@ dmypy.json
 *.blg
 *.json
 *.listing
+*.loa
 report/src/_minted-main
