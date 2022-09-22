@@ -1,1 +1,96 @@
 \section{Introduction}
+Consider the linear differential equation
+\[
+	\dot{x} + Ax = f.
+\]
+The set of solutions of this equation is characterized by matrix $A$ and, in particular, by its Jordan's canonical form.
+
+Next, take the equation
+\begin{gather} \label{intro:1}
+	B\dot{x} + Ax = f,
+\end{gather}
+with $A, B \in \mathbb{C}^{m \times n}$. We call the pair ($A$, $B$) a linear pencil of matrices or, for the sake of brevity,
+a pencil of matrices \cite{ikramov}.
+
+To solve \eqref{intro:1}, we shall distinguish two cases.
+\begin{cs}
+	\case $B$ is nonsingular.
+
+		The set of solutions is characterized by Jordan's canonical form of \[-B^{-1}A.\]
+	\case $B$ is singular.
+
+		The linear system given by \eqref{intro:1} may contain algebraic equations or, in other words, equations which do
+		not contain any derivatives. As an example, take the equation
+		\[
+			\begin{bmatrix}
+				1 & 0 & 1 \\
+				0 & 0 & 0
+			\end{bmatrix}
+			\begin{bmatrix}
+				\dot{x_1} \\
+				\dot{x_2} \\
+				\dot{x_3}
+			\end{bmatrix} + 
+			\begin{bmatrix}
+				1 & 0 & 0 \\
+				1 & 1 & 1
+			\end{bmatrix}
+			\begin{bmatrix}
+				x_1 \\
+				x_2 \\
+				x_3
+			\end{bmatrix}
+			= \begin{bmatrix}
+				f_1 \\
+				f_2
+			\end{bmatrix}.
+		\]
+		The linear system contains an algebraic equation
+		\begin{equation*}
+			\left\{
+				\begin{aligned}
+					\dot{x_1} + \dot{x_3} + x_1 &= f_1 \\
+					x_1 + x_2 + x_3 &= f_2
+				\end{aligned}
+			\right.
+		\end{equation*}
+		The set of solutions is characterized by \textbf{Kronecker's canonical form} of ($A$, $B$)
+		\cite{gantmacher, kunkel-mehrmann}.
+\end{cs}
+
+The problem of computing Kronecker's canonical form is ill-conditioned, meaning that small changes in its input values cause
+a large change in the answer. The current state of the art is to compute a \textbf{Kronecker-like form}, which can be found with
+numerically stable algorithms \cite{beelen-van_dooren}. An implementation of those algorithms has been written
+in Julia \cite{bezanson2017julia} by Andreas Varga, it can be found in \url{https://github.com/andreasvarga/MatrixPencils.jl}.
+
+Another approach we may take is to work in an exact ring, one in which numbers are never
+approximated, and their values are exact.
+
+Indeed, this work takes a \textit{novel approach} to compute Kronecker's canonical form: we define an algorithm to
+compute exactly
+Kronecker's canonical form for an arbitrary pencil of matrices. Last, we give an implementation of this
+algorithm \cite{Trapani_Computation_of_Kronecker_s} using the open-source computer algebra
+system \textbf{SageMath} \cite{sage}.
+
+Even though the focus of this work is not on the applications of pencils of matrices, it may be relevant for a reader to
+know they lie in the fields of control systems \cite{824690, 1103983} and signal
+processing \cite{1179782}.
+
+\vspace{5mm}
+
+In the first chapter, we recapitulate the basics of numerical analysis, computer algebra and linear algebra required to
+understand the following chapters. We also introduce SageMath and use it to show the reader consequences of the given
+theorems and the definitions.
+
+In the second chapter, we give a self-contained introduction to the theory of linear pencils of matrices: we define regular
+and singular pencils and the conditions for equivalence (between pencils of matrices). Last, we define Kronecker's canonical
+form and briefly introduce linear differential-algebraic equations with constant coefficients.
+
+In the third chapter, we prove Kronecker's theorem by defining a procedure to compute Kronecker's canonical form
+for an arbitrary pencil of matrices; we also provide the pseudocode for such an algorithm.
+
+In the fourth chapter, we discuss technical details of the SageMath algorithm and
+give an approximation of its time complexity; we give a minimal working example and discuss the reasoning behind the way
+the test suite has been written.
+
+The fifth chapter concludes this paper and outlines possible improvements for the algorithm.
