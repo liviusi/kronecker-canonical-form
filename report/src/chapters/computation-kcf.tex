@@ -224,7 +224,7 @@ To conclude, we shall present the aforementioned steps used in order to compute 
 \(K(\Gamma(\lambda))\) in pseudocode.
 \pagebreak
 \begin{algorithm}[!h]\label{alg:kcf-regular}
-    \caption{Procedure to compute KCF of a regular pencil.}
+    \caption{Procedure to compute Kronecker's canonical form of a regular pencil}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: regular pencil}
     \KwResult{$(P, Q), K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
     \While{True}{
@@ -464,7 +464,7 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
 
     \pagebreak
     \begin{algorithm}[!h]\label{alg:kcf-singular}
-        \caption{Procedure to reduce a singular pencil.}
+        \caption{Procedure to reduce a singular pencil}
         \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
         \KwResult{$K$: Reduced form of $\Gamma(\lambda)$}
         $V \gets $ polynomial of minimal degree $\in ker(\Gamma)$\;
@@ -537,7 +537,7 @@ an arbitrary pencil of matrices.
 \begin{algorithm}
     \SetKwBlock{Begin}{Begin}{}
     \SetKwFor{While}{while}{}{}
-    \caption{Procedure to compute KCF of an arbitrary pencil.}\label{alg:kcf}
+    \caption{Procedure to compute Kronecker's canonical form of an arbitrary pencil.}\label{alg:kcf}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: pencil of \(m \times n\) matrices}
     \KwResult{$K$: Kronecker's canonical form of $\Gamma(\lambda)$}
     \Begin{
