@@ -51,6 +51,8 @@
 % Prevents LaTeX from filling out a page to the bottom
 \raggedbottom
 
+\usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{enumitem}
@@ -151,6 +153,8 @@
 \setcounter{chapter}{-1}
 \tableofcontents
 \listofalgocfs
+\pagebreak
+\include{notation.tex}
 \pagebreak
 \include{chapters/introduction.tex}
 \pagebreak
