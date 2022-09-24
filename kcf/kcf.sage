@@ -123,14 +123,14 @@ def _reduction_theorem(
     Reduces a pencil (A + tB)x = 0 to a canonical form
     A_tilde = P^-1 * A * Q =
     [0 1 0 ... 0 |        ]
-    [0 0 1 ... 0 |   D    ]
+    [0 0 1 ... 0 |   0    ]
     [0 0 0 ... 1 |        ]
     [------------|------- ]
     [     0      | A_WIDEHAT ]
 
     B_tilde = P^-1 * B * Q =
     [1 0 0 ... 0 |        ]
-    [0 1 0 ... 0 |   F    ]
+    [0 1 0 ... 0 |   0    ]
     [0 0 ... 1 0 |        ]
     [------------|------- ]
     [     0      | B_WIDEHAT ]
