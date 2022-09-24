@@ -29,63 +29,29 @@ To ensure there are no errors in the implementation, a suitable
 test suite has been provided. We've chosen to use a functional testing technique known as \textbf{unit testing},
 and the test suite accurately tests the function \mintinline{bash}{kcf}.
 
-We've defined matrices already in Kronecker's canonical form and applied a random change of basis in order to have
-deterministic output from non-deterministic input so that we may assume we have covered every possible case.
-
-There are three files populated with functions to build completely regular, singular and a mix of both
-pencils of matrices, apply a random change of basis transformation, compute Kronecker's canonical form for each
-of them and, last, assert the transformation given in output is correct.
+The test suite consists of three files populated with functions which build pencils of matrices either with
+only regular blocks or only singular blocks or combinations of both, (already) in Kronecker's canonical form,
+apply a random change of basis transformation, compute Kronecker's canonical form and assert the transformation
+in output is correct. Since we are testing pencils of matrices made up of only regular blocks, only singular blocks
+and a mix of both, and we are applying a non-deterministic transformation, by repeating the tests we may assume
+we have covered as many cases as possible.
 
 The tool used for testing - \textit{pytest} - can also provide information on
-the test coverage, which is 91\%.
+the test coverage, which is 91\%; the reasons it is not 100\% are two: first, there is a routine which, given a
+pencil of matrices returns its string representation, and it is not called unless tests fail; second, the code
+we're testing includes - in its internal routines (i.e. those with a leading underscore in their names) - some
+lines to handle invalid input values, and the ``public'' routines do not use invalid input values.
 
+On the following page, we provide the reader with a minimal working example of the usage of the code written. We
+use two distinct variables for the (two) matrices making up the pencil of matrices.
 
-\subsection*{Time complexity.}
-As the algorithm works with computer algebra, an actual estimation of the time complexity of elementary operations
-(such as the sum of two variables) is implementation, ring and value-dependent; what we can do is calculate
-the number of operations needed at each step and give a measure of the complexity of the whole procedure based on it.
+The snippet works the very same way the functions in the test suite have been defined: starting with a pencil
+of matrices in Kronecker's canonical form, we apply a random change of basis transformation and compute Kronecker's
+canonical form; next, we assert the transformation given in output is correct. Last, we print the string
+representation of Kronecker's canonical form of the pencil of matrices in input.
 
-Assume the starting point is an arbitrary pencil of \(m \times n\) matrices \(\Gamma(\lambda) = A+\lambda B\).
+The pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) the example is working with is
 
-The method \mintinline{bash}{_reduction_theorem}, which operates on singular pencils of matrices,
-is called \(p + q\) times, with \(p\) the number of \(L_\epsilon\) blocks and \(q\)
-that of \(L^T_\eta\) blocks; internally, it calls \mintinline{bash}{_compute_lowest_degree_polynomial}, which
-iteratively computes the right kernel of an \(M_i\) matrix with \(i = 0, ..., k\) and \(k\) is the minimal degree
-of the polynomial at this point.
-
-\begin{remark}
-    The time complexity for Gaussian elimination on an \(m \times n\) matrix is
-    \(\Theta(mn \min(m, n))\) \cite{boyd_vandenberghe_2018}.
-\end{remark}
-
-To summarize, the number of operations needed to reduce an arbitrary singular pencil of matrices is
-\[
-    \mathcal{O}((p + q)\alpha mn \min(m, n)) = \mathcal{O}(\alpha mn \min(m, n)^2),
-\]
-with \(\alpha = \max(\{\epsilon_0, ..., \epsilon_p, \eta_0, ..., \eta_q\})\).
-
-Next, let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of \(n \times n\) matrices. To make calculations
-easier, we shall assume the factorization of the characteristic polynomial of \(\Gamma(\lambda)\) is known.
-
-\begin{remark}
-    Given the factorization of the characteristic polynomial of an \(n \times n\) matrix, the time complexity
-    for the algorithm to compute Jordan's canonical form is \(\mathcal{O}(n^4)\)
-    \cite{DBLP:journals/corr/abs-cs-0412005}.
-\end{remark}
-
-We can conclude the number of operations for a regular matrix pair is
-\[
-    \mathcal{O}(3n^4) = \mathcal{O}(n^4).
-\]
-Tying all together, the number of operations needed to compute Kronecker's canonical form is
-\[
-    \mathcal{O}(\alpha mn \min(m, n)^2 + (\max(m, n) - p - q)^4).
-\]
-
-\subsection*{Minimal working example.}
-Pencils of matrices are chosen to be represented as two variables. The snippet provided on the following page
-shall explain how to call the functions defined in order to compute Kronecker's canonical form of the pencil
-\(\Gamma(\lambda) = A + \lambda B\) subjected to an arbitrary change of basis, with
 \begin{align*}
     A &=
     \begin{bmatrix}
@@ -95,7 +61,7 @@ shall explain how to call the functions defined in order to compute Kronecker's 
         & & & & 1 & 0 \\
         & & & & 0 & 1 \\
         & & & & & & 42
-    \end{bmatrix} &
+    \end{bmatrix}, &
     B &=
     \begin{bmatrix}
         1 & 0 & 0 & 0 \\
@@ -106,7 +72,10 @@ shall explain how to call the functions defined in order to compute Kronecker's 
         & & & & & & 1
     \end{bmatrix}.
 \end{align*}
+
 \pagebreak
+
+
 \begin{minted}[numbersep=5pt,
     frame=lines,
     framesep=2mm]{python}
@@ -148,3 +117,49 @@ assert ((L*A*R - KCF_A).is_zero()
         and not L.is_singular() and not R.is_singular())
 print(f'KCF:\n{kcf.stringify_pencil(KCF_A, KCF_B)}')
 \end{minted}
+
+\pagebreak
+
+
+\subsection*{Time complexity.}
+As the algorithm works with computer algebra, an actual estimation of the time complexity of elementary operations
+(such as the sum of two variables) is implementation, ring and value-dependent; what we can do is calculate
+the number of operations needed at each step and give a measure of the complexity of the whole procedure based on it.
+
+Assume the starting point is an arbitrary pencil of \(m \times n\) matrices \(\Gamma(\lambda) = A+\lambda B\).
+
+The method \mintinline{bash}{_reduction_theorem}, which operates on singular pencils of matrices,
+is called \(p + q\) times, with \(p\) the number of \(L_\epsilon\) blocks and \(q\)
+that of \(L^T_\eta\) blocks; internally, it calls \mintinline{bash}{_compute_lowest_degree_polynomial}, which
+iteratively computes the right kernel of an \(M_i\) matrix with \(i = 0, ..., k\) and \(k\) is the minimal degree
+of the polynomial at this point.
+
+\begin{remark}
+    The time complexity for Gaussian elimination on an \(m \times n\) matrix is
+    \(\Theta(mn \min(m, n))\) \cite{boyd_vandenberghe_2018}.
+\end{remark}
+
+To summarize, the number of operations needed to reduce an arbitrary singular pencil of matrices is
+\[
+    \mathcal{O}((p + q)\alpha mn \min(m, n)) = \mathcal{O}(\alpha mn \min(m, n)^2),
+\]
+with \(\alpha = \max(\{\epsilon_0, ..., \epsilon_p, \eta_0, ..., \eta_q\})\).
+
+Next, let \(\Gamma(\lambda) = A + \lambda B\) be a regular pencil of \(n \times n\) matrices. To make calculations
+easier, we shall assume the factorization of the characteristic polynomial of \(\Gamma(\lambda)\) is known.
+
+\begin{remark}
+    Given the factorization of the characteristic polynomial of an \(n \times n\) matrix, the time complexity
+    for the algorithm to compute Jordan's canonical form is \(\mathcal{O}(n^4)\)
+    \cite{DBLP:journals/corr/abs-cs-0412005}.
+\end{remark}
+
+Since the number of Jordan matrices to be computed in the case of a regular pencil is - at most - 3, we can conclude
+the number of operations for a regular matrix pair is
+\[
+    \mathcal{O}(3n^4) = \mathcal{O}(n^4).
+\]
+Tying all together, the number of operations needed to compute Kronecker's canonical form is
+\[
+    \mathcal{O}(\alpha mn \min(m, n)^2 + (\max(m, n) - p - q)^4).
+\]
