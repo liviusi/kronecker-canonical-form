@@ -580,10 +580,13 @@ an arbitrary pencil of matrices.
                 $transpose \gets False$\;
             }
         }
-        $P, Q \gets $ empty matrix, empty matrix\;
+        
         \tcc{Check if $\tilde{\Gamma}(\lambda)$ is non-empty}
-        \If{dimensions($\tilde{A}$) $\neq (0, 0)$}{
+        \eIf{dimensions($\tilde{A}$) $\neq (0, 0)$}{
             $(P, Q), \_ \gets$  \Call KCF Regular Pencil($\tilde{\Gamma}(\lambda)$)\;
+        }
+        {
+            $P, Q \gets $ empty matrix, empty matrix\;
         }
         $u \gets$ nrows($P$)\;
         \tcc{Compose matrix transformations}
