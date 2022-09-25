@@ -53,9 +53,9 @@ shall not be discussed.
 \end{definition}
 
 \begin{example}
-    Let us define the matrix (made up of both symbols and numbers) M
+    Let us define a matrix $M$ made up of both symbols and numbers,
     \[
-        \begin{bmatrix}
+        M = \begin{bmatrix}
             \sqrt{2}  &   1    \\
                 2     & \sqrt{2}
         \end{bmatrix}.
@@ -155,15 +155,15 @@ SageMath is an open source CAS distributed under the terms of the GNU GPLv3 \cit
 
 Hereafter, an example in which symbolic computations are put against numerical (computations) shall be made.
 \begin{example}
-    Take matrix M from Example 2.1:
+    Take matrix $M$ from Example 2.1
     \[
-        \begin{bmatrix}
+        M = \begin{bmatrix}
             \sqrt{2}  &   1    \\
                 2     & \sqrt{2}
         \end{bmatrix}.
     \]
     Compare the different results given out when computing its determinant by defining M over the \textit{symbolic ring SR} and
-    the \textit{finite-precision ring CDF}:
+    the \textit{finite-precision ring CDF}
     \begin{minted}[mathescape,
             numbersep=5pt,
             gobble=2,
@@ -229,9 +229,9 @@ of their computation; a reader may also consult Axler \cite{axler} or Strang \ci
     Note that writing
     \( A \vb{u} = \lambda \vb{u} \) is equivalent to \( (A - \lambda I)\vb{u} = 0 \).
 
-    It follows that the eigenvalues of A are the roots of
+    It follows that the eigenvalues of $A$ are the roots of
     \[
-        det(A - \lambda I)
+        det(A - \lambda I),
     \]
     which is a polynomial in \(\lambda\) known as the \textbf{characteristic polynomial} \(ch_{A}(\lambda)\).
 \end{remark}
@@ -294,7 +294,7 @@ Assuming \(\norm{\delta A} = 1\) and using the definition of dot product for \(\
 In the following section, we shall define \textbf{Jordan matrices} and discuss the stability of a transformation of a matrix
 into Jordan's canonical form.
 \begin{definition}[Jordan matrix]
-    A diagonal block matrix M is called a Jordan matrix if and only if each block along the diagonal is of the form
+    A diagonal block matrix $M$ is called a Jordan matrix if and only if each block along the diagonal is of the form
     \[
         \begin{bmatrix}
             \lambda     &    1         &    0     &   \cdots   &    0    \\
@@ -302,10 +302,8 @@ into Jordan's canonical form.
             \vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
                 0       &       0      &     0    &  \lambda   &    1    \\
                 0       &       0      &     0    &     0      & \lambda
-        \end{bmatrix},
+        \end{bmatrix}.
     \]
-    and we can write such a matrix M as
-    \(M = diag(J_{\lambda_{1}, n_{1}}, ..., J_{\lambda_{k}, n_{k}})\) with \(k\) the number of diagonal blocks it is made up of.
 
     Each \(n \times n\) block can be completely characterized by the tuple \((\lambda, n)\) as it can fully describe both
     the structure and the dimension of a block.
