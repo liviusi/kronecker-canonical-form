@@ -1,28 +1,30 @@
 \section{Introduction}
-This work deals with the problem of \textit{computing precisely} \textbf{Kronecker's canonical form} for an
-arbitrary pencil of matrices and defines an algorithm \linebreak to compute it (exactly) using the open-source
-computer algebra system \textbf{SageMath}\cite{sage}. We may think of Kronecker's canonical form as a generalization of
-Jordan's canonical form. Next, we shall try and make sense of this abstract. Let us start with an example.
+The object of this thesis is the problem of \textit{computing exactly} \textbf{Kronecker's canonical form}
+\cite{kronecker1890} for an arbitrary pencil of matrices, defines an algorithm \linebreak to compute it
+(exactly) and implements it using the functionalities provided by open-source computer algebra system
+\textbf{SageMath}\cite{sage}. We may think of Kronecker's canonical form as a generalization of Jordan's
+canonical form. Next, we shall try and make sense of this abstract starting with an example.
 
 Let $A$ be a matrix defined in $\mathbb{C}^{m \times n}$ and consider the linear differential equation
 \[
-    \dot{x} + Ax = f.
+    \dot{x}(t) + Ax(t) = f(t).
 \]
 The set of solutions of this equation is characterized by matrix $A$ and, in particular, by Jordan's canonical form
 (of matrix $A$).
 
-Next, with $B \in \mathbb{C}^{m \times n}$, take the equation
-\begin{gather} \label{intro:1}
-    B\dot{x} + Ax = f.
-\end{gather}
-At this point, we can define what a pencil of matrices is. We call the pair ($A$, $B$) a \textbf{linear pencil
-of matrices} or, for the sake of brevity, a pencil of matrices \cite{ikramov}.
+Now, we generalize. Let $B$ be a matrix defined in $\mathbb{C}^{m \times n}$. We call the pair of matrices ($A$, $B$)
+a \textbf{linear pencil of matrices} or, for the sake of brevity,
+a pencil of matrices \cite{ikramov}.
 
+Take the equation
+\begin{gather} \label{intro:1}
+    B\dot{x}(t) + Ax(t) = f(t).
+\end{gather}
 To solve \eqref{intro:1}, we shall distinguish two cases.
 \begin{cs}
     \case $B$ is nonsingular.
 
-        The set of solutions is characterized by Jordan's normal form of \[-B^{-1}A.\]
+        The set of solutions is characterized by \textbf{Jordan's canonical form} of \[-B^{-1}A.\]
     \case $B$ is singular.
 
         The linear system given by \eqref{intro:1} may contain algebraic equations or, in other words,
@@ -66,8 +68,51 @@ To solve \eqref{intro:1}, we shall distinguish two cases.
         \end{equation*}
         The set of solutions is characterized by \textbf{Kronecker's canonical form} of ($A$, $B$)
         \cite{gantmacher, kunkel-mehrmann}.
+
 \end{cs}
 \vspace{5mm}
+Kronecker showed every linear pencil of matrices has the canonical block diagonal form
+\[
+\begin{bmatrix}
+    O^{h, g} \\
+    &L \\
+    && L^T \\
+    &&& N \\
+    &&&& G + \lambda I
+\end{bmatrix},
+\]
+with \(h, g \in \mathbb{Z}^+\), $G$ a Jordan matrix and the (other) blocks defined as
+\begin{align*}
+    L &= \begin{bmatrix}
+        L_{\epsilon_{h+1}} \\
+        & L_{\epsilon_{h+2}} \\
+        & & \ddots \\
+        & & & L_{\epsilon_{p}}
+    \end{bmatrix}, &
+    L^T &= \begin{bmatrix}
+        L_{\eta_{h+1}}^T \\
+        & L_{\eta_{h+2}}^T \\
+        & & \ddots \\
+        & & & L_{\eta_{q}^T}
+    \end{bmatrix}, &\\
+    N &= \begin{bmatrix}
+        N^{(u_{1})} \\
+        & N^{(u_{2})} \\ 
+        & & \ddots \\
+        & & & N^{(u_{s})}
+    \end{bmatrix}, &
+    L_{i} &=
+    \begin{bmatrix}
+        \lambda        &      1     &       0      &     \ldots       &    0       &    0   \\
+        0              & \lambda    &       1      &                  & \vdots     & \vdots \\
+        \vdots         & \vdots     &     & \ddots    &      &            &        \\
+        0              &      0     &              &                  & \lambda    &    1   
+    \end{bmatrix};
+\end{align*}
+\(L_{i}\) is a rectangular \(i \times (i + 1)\) matrix and
+\[
+    N^{(u)} = I^{(u)} + \lambda H^{(u)}.
+\]
 
 The problem of computing precisely Kronecker's canonical form is \textit{ill-conditioned}, meaning
 that small changes in its input values may cause a large change in the answer. The current state of the art is to
@@ -105,9 +150,9 @@ Indeed, this work takes this kind of approach to compute Kronecker's canonical f
 procedure to compute exactly Kronecker's canonical form of an arbitrary pencil of matrices and prove its
 correctness. Next, we provide an implementation of such a procedure in \cite{trapani-kronecker} making use of
 SageMath's support for symbolic expressions, and a suitable test suite to prove it correctly mirrors its
-specification. Now, it is a pertinent fact that, while this technique is used to calculate Jordan's canonical
-form, \textit{no other works in literature follow this approach for Kronecker's canonical form} (at least, there
-are none to our knowledge).
+specification. Now, it is a pertinent fact that, while this technique is already being used to calculate
+Jordan's canonical form, \textit{no other works in literature follow this approach for Kronecker's canonical form}
+(at least, there are none to our knowledge).
 
 Last, even though the focus of this work is not on the applications of pencils of matrices, it may be relevant
 for a reader to know they lie in the fields of control
