@@ -154,7 +154,7 @@ First, let us clarify what we are to prove.
         \scalemath{0.92}{
             \begin{bmatrix}
                 P_{2}^{-1} & \\
-                & I
+                & I^{(k)}
             \end{bmatrix}
             P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
             \begin{bmatrix}
@@ -178,7 +178,7 @@ First, let us clarify what we are to prove.
         \scalemath{0.92}{
             \begin{bmatrix}
                 P_{2}^{-1} & \\
-                & I
+                & I^{(k)}
             \end{bmatrix}
             P_{\pi}^T P_{1}^{-1} A_{1}^{-1} \Gamma(\lambda) P_{1} P_{\pi}
             \begin{bmatrix}
@@ -228,16 +228,20 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     \KwResult{$(P, Q), K$: KCF of the pencil of matrices $\Gamma(\lambda)$}
     \While{True}{
         $c \gets $ random value\;
+        \tcc{Check whether $A_1$ is invertible}
         \If{$det(\Gamma(c)) \neq 0$}{
             \Continue
         }
         $A_{1} \gets A + c*B$\;
+        \tcc{For the sake of simplicity, we shall assume the blocks are in the right order}
         $P_1, J \gets $ jordan($A_{1}^{-1}*B$)\;
         $\{J_{0}, J_{1}\} \gets$ submatrices($J$)\;
+        \tcc{Ensure the sub-block $J_1$ in $J$ is invertible}
         \If{$det(J_1) = 0$}{
             \Break
         }
     }
+    \tcc{Proceed with the remaining steps}
     $j, k \gets $nrows($J_0$), nrows($J_1$)\;
     $M \gets (I^{(j)} - c*J_{0})^{-1}$\;
     $P_2, N \gets $ jordan($M * J_0$)\;
@@ -245,6 +249,7 @@ To conclude, we shall present the aforementioned steps used in order to compute 
     $K \gets $ diag($N, G +\lambda I$)\;
     $P \gets A_1 * P_1 * $ block diagonal matrix([$P_2, P_3$])\;
     $Q \gets P_1 * $ block diagonal matrix([$M * P_2, J_1^{-1} * P_3$])\;
+    \tcc{The transformation is given by $P^{-1}\Gamma Q$}
     \Return{$(P, Q), K$}\;
 \end{algorithm}
 \pagebreak
@@ -455,32 +460,7 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
         We can now recover \(Y\) and, subsequently, \(X\) from the linear system in \eqref{linear-system-x}.
     \end{proof}
 
-    To help make the procedure more intelligible, we shall present the pseudocode to apply the transformation in
-    \nameref{thm:reduction-theorem} (theorem \ref{thm:reduction-theorem}).
-
-    \pagebreak
-    \begin{algorithm}[!h]\label{alg:kcf-singular}
-        \caption{Procedure to reduce a singular pencil}
-        \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
-        \KwResult{$K$: Reduced form of $\Gamma(\lambda)$}
-        $V \gets $ polynomial of minimal degree $\in ker(\Gamma)$\;
-        $Q \gets $ complete to a basis($V$)\;
-        $P \gets $ complete to a basis($AV$)\;
-        $\tilde{A} = P^{-1}AQ$\;
-        $\tilde{B} = P^{-1}BQ$\;
-        $L_{\epsilon}, D, F, \widehat{A}, \widehat{B} \gets $ partition pencil($\tilde{A} + \lambda \tilde{B}$)\;
-        \eIf{$degree(V) \neq 0$}{
-            $M \gets $ build $M_{\epsilon}(\widehat{A}, \widehat{B}, \epsilon-1)$\;
-            $W \gets $ build $W(F, D)$\;
-            $Z \gets WM^{-1}$\;
-            $Y \gets $ partition(Z)\;
-            $X \gets $ solve system in \eqref{linear-system-x}\;
-            $L \gets $ block matrix($[[I, Y], [0, I]]$)\;
-            $R \gets$ block matrix($[[I, -X], [0, I]]$)\;
-            \Return{$LP^{-1}\Gamma(\lambda)QR$}\;
-        }
-        {\Return{$P^{-1}\Gamma(\lambda)Q$}\;}
-    \end{algorithm}
+\vspace{5mm}
     \case \(\epsilon = 0.\)
 
     In this case, the columns of the pencil are connected by linear relations with constant coefficients.
@@ -491,6 +471,9 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
             0 & A_{0} + B_{0}
         \end{bmatrix}.
     \]
+
+    \pagebreak
+
     Assuming there are \(g\) constant independent solutions, then the pencil can be reduced to
     \[
         \begin{bmatrix}
@@ -521,9 +504,43 @@ found in \cite[pp. 32-33]{gantmacher}.
         \widehat{\Gamma}(\lambda) = \widehat{A} + \lambda\widehat{B}.
     \]
 \end{lemma}
+To help make the procedure we have just described more intelligible, we shall present in the following page the
+pseudocode for both cases, i.e. if $\epsilon > 0$ or $\epsilon = 0$.
 
-Next, we shall show on the following page the pseudocode for an algorithm to compute Kronecker's canonical form of
+Next, we give the pseudocode for an algorithm to compute Kronecker's canonical form of
 an arbitrary pencil of matrices.
+
+\pagebreak
+
+\begin{algorithm}[!h]\label{alg:kcf-singular}
+    \caption{Procedure to compute a single step in reducing a singular pencil}
+    \KwData{$\Gamma(\lambda) = A + \lambda B$: singular pencil}
+    \KwResult{$(P, Q), K$: One-step reduced form of $\Gamma(\lambda)$}
+    \tcc{The first steps are the same in both cases}
+    $V \gets $ polynomial of minimal degree in $ker(\Gamma)$\;
+    $Q \gets $ complete to a basis($V$)\;
+    $P \gets $ complete to a basis($AV$)\;
+    $\tilde{\Gamma}(\lambda) = P^{-1}\Gamma(\lambda)Q$\;
+    $L_{\epsilon}, D, F, \widehat{A}, \widehat{B} \gets $ partition($\tilde{\Gamma}(\lambda)$)\;
+    \eIf{$degree(V) \neq 0$}{
+        \tcc{In this case, we apply the procedure described in
+        \nameref{thm:reduction-theorem} (theorem \ref{thm:reduction-theorem})}
+        $M \gets $ build $M_{\epsilon}(\widehat{A}, \widehat{B}, \epsilon-1)$\;
+        $W \gets $ build $W(F, D)$\;
+        $Z \gets WM^{-1}$\;
+        $Y \gets $ partition(Z)\;
+        $X \gets $ solve system in \eqref{linear-system-x}\;
+        $L \gets $ block matrix($[[I, Y], [0, I]]$)\;
+        $R \gets$ block matrix($[[I, -X], [0, I]]$)\;
+        $P \gets LP^{-1}$\;
+        $Q \gets QR$\;
+        \Return{$(P, Q)$, $P\Gamma(\lambda)Q$}\;
+    }
+    {
+        \tcc{In this case, the transformation has already been computed.}
+        \Return{$(P^{-1}, Q)$, $P^{-1}\Gamma(\lambda)Q$}\;
+    }
+\end{algorithm}
 
 \pagebreak
 

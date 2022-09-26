@@ -14,7 +14,7 @@ Ikramov \cite{ikramov} and Kunkel, Mehrmann.
 \end{definition}
 
 \subsection*{Regular pencils.}
-Now, we consider the case where \((A + \lambda B)\) is a regular pencil of matrices.
+Now, we consider the case where \((A, B)\) is a regular pencil of matrices.
 \begin{definition}[Regular pencil]\cite[p. 25, Definition 2]{gantmacher}
     A matrix pair \((A, B)\) is said to be regular if and only if \(A\) and \(B\) are square matrices of the same size and
     the determinant \(det(A + \lambda B)\) is not identically zero.
@@ -109,7 +109,7 @@ We can now give a result on the equivalence of regular pencils.
 Next, we shall investigate the most general case of \(m \times n\) pencils of matrices in order to introduce
 the reader to the concept of minimal indices of a pencil of matrices.
 \begin{definition}[Singular pencil]\cite[p. 25, Definition 2]{gantmacher}
-    A matrix pair \(A, B\) is said to be singular if and only if it is not regular.
+    A matrix pair \((A, B)\) is said to be singular if and only if it is not regular.
 \end{definition}
 
 Consider the singular pencil of (rectangular) matrices \(\Gamma(\lambda) = A + \lambda B\) and assume its rank \(r\) is smaller
@@ -152,8 +152,8 @@ and we define \(\epsilon_{i}\) a \textbf{minimal index for the columns} \cite[p.
 \(\Gamma(\lambda)\).
 
 We can also introduce \textbf{minimal indices for the rows} \cite[p. 38]{gantmacher} \(\eta_{1}, \eta_{2}, ..., \eta_{q}\)
-of the pencil \((A + \lambda B)\) which we can yield working with the transpose of the pencil \(A^T + \lambda B^T\)
-or, in other words, with the equation
+of the pencil \(\Gamma(\lambda)\) which we can yield working with the transpose of the pencil
+\(\Gamma^T(\lambda) = A^T + \lambda B^T\) or, in other words, with the equation
 \[
     (A^T + \lambda B^T)\vb{y} = 0.
 \]
@@ -242,7 +242,8 @@ For a proof of \nameref{thm:kronecker} (theorem \ref{thm:kronecker}) and \namere
 the reader shall refer to the following chapter.
 
 \begin{corollary}
-    Given a matrix pair \((A, B)\) there exists a pair of nonsingular matrices \(P\), \(Q\) such that
+    Given a matrix pair \((A, B)\) with $A$ and $B$ \(m \times n\) matrices, there exists a pair of nonsingular
+    matrices \(P\), \(Q\) such that
     \begin{align*}
         P A Q &= K(A) & P B Q &= K(B),
     \end{align*}
