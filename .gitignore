@@ -149,5 +149,8 @@ dmypy.json
 *.json
 *.listing
 *.loa
+*.nav
+*.snm
 report/src/images/unipi-marchio-eps-converted-to.pdf
 report/src/_minted-main
+report/src/_minted-slides
