@@ -429,7 +429,7 @@ Depending on the value of \(\epsilon\), we shall distinguish two cases.
         the explanation easier to understand, we shall give its definition (again, but) in pseudocode.
 
         \begin{algorithm*}
-            \caption{Procedure to compute W.}
+            \caption{Procedure to compute W}
             $sign \gets -1$\;
             $W \gets []$\;
             $i \gets 0$\;
@@ -498,7 +498,8 @@ found in \cite[pp. 32-33]{gantmacher}.
 \begin{lemma}
     If a pencil of matrices \(\Gamma(\lambda) = A + \lambda B\) has a polynomial of minimal degree \(\epsilon > 0\)
     in its (right) kernel, then the pencil \(\widehat{\Gamma}(\lambda)\)
-    obtained via the transformation defined in \nameref{thm:reduction-theorem} has no polynomial in its (right)
+    obtained via the transformation defined in theorem \ref{thm:reduction-theorem}
+    (\nameref{thm:reduction-theorem}) has no polynomial in its (right)
     kernel of degree less than \(\epsilon\), with
     \[
         \widehat{\Gamma}(\lambda) = \widehat{A} + \lambda\widehat{B}.
@@ -524,7 +525,7 @@ an arbitrary pencil of matrices.
     $L_{\epsilon}, D, F, \widehat{A}, \widehat{B} \gets $ partition($\tilde{\Gamma}(\lambda)$)\;
     \eIf{$degree(V) \neq 0$}{
         \tcc{In this case, we apply the procedure described in
-        \nameref{thm:reduction-theorem} (theorem \ref{thm:reduction-theorem})}
+        theorem \ref{thm:reduction-theorem} (\nameref{thm:reduction-theorem})}
         $M \gets $ build $M_{\epsilon}(\widehat{A}, \widehat{B}, \epsilon-1)$\;
         $W \gets $ build $W(F, D)$\;
         $Z \gets WM^{-1}$\;
@@ -547,7 +548,7 @@ an arbitrary pencil of matrices.
 \begin{algorithm}
     \SetKwBlock{Begin}{Begin}{}
     \SetKwFor{While}{while}{}{}
-    \caption{Procedure to compute Kronecker's canonical form of an arbitrary pencil.}\label{alg:kcf}
+    \caption{Procedure to compute Kronecker's canonical form of an arbitrary pencil}\label{alg:kcf}
     \KwData{$\Gamma(\lambda) = A + \lambda B$: pencil of \(m \times n\) matrices}
     \KwResult{$K$: Kronecker's canonical form of $\Gamma(\lambda)$}
     \Begin{
