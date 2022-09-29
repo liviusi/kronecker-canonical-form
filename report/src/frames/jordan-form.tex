@@ -1,0 +1,55 @@
+\begin{frame}
+	\frametitle{Forma canonica di Jordan}
+	\begin{itemize}
+		\item \onslide<1->{
+			Definizione
+		}
+		\item \onslide<2->{
+			Propriet\`a
+		}
+		\item \onslide<3->{
+			Stabilit\`a della trasformazione
+		}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Forma canonica di Jordan}
+	\framesubtitle{Definizione}
+		\begin{definition}
+			Una matrice $J$ diagonale a blocchi viene detta \emph{matrice di Jordan} se e solo se
+			ogni blocco lungo la diagonale \`e quadrato ed \`e del tipo
+			\[
+				\begin{bmatrix}
+					\lambda     &    1         &    0     &   \cdots   &    0    \\
+						0       &    \lambda   &    1     &   \cdots   &    0    \\
+					\vdots      &    \vdots    &  \vdots  &   \ddots   & \vdots  \\
+						0       &       0      &     0    &  \lambda   &    1    \\
+						0       &       0      &     0    &     0      & \lambda
+				\end{bmatrix}.
+			\]
+		\end{definition}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Forma canonica di Jordan}
+	\framesubtitle{Propriet\`a}
+		\textbf{Propriet\`a}:
+		\begin{itemize}
+			\item<2-> I valori sulla diagonale sono gli \emph{autovalori} di $J$, il numero di volte
+			in cui occorre \`e la sua \emph{molteplicit\`a algebrica}.
+			\item<3-> A meno di permutazioni di blocchi, due matrici \emph{simili} hanno la
+			stessa forma di Jordan.
+		\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Forma canonica di Jordan}
+	\framesubtitle{Stabilit\`a della trasformazione}
+	Data una matrice quadrata $A$, la matrice di trasformazione P in
+	\[A = P^{-1}JP\]
+	\`e malcondizionata se $A$ ha un autovalore difettivo o quasi difettivo.
+\end{frame}

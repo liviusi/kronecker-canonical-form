@@ -1,0 +1,41 @@
+\begin{frame}
+	\frametitle{Equazioni differenziali lineari a coefficienti costanti}
+	\begin{itemize}
+		\item Consideriamo le equazioni
+		differenziali del tipo
+		\begin{align*}
+			\dot{x}(t) + Ax(t) &= f(t),& A &\in \mathbb{C}^{m \times n}.
+		\end{align*}
+		\item \onslide<2-> Le soluzioni sono caratterizzate dalla forma canonica
+		di Jordan della matrice A.
+
+		\item \onslide<3-> Generalizziamo.
+	
+		Introduciamo una matrice $B \in \mathbb{C}^{m \times n}$. Dunque, consideriamo
+		le equazioni del tipo
+		\[
+			B\dot{x}(t) + Ax(t) = f(t).
+		\]
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Equazioni differenziali lineari algebriche a coefficienti costanti}
+	Distinguiamo due casi.
+	\begin{enumerate}
+		\item $B$ non \`e singolare.
+		\begin{itemize}
+			\item \onslide<2-> Le soluzioni sono caratterizzate dalla forma
+			di Jordan della matrice $-B^{-1}A$.
+		\end{itemize}
+		\item \onslide<3-> $B$ \`e singolare.
+		\begin{itemize}
+			\item \onslide<4-> Essendo B una matrice singolare, alcune equazioni nel sistema lineare potrebbero
+			essere algebriche o, in altre parole, non contenere derivate.
+			\item \onslide<5-> Le soluzioni sono caratterizzate dalla \emph{forma canonica di
+			Kronecker} della coppia di matrici ($A$, $B$) (detta anche \emph{linear pencil} o,
+			per brevit\`a, \emph{pencil}).
+		\end{itemize}
+	\end{enumerate}
+	
+\end{frame}
