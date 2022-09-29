@@ -152,5 +152,6 @@ dmypy.json
 *.nav
 *.snm
 report/src/images/unipi-marchio-eps-converted-to.pdf
+report/src/images/unipi-marchio.eps
 report/src/_minted-main
 report/src/_minted-slides
