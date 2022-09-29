@@ -151,6 +151,7 @@ dmypy.json
 *.loa
 *.nav
 *.snm
+*.vrb
 report/src/images/unipi-marchio-eps-converted-to.pdf
 report/src/images/unipi-marchio.eps
 report/src/_minted-main
