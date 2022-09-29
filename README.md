@@ -7,7 +7,7 @@ First, it is required to clone the repository.
 In order to test the code provided or include it in scripts, it is required to follow the following steps.
 
 Setup **Python** on your machine; the version the algorithm has been implemented with
-is \textbf{Python 3.10.6}.
+is **Python 3.10.6**.
 
 Setup **SageMath** on your machine and make sure Python can handle SageMath code, this should be achieved
 by installing the Python package _sagemath_
