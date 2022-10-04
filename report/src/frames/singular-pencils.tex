@@ -1,0 +1,68 @@
+\begin{frame}
+	\frametitle{Pencil singolari}
+	\framesubtitle{Determinare un polinomio di grado minimo nel kernel destro}
+	Sia \(\Gamma(\lambda)=A+\lambda B\) un pencil singolare di matrici.
+
+	Iterando sul valore di $k = 0$ con passo $1$, consideriamo la famiglia di matrici
+	$M_k^{(A, B)}$ di dimensione $(k+2) \times (k+1)$
+	\begin{align*}
+		M_{0}^{(A, B)} &=
+			\left[\begin{smallmatrix}
+				A \\
+				B
+			\end{smallmatrix}\right],
+		& M_{1}^{(A, B)} &=
+			\left[\begin{smallmatrix}
+				A & 0 \\
+				B & A \\
+				0 & B
+			\end{smallmatrix}\right],
+		& M_{k}^{(A, B)} &=
+			\left[\begin{smallmatrix}
+				A & 0 & \hdots &    0   \\
+				B & A &        & \vdots \\
+				0 & B & \ddots & \\
+				\vdots & \vdots & \ddots & A \\
+				0      &    0   & \hdots & B
+			\end{smallmatrix}\right].
+	\end{align*}
+	\onslide<2-> La matrice di base del kernel destro di $M_k$, divisa in blocchi di
+	dimensione $k+1$, identifica un polinomio di grado $k$ nel kernel destro di
+	$\Gamma(\lambda)$.
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Pencil singolari}
+	\framesubtitle{Indice minimo per le colonne}
+	Assumiamo senza perdita
+	di generalit\`a che il suo rango $r$ sia minore del numero di colonne $n$. Allora,
+	esistono soluzioni non banali $\vb{x_1}(\lambda), ..., \vb{x_r}(\lambda)$ dell'equazione
+	\[
+		(A+\lambda B)\vb{x} = 0.
+	\]
+	\onslide<2-> Il numero massimo di soluzioni linearmente indipendenti \`e $n-r$. Scegliamo
+	sempre il polinomio di grado minimo e, iterando, otteniamo la sequenza
+	\[
+		\epsilon_{1} \leq \epsilon_{2} \leq ... \leq \epsilon_{p}.
+	\]
+	Definiamo i termini $\epsilon_i$ \emph{indici minimi per le colonne}.
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Pencil singolari}
+	\framesubtitle{Teorema di riduzione}
+	\begin{theorem}[Teorema di riduzione]
+		Se il polinomio di grado minimo nel kernel destro ha grado $\epsilon > 0$, allora esistono
+		$P$, $Q$ matrici quadrate costanti invertibili tali che
+		\[
+			P\Gamma(\lambda)Q=\begin{bmatrix}
+				L_{\epsilon} & 0 \\
+				0 & \widehat{A} + \lambda \widehat{B}
+			\end{bmatrix}.
+		\]
+	\end{theorem}
+	\onslide<2-> Il pencil ottenuto $\widehat{\Gamma}(\lambda) = \widehat{A} + \lambda \widehat{B}$
+	non ha polinomi di grado inferiore a $\epsilon$ nel proprio kernel destro.
+\end{frame}
