@@ -3,7 +3,7 @@
 	\begin{theorem}[Forma canonica di Kronecker]
 		Sia \(\Gamma(\lambda) = A + \lambda B\) un pencil di matrici arbitrarie con
 		$A$, $B$ di dimensione \(m \times n\). Esistono $P$, $Q$
-		matrici quadrate costanti delle dimensioni appropriate tali che
+		matrici quadrate costanti invertibili delle dimensioni appropriate tali che
 		\[
 			P\Gamma(\lambda)Q = \begin{bmatrix}
 				O^{(h, g)} \\
@@ -19,6 +19,7 @@
 
 \begin{frame}
 	\frametitle{Forma canonica di Kronecker}
+	\framesubtitle{Descrizione dei blocchi}
 	\begin{itemize}
 		\item $h$, $g$ sono il numero massimo di soluzioni costanti e indipendenti delle
 		equazioni
@@ -46,6 +47,7 @@
 
 \begin{frame}
 	\frametitle{Forma canonica di Kronecker}
+	\framesubtitle{Descrizione dei blocchi}
 	\begin{align*}
 		L^T &= \left[\begin{smallmatrix}
 			L_{\eta_{h+1}}^T \\
@@ -72,11 +74,11 @@
 	\frametitle{Pencil di matrici}
 	Distinguiamo due tipi di pencil di matrici:
 	\begin{definition}[Pencil lineare regolare]
-		Un pencil di matrici ($A$, $B$) viene definito regolare se e solo se
+		Un pencil di matrici ($A$, $B$) viene definito \emph{regolare} se e solo se
 		$A$ e $B$ sono matrici quadrate della stessa dimensione e il determinante
 		$det(A+\lambda B)$ non \`e identicamente zero.
 	\end{definition}
 	\begin{definition}[Pencil lineare singolare]
-			Un pencil di matrici non regolare viene definito singolare.
+			Un pencil di matrici non regolare viene definito \emph{singolare}.
 	\end{definition}
 \end{frame}

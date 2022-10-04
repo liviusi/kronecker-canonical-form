@@ -14,7 +14,7 @@
 		..., \
 		i_{r}(\lambda) = D_{1}(\lambda).
 	\end{gather*}
-	Siano $p_i$ polinomi irriducibili. Possiamo scrivere l'espansione dei polinomi invarianti
+	\onslide<2-> Siano $p_i$ polinomi irriducibili. Possiamo scrivere l'espansione dei polinomi invarianti
 	in fattori irriducibili come
 	\begin{gather*}
 		i_{1}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{1, i}}, \
@@ -29,27 +29,33 @@
 	\frametitle{Pencil regolari}
 	\framesubtitle{Divisori elementari finiti, divisori elementari infiniti}
 	\begin{definition}[Divisori elementari finiti]
-		Definiamo divisori elementari finiti di \(\Gamma(\lambda)\) tutti i
+		Definiamo \emph{divisori elementari finiti} di \(\Gamma(\lambda)\) tutti i
 		polinomi $p_i(\lambda)$ diversi da 1.
 	\end{definition}
 	\begin{definition}[Divisori elementari infiniti]
 		Definiamo
-		divisori elementari infiniti di \(\Gamma(\lambda)\) i divisori elementari finiti
+		\emph{divisori elementari infiniti} di \(\Gamma(\lambda)\) i divisori elementari finiti
 		del pencil $\lambda A + B$.
 	\end{definition}
 \end{frame}
 
 
 \begin{frame}
-	\frametitle{Pencil lineari regolari}
+	\frametitle{Pencil regolari}
+	\framesubtitle{Forma canonica di Kronecker}
 	\begin{theorem}[Forma canonica di Kronecker - pencil regolari]
-		Ogni pencil regolare pu\`o essere ridotto a una matrice del tipo
-		\[\begin{bmatrix}
+		Sia \(\Gamma(\lambda) = A+\lambda B\) un pencil regolare. Esistono $P$, $Q$ matrici
+		quadrate costanti invertibili tali che
+		\[
+			P\Gamma(\lambda)Q=\begin{bmatrix}
 			N^{(u_1)} \\
 			& N^{(u_2)} \\
 			&& \ddots \\
 			&&& N^{(u_s)} \\
 			&&&& G + \lambda I
-		\end{bmatrix}.\]
+		\end{bmatrix}.
+		\]
 	\end{theorem}
+	\onslide<2-> I blocchi $N^{(u)}$ sono unicamente determinati dai divisori elementari infiniti
+	del pencil, l'ultimo blocco dai divisori elementari finiti.
 \end{frame}
