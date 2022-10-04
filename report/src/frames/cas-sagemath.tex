@@ -9,8 +9,9 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Esempio: calcolo del determinante}
+\begin{frame}[fragile]
+	\frametitle{Calcolo simbolico}
+	\framesubtitle{Esempio: calcolo del determinante di una matrice}
 	Calcoliamo il determinante della matrice $A$, con
 	\[
 		A = \begin{bmatrix}
@@ -18,36 +19,14 @@
 			3 & \sqrt{3}
 		\end{bmatrix}.
 	\]
-	Confrontiamo i risultati ottenuti definendola
-	inizialmente sull'anello \mintinline{sage}{CDF} (\emph{Complex Double Field})
-	e, in seguito, sull'anello simbolico \mintinline{sage}{SR} (\emph{Symbolic Ring}).
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{Esempio: calcolo del determinante}
-		\begin{minted}[fontsize=\footnotesize,
-			frame=lines,
-			framesep=2mm,
-			escapeinside=!!]{sage}
+	\begin{minted}[fontsize=\footnotesize,
+		frame=lines,
+		framesep=2mm,
+		escapeinside=!!]{sage}
 !\textcolor{blue}{sage:}! A = matrix(SR, [[sqrt(3), 1], [3, sqrt(3)]])
 !\textcolor{blue}{sage:}! A.det().is_zero()
 True
 !\textcolor{blue}{sage:}! A.change_ring(CDF).det().is_zero()
 False
-		\end{minted}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Modello di calcolo}
-	\begin{itemize}
-		\item Useremo l'anello simbolico \mintinline{sage}{SR} per il calcolo esatto.
-		\item \onslide<2-> SageMath mette a disposizione due metodi che, per il nostro caso
-		d'uso, sono particolarmente utili:
-		\begin{itemize}
-			\item \onslide<3-> \mintinline{sage}{is_zero}
-			per verificare che una espressione sia esattamente uguale a zero;
-			\item \onslide<4-> \mintinline{sage}{jordan_form}
-			per calcolare esattamente la forma canonica di Jordan di una matrice.
-		\end{itemize}
-	\end{itemize}
+	\end{minted}
 \end{frame}

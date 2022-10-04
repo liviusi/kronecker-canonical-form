@@ -1,0 +1,55 @@
+\begin{frame}
+	\frametitle{Pencil regolari}
+	\framesubtitle{Polinomi invarianti}
+	Assumiamo che il pencil $\Gamma(\lambda)=A+\lambda B$ abbia rango $r$.
+
+	Sia \(D_{j}(\lambda)\) il massimo comun divisore dei minori di ordine $j$
+	di $\Gamma(\lambda)$ (con $j=1, ..., r$). Assumiamo senza perdita di generalit\`a
+	$D_r(\lambda)$ abbia coefficiente 1 e $D_0(\lambda)=1$.
+	Definiamo \emph{polinomi invarianti} del
+	pencil \(\Gamma(\lambda)\) le frazioni
+	\begin{gather*}
+		i_{1}(\lambda) = \dfrac{D_{r}(\lambda)}{D_{r-1}(\lambda)}, \
+		i_{2}(\lambda) = \dfrac{D_{r-1}(\lambda)}{D_{r-2}(\lambda)}, \
+		..., \
+		i_{r}(\lambda) = D_{1}(\lambda).
+	\end{gather*}
+	Siano $p_i$ polinomi irriducibili. Possiamo scrivere l'espansione dei polinomi invarianti
+	in fattori irriducibili come
+	\begin{gather*}
+		i_{1}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{1, i}}, \
+		i_{2}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{2, i}}, \
+		... \\
+		i_{r}(\lambda) = \prod_{i=1}^{k}p_{i}(\lambda)^{\alpha_{r, i}}.
+	\end{gather*}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Pencil regolari}
+	\framesubtitle{Divisori elementari finiti, divisori elementari infiniti}
+	\begin{definition}[Divisori elementari finiti]
+		Definiamo divisori elementari finiti di \(\Gamma(\lambda)\) tutti i
+		polinomi $p_i(\lambda)$ diversi da 1.
+	\end{definition}
+	\begin{definition}[Divisori elementari infiniti]
+		Definiamo
+		divisori elementari infiniti di \(\Gamma(\lambda)\) i divisori elementari finiti
+		del pencil $\lambda A + B$.
+	\end{definition}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Pencil lineari regolari}
+	\begin{theorem}[Forma canonica di Kronecker - pencil regolari]
+		Ogni pencil regolare pu\`o essere ridotto a una matrice del tipo
+		\[\begin{bmatrix}
+			N^{(u_1)} \\
+			& N^{(u_2)} \\
+			&& \ddots \\
+			&&& N^{(u_s)} \\
+			&&&& G + \lambda I
+		\end{bmatrix}.\]
+	\end{theorem}
+\end{frame}
