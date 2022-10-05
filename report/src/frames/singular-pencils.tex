@@ -5,29 +5,29 @@
 
 	Iterando sul valore di $k = 0$ con passo $1$, consideriamo la famiglia di matrici
 	$M_k^{(A, B)}$ di dimensione $(k+2) \times (k+1)$
-	\begin{align*}
-		M_{0}^{(A, B)} &=
-			\left[\begin{smallmatrix}
+	\begin{gather*}
+		M_{0}^{(A, B)} =
+			\begin{bmatrix}
 				A \\
 				B
-			\end{smallmatrix}\right],
-		& M_{1}^{(A, B)} &=
-			\left[\begin{smallmatrix}
+			\end{bmatrix}, \
+		M_{1}^{(A, B)} =
+			\begin{bmatrix}
 				A & 0 \\
 				B & A \\
 				0 & B
-			\end{smallmatrix}\right],
-		& M_{k}^{(A, B)} &=
-			\left[\begin{smallmatrix}
+			\end{bmatrix}, \\
+		M_{k}^{(A, B)} =
+			\begin{bmatrix}
 				A & 0 & \hdots &    0   \\
 				B & A &        & \vdots \\
-				0 & B & \ddots & \\
+				0 & B & \ddots & \vdots \\
 				\vdots & \vdots & \ddots & A \\
 				0      &    0   & \hdots & B
-			\end{smallmatrix}\right].
-	\end{align*}
-	\onslide<2-> La matrice di base del kernel destro di $M_k$, divisa in blocchi di
-	dimensione $k+1$, identifica un polinomio di grado $k$ nel kernel destro di
+			\end{bmatrix}.
+	\end{gather*}
+	\onslide<2-> Ogni vettore nel kernel destro di $M_k$ identifica un polinomio di grado $k$ nel
+	kernel (destro) di
 	$\Gamma(\lambda)$.
 \end{frame}
 

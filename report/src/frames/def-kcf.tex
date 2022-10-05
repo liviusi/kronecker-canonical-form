@@ -28,18 +28,13 @@
 		\end{align*}
 		\item \onslide<2-> I blocchi sono del tipo:
 		\begin{align*}
-			L &= \left[\begin{smallmatrix}
-				L_{\epsilon_{h+1}} \\
-				& L_{\epsilon_{h+2}} \\
-				& & \ddots \\
-				& & & L_{\epsilon_{p}}
-			\end{smallmatrix}\right], &
-			L_{i}^{(i, i+1)} &= \left[\begin{smallmatrix}
-				\lambda        &      1     &       0      &     \ldots       &    0       &    0   \\
-				0              & \lambda    &       1      &                  & \vdots     & \vdots \\
-				\vdots         & \vdots     &     & \ddots    &      &            &        \\
-				0              &      0     &              &                  & \lambda    &    1   
-			\end{smallmatrix}\right]
+			L &= diag\{L_{\epsilon_{h+1}}, L_{\epsilon_{h+2}}, ..., L_{\epsilon_{p}}\},
+			&
+			L_{i}^{(i, i+1)} &= \begin{bmatrix}
+				\lambda & 1 \\
+				& \ddots \\
+				& & \lambda & 1
+			\end{bmatrix}
 		\end{align*}
 	\end{itemize}
 \end{frame}
@@ -49,22 +44,21 @@
 	\frametitle{Forma canonica di Kronecker}
 	\framesubtitle{Descrizione dei blocchi}
 	\begin{align*}
-		L^T &= \left[\begin{smallmatrix}
-			L_{\eta_{h+1}}^T \\
-			& L_{\eta_{h+2}}^T \\
-			& & \ddots \\
-			& & & L_{\eta_{q}^T}
-		\end{smallmatrix}\right], &
-		N &= \left[\begin{smallmatrix}
-			N^{(u_{1})} \\
-			& N^{(u_{2})} \\ 
-			& & \ddots \\
-			& & & N^{(u_{s})}.
-		\end{smallmatrix}\right]
+		L^T &= diag\{L_{\eta_{h+1}}^T, L_{\eta_{h+2}}^T, ..., L_{\eta_{q}^T}\},
+		&
+		N &= diag\{N^{(u_{1})}, N^{(u_{2})} ..., N^{(u_{s})}\}
 	\end{align*}
 	\begin{itemize}
 		\item \onslide<2-> I blocchi $N^{u}$ sono del tipo
-		\[N^{(u)} = I^{(u)} + \lambda H^{(u)}.\]
+		\begin{align*}
+			N^{(u)} &= I^{(u)} + \lambda H^{(u)}, &
+			H^{(i)} &= \begin{bmatrix}
+				0 & 1 \\
+				& \ddots & \ddots \\
+				& & 0 & 1 \\
+				& & & 0
+			\end{bmatrix}
+		\end{align*}
 		\item \onslide<3-> $G$ \`e una matrice di Jordan.
 	\end{itemize}
 \end{frame}

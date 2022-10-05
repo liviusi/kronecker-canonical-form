@@ -1,0 +1,85 @@
+\begin{frame}
+	\frametitle{Calcolo esatto della forma canonica di Kronecker}
+	\framesubtitle{Risultati}
+	I risultati ottenuti da questa tesi sono:
+	\begin{enumerate}
+		\item aver esteso la letteratura riguardo al calcolo della forma canonica di Kronecker,
+		\item descritto e dimostrato un algoritmo che la calcola esattamente,
+		\item implementato e testato tale algoritmo.
+	\end{enumerate}
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Calcolo esatto della forma canonica di Kronecker}
+	\framesubtitle{Snippet di codice}
+	Assumiamo di aver definito la coppia di matrici in forma di Kronecker ($A$, $B$) con
+	\begin{align*}
+		A &=
+		\begin{bmatrix}
+			0 & 1 & 0 & 0 \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 1 \\
+			& & & & 1 & 0 \\
+			& & & & 0 & 1 \\
+			& & & & & & 42
+		\end{bmatrix}, &
+		B &=
+		\begin{bmatrix}
+			1 & 0 & 0 & 0 \\
+			0 & 1 & 0 & 0 \\
+			0 & 0 & 1 & 0 \\
+			& & & & 0 & 1 \\
+			& & & & 0 & 0 \\
+			& & & & & & 1
+		\end{bmatrix}.
+	\end{align*}
+	Importiamo i moduli necessari.
+	\begin{minted}[numbersep=5pt,
+		frame=lines,
+		framesep=2mm]{python}
+import sage.all as sa
+from kcf import kcf_sage as kcf
+	\end{minted}
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Calcolo esatto della forma canonica di Kronecker}
+	\framesubtitle{Snippet di codice}
+	Definiamo un metodo per calcolare una matrice casuale invertibile.
+	\begin{minted}[numbersep=5pt,
+		frame=lines,
+		framesep=2mm]{python}
+def random_invertible_matrix(n: int):
+	while True:
+		M = sa.random_matrix(sa.ZZ, n, n)
+		if not (M.is_singular()):
+			return M.change_ring(sa.SR)
+
+D = random_invertible_matrix(A.nrows())
+C = random_invertible_matrix(A.ncols())
+	\end{minted}
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Calcolo esatto della forma canonica di Kronecker}
+	\framesubtitle{Snippet di codice}
+	Calcoliamo la forma canonica di Kronecker della coppia di matrici ($A$, $B$) dopo aver
+	cambiato la loro base.
+	\begin{minted}[numbersep=5pt,
+		frame=lines,
+		framesep=2mm]{python}
+A = D.inverse() * A * C
+B = D.inverse() * B * C
+
+(L, R), (KCF_A, KCF_B) = kcf.kronecker_canonical_form(
+	A, B, transformation=True)
+assert ((L*A*R - KCF_A).is_zero()
+		and (L*B*R - KCF_B).is_zero()
+		and not L.is_singular()
+		and not R.is_singular())
+print(f'{kcf.stringify_pencil(KCF_A, KCF_B)}')
+\end{minted}
+\end{frame}
