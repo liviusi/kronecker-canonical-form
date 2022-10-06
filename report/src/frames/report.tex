@@ -1,15 +1,3 @@
-\begin{frame}
-	\frametitle{Calcolo esatto della forma canonica di Kronecker}
-	\framesubtitle{Risultati}
-	I risultati ottenuti da questa tesi sono:
-	\begin{enumerate}
-		\item aver esteso la letteratura riguardo al calcolo della forma canonica di Kronecker,
-		\item descritto e dimostrato un algoritmo che la calcola esattamente,
-		\item implementato e testato tale algoritmo.
-	\end{enumerate}
-\end{frame}
-
-
 \begin{frame}[fragile]
 	\frametitle{Calcolo esatto della forma canonica di Kronecker}
 	\framesubtitle{Snippet di codice}
@@ -82,4 +70,15 @@ assert ((L*A*R - KCF_A).is_zero()
 		and not R.is_singular())
 print(f'{kcf.stringify_pencil(KCF_A, KCF_B)}')
 \end{minted}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Calcolo esatto della forma canonica di Kronecker}
+	\framesubtitle{Risultati}
+	I risultati ottenuti da questa tesi sono:
+	\begin{enumerate}
+		\item aver esteso la letteratura riguardo al calcolo della forma canonica di Kronecker,
+		\item descritto e dimostrato un algoritmo che la calcola esattamente,
+		\item implementato e testato tale algoritmo.
+	\end{enumerate}
 \end{frame}
